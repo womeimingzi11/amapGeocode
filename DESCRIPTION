@@ -1,0 +1,17 @@
+Package: amapGeocode
+Type: Package
+Title: An Interface to the AutoNavi Maps API Geocoding Services
+Version: 0.1.0
+Author: person("Han", "Chen", email = "chenhan28@gmail.com", role = c("aut", "cre"))
+Maintainer: The package maintainer <yourself@somewhere.net>
+Description: Using R to get detailed coordinates and locations by the AutoNavi Maps API.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports:
+  httr,
+  jsonlite,
+  xml2,
+  readr,
+  purrr
+RoxygenNote: 7.1.1
