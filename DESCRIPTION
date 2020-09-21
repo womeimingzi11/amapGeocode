@@ -8,10 +8,14 @@ Description: Using R to get detailed coordinates and locations by the AutoNavi M
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Imports:
-  httr,
-  jsonlite,
-  xml2,
-  readr,
-  purrr
 RoxygenNote: 7.1.1
+Imports: 
+    httr,
+    xml2,
+    jsonlite,
+    magrittr,
+    stringr,
+    tibble
+URL: https://womeimingzi11.github.io
+Suggests: 
+    testthat
