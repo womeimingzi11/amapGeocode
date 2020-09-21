@@ -13,19 +13,27 @@ knitr::opts_chunk$set(
 )
 ```
 
-# amapGeocode
+# [amapGeocode](https://github.com/womeimingzi11/amapGeocode)
 
 <!-- badges: start -->
 <!-- badges: end -->
 **amapGeocode** provides an interface for the AutoNavi(高德) Maps API geocoding services. API docs can be foun [here](https://lbs.amap.com/) and [here](https://lbs.amap.com/api/webservice/summary/). For now, amapGeocode can be used for both forward and revese geocoding powered by high-precision AutoNavi Maps API.
 
-It's very common for API upgrades to make the downstream application, like amapGeocode, to be unavilable. Feel free to [let me know](mailto://chenhan28@gmail.com) once it's broken or just open an issue.
+This project is still in a very early stage and only the geocodig function has been developed. So all the functions may change or supersede, so it's not recommanded to use this package in production environment till it goes to stable stage. When will the stable stage come? It depends my graduate progress.
+
+amapGeocode is inspired by [baidumap](https://github.com/badbye/baidumap) and [baidugeo](https://github.com/ChrisMuir/baidugeo). If you want to choose the Baidu Map API, these packages are good choice.
+
+Baidu or AutoNavi? Here is the main differences:
+
+1. AutoNavi has significant high precise, in my case, the Results from Baidu were unsatisfactory.
+2. Baidu with free verification provices really high request: 300,000/month for each geocode/reverse-geocode, while AutoNavi only provide 6000/month.
+
 ## Installation
 amapGeocode may be published to [CRAN](https://CRAN.R-project.org) once the first available version been finished.
 
 For now, please install amapGeocode from GitHub following this command:
-```{r install by remotes}
-# remotes::install_github('womeimingzi11/amapGeocode')
+```{r install by remotes, eval=FALSE, message=TRUE, include=FALSE}
+remotes::install_github('womeimingzi11/amapGeocode')
 ```
 
 <!-- You can install the released version of amapGeocode from [CRAN](https://CRAN.R-project.org) with: -->
@@ -34,27 +42,31 @@ For now, please install amapGeocode from GitHub following this command:
 <!-- install.packages("amapGeocode") -->
 <!-- ``` -->
 
-## Example
+## Usage
 
-This is a basic example which shows you how to solve a common problem:
+Before start geocoding and reverse geocoding, please (apply a AutoNavi Map API Key)[https://lbs.amap.com/dev/]. Set `amap_key` globally by following command:
 
-```{r example}
+```{r set amap_key, eval=FALSE, include=FALSE}
+options(amap_key = 'REPLACE THIS BY YOUR KEY')
+```
+
+Then get result of geocoding, by `getCoord` function:
+
+```{r getCoord}
 library(amapGeocode)
-## basic example code
+res <-
+  getCoord('成都中医药大学')
+res
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
+What we get from `getCoord` is **JSON** or **XML**. For readability, `extractCoord` is created to get result as `tibble`, [a modern reimagining of the data.frame](https://tibble.tidyverse.org/).
 
-```{r cars}
-summary(cars)
+```{r extractCood}
+tb <- extractCoord(res)
+knitr::kable(tb)
 ```
 
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date.
+For more functions and improvements, Coming Soon!
 
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
-```
-
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub!
+## Bug report
+It's very common for API upgrades to make the downstream application, like amapGeocode, to be unavilable. Feel free to [let me know](mailto://chenhan28@gmail.com) once it's broken or just open an issue.

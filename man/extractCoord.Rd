@@ -2,7 +2,7 @@
 % Please edit documentation in R/getCoord.R
 \name{extractCoord}
 \alias{extractCoord}
-\title{Extract geocoding}
+\title{Extract geocode from location}
 \usage{
 extractCoord(res)
 }

@@ -1,4 +1,4 @@
-#' Get geocoding
+#' Get geocode from location
 #'
 #' @param key Required.\cr
 #' Amap Key. \cr
@@ -31,8 +31,8 @@
 #' @export
 
 getCoord <-
-  function(key,
-           address,
+  function(address,
+           key = NULL,
            city = NULL,
            batch = NULL,
            sig = NULL,
@@ -40,9 +40,18 @@ getCoord <-
            callback = NULL) {
     if (stringr::str_detect(address, string = stringr::fixed('|'))) {
       if(!isTRUE(batch)){
-        warning('Multiple address has been detected by | sign, but batch argument is not TRUE yet!' )
+        warning('Multiple address has been detected by | sign, unfortunately batch argument is not TRUE yet!' )
       }
     }
+
+    if(is.null(key)){
+      if(is.null(getOption('amap_key'))){
+        stop('Please set key argument or set amap_key globally by this command
+             options(amap_key = your key)')
+      }
+      key = getOption('amap_key')
+    }
+
     base_url = 'https://restapi.amap.com/v3/geocode/geo'
 
     query_parm = list(
@@ -61,7 +70,7 @@ getCoord <-
     httr::content(res)
   }
 
-#' Extract geocoding
+#' Extract geocode from location
 #'
 #' Extract geocoding result from Response of getCoord. For now, only single place response is supported.
 #'

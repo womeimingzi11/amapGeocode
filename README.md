@@ -1,8 +1,8 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-amapGeocode
-===========
+[amapGeocode](https://github.com/womeimingzi11/amapGeocode)
+===========================================================
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -13,48 +13,77 @@ and [here](https://lbs.amap.com/api/webservice/summary/). For now,
 amapGeocode can be used for both forward and revese geocoding powered by
 high-precision AutoNavi Maps API.
 
-It’s very common for API upgrades to make the downstream application,
-like amapGeocode, to be unavilable. Feel free to [let me
-know](mailto://chenhan28@gmail.com) once it’s broken or just open an
-issue. \#\# Installation amapGeocode may be published to
-[CRAN](https://CRAN.R-project.org) once the first available version been
-finished.
+This project is still in a very early stage and only the geocodig
+function has been developed. So all the functions may change or
+supersede, so it’s not recommanded to use this package in production
+environment till it goes to stable stage. When will the stable stage
+come? It depends my graduate progress.
+
+amapGeocode is inspired by
+[baidumap](https://github.com/badbye/baidumap) and
+[baidugeo](https://github.com/ChrisMuir/baidugeo). If you want to choose
+the Baidu Map API, these packages are good choice.
+
+Baidu or AutoNavi? Here is the main differences:
+
+1.  AutoNavi has significant high precise, in my case, the Results from
+    Baidu were unsatisfactory.
+2.  Baidu with free verification provices really high request:
+    300,000/month for each geocode/reverse-geocode, while AutoNavi only
+    provide 6000/month.
+
+Installation
+------------
+
+amapGeocode may be published to [CRAN](https://CRAN.R-project.org) once
+the first available version been finished.
 
 For now, please install amapGeocode from GitHub following this command:
-
-    # remotes::install_github('womeimingzi11/amapGeocode')
 
 <!-- You can install the released version of amapGeocode from [CRAN](https://CRAN.R-project.org) with: -->
 <!-- ``` r -->
 <!-- install.packages("amapGeocode") -->
 <!-- ``` -->
 
-Example
--------
+Usage
+-----
 
-This is a basic example which shows you how to solve a common problem:
+Before start geocoding and reverse geocoding, please (apply a AutoNavi
+Map API
+Key)\[<a href="https://lbs.amap.com/dev/" class="uri">https://lbs.amap.com/dev/</a>\].
+Set `amap_key` globally by following command:
+
+Then get result of geocoding, by `getCoord` function:
 
     library(amapGeocode)
-    ## basic example code
+    res <-
+      getCoord('成都中医药大学')
+    res
+    #> {xml_document}
+    #> <response>
+    #> [1] <status>1</status>
+    #> [2] <info>OK</info>
+    #> [3] <infocode>10000</infocode>
+    #> [4] <count>1</count>
+    #> [5] <geocodes type="list">\n  <geocode>\n    <formatted_address>四川省成都市金牛区成都中医 ...
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+What we get from `getCoord` is **JSON** or **XML**. For readability,
+`extractCoord` is created to get result as `tibble`, [a modern
+reimagining of the data.frame](https://tibble.tidyverse.org/).
 
-    summary(cars)
-    #>      speed           dist       
-    #>  Min.   : 4.0   Min.   :  2.00  
-    #>  1st Qu.:12.0   1st Qu.: 26.00  
-    #>  Median :15.0   Median : 36.00  
-    #>  Mean   :15.4   Mean   : 42.98  
-    #>  3rd Qu.:19.0   3rd Qu.: 56.00  
-    #>  Max.   :25.0   Max.   :120.00
+    tb <- extractCoord(res)
+    knitr::kable(tb)
 
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date.
+| lng        | lat       | formatted\_address               | country | province | city   | district | township | street | number | citycode | adcode |
+|:-----------|:----------|:---------------------------------|:--------|:---------|:-------|:---------|:---------|:-------|:-------|:---------|:-------|
+| 104.043284 | 30.666864 | 四川省成都市金牛区成都中医药大学 | 中国    | 四川省   | 成都市 | 金牛区   |          |        |        | 028      | 510106 |
 
-You can also embed plots, for example:
+For more functions and improvements, Coming Soon!
 
-<img src="man/figures/README-pressure-1.png" width="100%" />
+Bug report
+----------
 
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub!
+It’s very common for API upgrades to make the downstream application,
+like amapGeocode, to be unavilable. Feel free to [let me
+know](mailto://chenhan28@gmail.com) once it’s broken or just open an
+issue.
