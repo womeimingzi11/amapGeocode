@@ -4,8 +4,8 @@
 [amapGeocode](https://github.com/womeimingzi11/amapGeocode)
 ===========================================================
 
-<!-- badges: start -->
-<!-- badges: end -->
+<img src="resource/amapGeocode-sticker.png" width="100" />
+<!-- badges: start --> <!-- badges: end -->
 
 **amapGeocode** provides an interface for the AutoNavi(高德) Maps API
 geocoding services. API docs can be foun [here](https://lbs.amap.com/)
@@ -40,6 +40,8 @@ the first available version been finished.
 
 For now, please install amapGeocode from GitHub following this command:
 
+    remotes::install_github('womeimingzi11/amapGeocode')
+
 <!-- You can install the released version of amapGeocode from [CRAN](https://CRAN.R-project.org) with: -->
 <!-- ``` r -->
 <!-- install.packages("amapGeocode") -->
@@ -47,6 +49,8 @@ For now, please install amapGeocode from GitHub following this command:
 
 Usage
 -----
+
+### Geocoding
 
 Before start geocoding and reverse geocoding, please (apply a AutoNavi
 Map API
@@ -96,12 +100,63 @@ or **XML**. The result can further be parsed by `extractCoord`.
     #> [3] <infocode>10000</infocode>
     #> [4] <count>1</count>
     #> [5] <geocodes type="list">\n  <geocode>\n    <formatted_address>四川省成都市金牛区成都中医 ...
-    tb <- extractCoord(res)
+    tb <- 
+      extractCoord(res)
     knitr::kable(tb)
 
 | lng        | lat       | formatted\_address               | country | province | city   | district | township | street | number | citycode | adcode |
 |:-----------|:----------|:---------------------------------|:--------|:---------|:-------|:---------|:---------|:-------|:-------|:---------|:-------|
 | 104.043284 | 30.666864 | 四川省成都市金牛区成都中医药大学 | 中国    | 四川省   | 成都市 | 金牛区   |          |        |        | 028      | 510106 |
+
+### Reverse Geocoding
+
+get result of reverse geocoding, by `get` function.
+
+    res <- 
+      getLocation(104.043284, 30.666864)
+    knitr::kable(res)
+
+| formatted\_address                                                                   | country | province | city   | district | township   | citycode | towncode     |
+|:-------------------------------------------------------------------------------------|:--------|:---------|:-------|:---------|:-----------|:---------|:-------------|
+| 四川省成都市金牛区西安路街道成都中医药大学附属医院腹泻门诊成都中医药大学(十二桥校区) | 中国    | 四川省   | 成都市 | 金牛区   | 西安路街道 | 028      | 510106024000 |
+
+The response we get from **AutoNavi Map API** is **JSON** or **XML**.
+For readability, we transform them to `tibble`, [a modern reimagining of
+the data.frame](https://tibble.tidyverse.org/), by setting `to_table`
+argument as `FALSE` defaultly. At this situation, `getLocation` will
+automatically set `output` argument as `XML`, even this argument has
+setted as `JSON`.
+
+If anyone want to get response as **JSON** or **XML**, please set
+`to_table = TRUE`. If anyone want to extract information from **JSON**
+or **XML**. The result can further be parsed by `extractLocation`.
+
+    res <-
+       getLocation(104.043284, 30.666864, to_table = FALSE)
+    res
+    #> {xml_document}
+    #> <response>
+    #> [1] <status>1</status>
+    #> [2] <info>OK</info>
+    #> [3] <infocode>10000</infocode>
+    #> [4] <regeocode>\n  <formatted_address>四川省成都市金牛区西安路街道成都中医药大学附属医院腹泻门诊成都中医药大学(十二 ...
+
+`extractLocation` is created to get result as tibble.
+
+    res
+    #> {xml_document}
+    #> <response>
+    #> [1] <status>1</status>
+    #> [2] <info>OK</info>
+    #> [3] <infocode>10000</infocode>
+    #> [4] <regeocode>\n  <formatted_address>四川省成都市金牛区西安路街道成都中医药大学附属医院腹泻门诊成都中医药大学(十二 ...
+    tb <- 
+      extractLocation(res)
+    knitr::kable(tb)
+
+| formatted\_address                                                                   | country | province | city   | district | township   | citycode | towncode     |
+|:-------------------------------------------------------------------------------------|:--------|:---------|:-------|:---------|:-----------|:---------|:-------------|
+| 四川省成都市金牛区西安路街道成都中医药大学附属医院腹泻门诊成都中医药大学(十二桥校区) | 中国    | 四川省   | 成都市 | 金牛区   | 西安路街道 | 028      | 510106024000 |
 
 For more functions and improvements, Coming Soon!
 
@@ -112,3 +167,11 @@ It’s very common for API upgrades to make the downstream application,
 like amapGeocode, to be unavilable. Feel free to [let me
 know](mailto://chenhan28@gmail.com) once it’s broken or just open an
 issue.
+
+Acknowledgements
+----------------
+
+Hex Sticker was created by [hexSticker
+package](https://github.com/GuangchuangYu/hexSticker) with the world
+data from
+[rnaturalearth](https://cran.r-project.org/web/packages/rnaturalearth/README.html).

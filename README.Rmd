@@ -14,9 +14,10 @@ knitr::opts_chunk$set(
 ```
 
 # [amapGeocode](https://github.com/womeimingzi11/amapGeocode)
-
+![](resource/amapGeocode-sticker.png){width=100px}
 <!-- badges: start -->
 <!-- badges: end -->
+
 **amapGeocode** provides an interface for the AutoNavi(高德) Maps API geocoding services. API docs can be foun [here](https://lbs.amap.com/) and [here](https://lbs.amap.com/api/webservice/summary/). For now, amapGeocode can be used for both forward and revese geocoding powered by high-precision AutoNavi Maps API.
 
 This project is still in a very early stage and only the geocodig function has been developed. So all the functions may change or supersede, so it's not recommanded to use this package in production environment till it goes to stable stage. When will the stable stage come? It depends my graduate progress.
@@ -32,7 +33,7 @@ Baidu or AutoNavi? Here is the main differences:
 amapGeocode may be published to [CRAN](https://CRAN.R-project.org) once the first available version been finished.
 
 For now, please install amapGeocode from GitHub following this command:
-```{r install by remotes, eval=FALSE, message=TRUE, include=FALSE}
+```{r install by remotes, eval=FALSE, message=TRUE, include=TRUE}
 remotes::install_github('womeimingzi11/amapGeocode')
 ```
 
@@ -43,7 +44,7 @@ remotes::install_github('womeimingzi11/amapGeocode')
 <!-- ``` -->
 
 ## Usage
-
+### Geocoding
 Before start geocoding and reverse geocoding, please (apply a AutoNavi Map API Key)[https://lbs.amap.com/dev/]. Set `amap_key` globally by following command:
 
 ```{r set amap_key, eval=FALSE, include=FALSE}
@@ -73,7 +74,36 @@ res
 
 ```{r extractCood}
 res
-tb <- extractCoord(res)
+tb <- 
+  extractCoord(res)
+knitr::kable(tb)
+```
+### Reverse Geocoding
+
+get result of reverse geocoding, by `get` function. 
+
+```{r getLocation_to_table_as_TRUE}
+res <- 
+  getLocation(104.043284, 30.666864)
+knitr::kable(res)
+```
+
+The response we get from **AutoNavi Map API** is **JSON** or **XML**. For readability, we transform them to `tibble`, [a modern reimagining of the data.frame](https://tibble.tidyverse.org/), by setting `to_table` argument as `FALSE` defaultly. At this situation, `getLocation` will automatically set `output` argument as `XML`, even this argument has setted as `JSON`.
+
+If anyone want to get response as **JSON** or **XML**, please set `to_table = TRUE`. If anyone want to extract information from **JSON** or **XML**. The result can further be parsed by `extractLocation`.
+
+```{r getLocation_to_table_as_FALSE}
+res <-
+   getLocation(104.043284, 30.666864, to_table = FALSE)
+res
+```
+
+`extractLocation` is created to get result as tibble.
+
+```{r extractLocation}
+res
+tb <- 
+  extractLocation(res)
 knitr::kable(tb)
 ```
 
@@ -81,3 +111,6 @@ For more functions and improvements, Coming Soon!
 
 ## Bug report
 It's very common for API upgrades to make the downstream application, like amapGeocode, to be unavilable. Feel free to [let me know](mailto://chenhan28@gmail.com) once it's broken or just open an issue.
+
+## Acknowledgements
+Hex Sticker was created by [hexSticker package](https://github.com/GuangchuangYu/hexSticker) with the world data from  [rnaturalearth](https://cran.r-project.org/web/packages/rnaturalearth/README.html).
