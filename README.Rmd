@@ -45,7 +45,7 @@ remotes::install_github('womeimingzi11/amapGeocode')
 
 ## Usage
 ### Geocoding
-Before start geocoding and reverse geocoding, please (apply a AutoNavi Map API Key)[https://lbs.amap.com/dev/]. Set `amap_key` globally by following command:
+Before start geocoding and reverse geocoding, please apply a [AutoNavi Map API Key](https://lbs.amap.com/dev/). Set `amap_key` globally by following command:
 
 ```{r set amap_key, eval=FALSE, include=FALSE}
 options(amap_key = 'REPLACE THIS BY YOUR KEY')

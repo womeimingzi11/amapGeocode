@@ -19,7 +19,8 @@ Imports:
     magrittr,
     stringr,
     tibble,
-    dplyr
+    dplyr,
+    sjmisc
 URL: https://womeimingzi11.github.io
 Suggests: 
     testthat

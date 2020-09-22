@@ -17,9 +17,6 @@
 #' Return results controller.\cr
 #' Once it is `base`, the default value, it only return base information about coordinate.\cr
 #' Once it is `all`, it will return nearby POI, road information and cross information.
-#' @param batch Not work yet.\cr
-#' Specify whether batch search or not. \cr
-#' If batch is TRUE, the maximum 10 address with '|' sign will return. If batch is FALSE, only the first address with '|' returned. The default value is FALSE.
 #' @param roadlevel Optional.\cr
 #' Road levels.\cr
 #' When `extensions = all`, this argument makes sense. \cr
@@ -57,32 +54,26 @@ getLocation <-
            poitype = NULL,
            radius = NULL,
            extensions = NULL,
-           batch = NULL,
            roadlevel = NULL,
            sig = NULL,
            output = 'XML',
            callback = NULL,
            homeorcorp = 0,
-           to_table = TRUE
-  ) {
+           to_table = TRUE) {
     # Arguments check ---------------------------------------------------------
     # Combine lng and lat as location which significant figures lower than 6
     location = paste(round(lng, 6), round(lat, 6), sep = ',')
     # Check if key argument is set or not
     # If there is no key, try to get amap_key from option and set as key
-    if(is.null(key)){
-      if(is.null(getOption('amap_key'))){
-        stop('Please set key argument or set amap_key globally by this command
-             options(amap_key = your key)')
+    if (is.null(key)) {
+      if (is.null(getOption('amap_key'))) {
+        stop(
+          'Please set key argument or set amap_key globally by this command
+             options(amap_key = your key)'
+        )
       }
       key = getOption('amap_key')
     }
-    # If to_table has been set, replace output as XML
-    # Will be remove once JSON extract function finished
-    if(isTRUE(to_table)){
-      output = 'XML'
-    }
-
     # assemble url and parameter ----------------------------------------------
     base_url = 'https://restapi.amap.com/v3/geocode/regeo'
 
@@ -92,7 +83,6 @@ getLocation <-
       poitype = poitype,
       radius = radius,
       extensions = extensions,
-      batch = batch,
       roadlevel = roadlevel,
       sig = sig,
       output = output,
@@ -109,7 +99,7 @@ getLocation <-
 
     # Transform response to tibble or return directly -------------------------
 
-    if(isTRUE(to_table)) {
+    if (isTRUE(to_table)) {
       extractLocation(res_content) %>%
         return()
     } else {
@@ -130,61 +120,59 @@ getLocation <-
 #' @export
 extractLocation <- function(res) {
   # Detect what kind of response will be parse ------------------------------
-  class_detect <-
-    dplyr::case_when(
-      any(stringr::str_detect(class(res), 'xml_document')) ~ 'xml',
-      # any(stringr::str_detect(class(res), 'tbl')) ~ 'tibble',
-      any(stringr::str_detect(class(res), 'list')) ~ 'json_list'
+  xml_detect <-
+    any(stringr::str_detect(class(res), 'xml_document'))
+  # Convert xml2 to list
+  if (isTRUE(xml_detect)) {
+    # get the number of retruned address
+    res <-
+      res %>% xml2::as_list() %>% '$'('response')
+  }
+
+  # check the status of request
+  request_stat <-
+    res$status
+
+  if (request_stat == '0') {
+    tibble::tibble(
+      formatted_address = NA,
+      country = NA,
+      province = NA,
+      city = NA,
+      district = NA,
+      township = NA,
+      citycode = NA,
+      towncode = NA
     )
-
-
-  # Parse xml ---------------------------------------------------------------
-  if (class_detect == 'xml') {
-    # check the status of request
-    obj_stat <-
-      res %>% xml2::xml_find_all(
-        'status'
-      ) %>% xml2::xml_text()
-
+  } else if (request_stat == '1') {
+    # get addressComponent from regeocode
     # get geocodes node for futher parse
     regeocode <-
-      res %>% xml2::xml_find_all('regeocode')
+      res$regeocode
 
-    if (obj_stat == '0') {
-      tibble::tibble(
-        formatted_address = NA,
-        country = NA,
-        province = NA,
-        city = NA,
-        district = NA,
-        township = NA,
-        citycode = NA,
-        towncode = NA
-      )
-    } else if(obj_stat == '1'){
-      # get addressComponent from regeocode
-      addressComponent <-
-        regeocode %>% xml2::xml_find_all('addressComponent')
-
-      # assemble information tible
-      tibble::tibble(
-        formatted_address = regeocode %>% xml2::xml_find_all('formatted_address') %>% xml2::xml_text(),
-        country = addressComponent %>% xml2::xml_find_all('country') %>% xml2::xml_text(),
-        province = addressComponent %>% xml2::xml_find_all('province') %>% xml2::xml_text(),
-        city = addressComponent %>% xml2::xml_find_all('city') %>% xml2::xml_text(),
-        district = addressComponent %>% xml2::xml_find_all('district') %>% xml2::xml_text(),
-        township = addressComponent %>% xml2::xml_find_all('township') %>% xml2::xml_text(),
-        citycode = addressComponent %>% xml2::xml_find_all('citycode') %>% xml2::xml_text(),
-        towncode = addressComponent %>% xml2::xml_find_all('towncode') %>% xml2::xml_text()
-      )
-    } else {
-      stop(res %>% xml2::xml_find_all(
-        'info'
-      ) %>% xml2::xml_text())
-    }
-  } else if(class_detect == 'json_list'){
-    stop('Sorry, this function is not finished yet')
+    addressComponent <-
+      regeocode$addressComponent
+    # assemble information tible
+    var_name = c(
+      'country',
+      'province',
+      'city',
+      'district',
+      'township',
+      'citycode',
+      'towncode'
+    )
+    # extract value of above parameters
+    lapply(var_name,
+           function(x) {
+             x = ifelse(sjmisc::is_empty(addressComponent[[x]]), NA, addressComponent[[x]])
+           }) %>%
+      as.data.frame() %>%
+      tibble::tibble(formatted_address = regeocode$formatted_address[[1]],
+                     .) %>%
+      # set name of tibble
+      setNames(c('formatted_address', var_name))
   } else {
-    stop('Only support JSON and XML class.')
+  stop(res$info)
   }
-}
+  }

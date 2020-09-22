@@ -11,7 +11,6 @@ getLocation(
   poitype = NULL,
   radius = NULL,
   extensions = NULL,
-  batch = NULL,
   roadlevel = NULL,
   sig = NULL,
   output = "XML",
@@ -43,10 +42,6 @@ radius ranges from 0 to 3000, the default value is 1000, unit: meter.}
 Return results controller.\cr
 Once it is `base`, the default value, it only return base information about coordinate.\cr
 Once it is `all`, it will return nearby POI, road information and cross information.}
-
-\item{batch}{Not work yet.\cr
-Specify whether batch search or not. \cr
-If batch is TRUE, the maximum 10 address with '|' sign will return. If batch is FALSE, only the first address with '|' returned. The default value is FALSE.}
 
 \item{roadlevel}{Optional.\cr
 Road levels.\cr

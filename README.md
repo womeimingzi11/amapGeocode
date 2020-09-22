@@ -52,10 +52,9 @@ Usage
 
 ### Geocoding
 
-Before start geocoding and reverse geocoding, please (apply a AutoNavi
-Map API
-Key)\[<a href="https://lbs.amap.com/dev/" class="uri">https://lbs.amap.com/dev/</a>\].
-Set `amap_key` globally by following command:
+Before start geocoding and reverse geocoding, please apply a [AutoNavi
+Map API Key](https://lbs.amap.com/dev/). Set `amap_key` globally by
+following command:
 
 Then get result of geocoding, by `getCoord` function.
 

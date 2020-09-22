@@ -8,7 +8,6 @@ getCoord(
   address,
   key = NULL,
   city = NULL,
-  batch = NULL,
   sig = NULL,
   output = "XML",
   callback = NULL,
@@ -30,10 +29,6 @@ Applied from AutoNavi Map API official website\url{https://lbs.amap.com/dev/}}
 Specify the City. \cr
 Support: city in Chinese, full pinyin, citycode, adcode\url{https://lbs.amap.com/api/webservice/download}.\cr
 The default value is NULL which will search country-wide. The default value is NULL}
-
-\item{batch}{Optional.\cr
-Specify whether batch search or not. \cr
-If batch is TRUE, the maximum 10 address with '|' sign will return. If batch is FALSE, only the first address with '|' returned. The default value is FALSE.}
 
 \item{sig}{Optional.\cr
 Digital Signature.\cr
