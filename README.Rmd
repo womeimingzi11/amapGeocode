@@ -26,7 +26,7 @@ amapGeocode is inspired by [baidumap](https://github.com/badbye/baidumap) and [b
 Baidu or AutoNavi? Here is the main differences:
 
 1. AutoNavi has significant high precise, in my case, the Results from Baidu were unsatisfactory.
-2. Baidu with free verification provices really high request: 300,000/month for each geocode/reverse-geocode, while AutoNavi only provide 6000/month.
+2. Baidu with free verification provices really high request: 300,000/month for each geocode/reverse-geocode, while AutoNavi only provide 6,000/month.
 
 ## Installation
 amapGeocode may be published to [CRAN](https://CRAN.R-project.org) once the first available version been finished.
@@ -50,18 +50,29 @@ Before start geocoding and reverse geocoding, please (apply a AutoNavi Map API K
 options(amap_key = 'REPLACE THIS BY YOUR KEY')
 ```
 
-Then get result of geocoding, by `getCoord` function:
+Then get result of geocoding, by `getCoord` function. 
 
-```{r getCoord}
+```{r getCoord_to_table_as_TRUE}
 library(amapGeocode)
 res <-
   getCoord('成都中医药大学')
+knitr::kable(res)
+```
+
+The response we get from **AutoNavi Map API** is **JSON** or **XML**. For readability, we transform them to `tibble`, [a modern reimagining of the data.frame](https://tibble.tidyverse.org/), by setting `to_table` argument as `FALSE` defaultly. At this situation, `getCoord` will automatically set `output` argument as `XML`, even this argument has setted as `JSON`.
+
+If anyone want to get response as **JSON** or **XML**, please set `to_table = TRUE`. If anyone want to extract information from **JSON** or **XML**. The result can further be parsed by `extractCoord`.
+
+```{r getCoord_to_table_as_FALSE}
+res <-
+  getCoord('成都中医药大学', to_table = FALSE)
 res
 ```
 
-What we get from `getCoord` is **JSON** or **XML**. For readability, `extractCoord` is created to get result as `tibble`, [a modern reimagining of the data.frame](https://tibble.tidyverse.org/).
+`extractCoord` is created to get result as tibble.
 
 ```{r extractCood}
+res
 tb <- extractCoord(res)
 knitr::kable(tb)
 ```

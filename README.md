@@ -30,7 +30,7 @@ Baidu or AutoNavi? Here is the main differences:
     Baidu were unsatisfactory.
 2.  Baidu with free verification provices really high request:
     300,000/month for each geocode/reverse-geocode, while AutoNavi only
-    provide 6000/month.
+    provide 6,000/month.
 
 Installation
 ------------
@@ -53,11 +53,30 @@ Map API
 Key)\[<a href="https://lbs.amap.com/dev/" class="uri">https://lbs.amap.com/dev/</a>\].
 Set `amap_key` globally by following command:
 
-Then get result of geocoding, by `getCoord` function:
+Then get result of geocoding, by `getCoord` function.
 
     library(amapGeocode)
     res <-
       getCoord('成都中医药大学')
+    knitr::kable(res)
+
+| lng        | lat       | formatted\_address               | country | province | city   | district | township | street | number | citycode | adcode |
+|:-----------|:----------|:---------------------------------|:--------|:---------|:-------|:---------|:---------|:-------|:-------|:---------|:-------|
+| 104.043284 | 30.666864 | 四川省成都市金牛区成都中医药大学 | 中国    | 四川省   | 成都市 | 金牛区   |          |        |        | 028      | 510106 |
+
+The response we get from **AutoNavi Map API** is **JSON** or **XML**.
+For readability, we transform them to `tibble`, [a modern reimagining of
+the data.frame](https://tibble.tidyverse.org/), by setting `to_table`
+argument as `FALSE` defaultly. At this situation, `getCoord` will
+automatically set `output` argument as `XML`, even this argument has
+setted as `JSON`.
+
+If anyone want to get response as **JSON** or **XML**, please set
+`to_table = TRUE`. If anyone want to extract information from **JSON**
+or **XML**. The result can further be parsed by `extractCoord`.
+
+    res <-
+      getCoord('成都中医药大学', to_table = FALSE)
     res
     #> {xml_document}
     #> <response>
@@ -67,10 +86,16 @@ Then get result of geocoding, by `getCoord` function:
     #> [4] <count>1</count>
     #> [5] <geocodes type="list">\n  <geocode>\n    <formatted_address>四川省成都市金牛区成都中医 ...
 
-What we get from `getCoord` is **JSON** or **XML**. For readability,
-`extractCoord` is created to get result as `tibble`, [a modern
-reimagining of the data.frame](https://tibble.tidyverse.org/).
+`extractCoord` is created to get result as tibble.
 
+    res
+    #> {xml_document}
+    #> <response>
+    #> [1] <status>1</status>
+    #> [2] <info>OK</info>
+    #> [3] <infocode>10000</infocode>
+    #> [4] <count>1</count>
+    #> [5] <geocodes type="list">\n  <geocode>\n    <formatted_address>四川省成都市金牛区成都中医 ...
     tb <- extractCoord(res)
     knitr::kable(tb)
 

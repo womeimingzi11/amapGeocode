@@ -15,7 +15,8 @@ Imports:
     jsonlite,
     magrittr,
     stringr,
-    tibble
+    tibble,
+    dplyr
 URL: https://womeimingzi11.github.io
 Suggests: 
     testthat
