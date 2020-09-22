@@ -1,13 +1,13 @@
-#' Get geocode from location
+#' Get coordinate from location
 #'
-#' @param key Required.\cr
-#' Amap Key. \cr
-#' Applied from AutoNavi Map API official website\url{https://lbs.amap.com/dev/}
 #' @param address Required.\cr
 #' Structured address information. \cr
 #' Rules: Country/Region, Province/State, City, County/District, Town, Country, Road, Number, Room, Building. \cr
 #' For instance '北京市朝阳区阜通东大街6号'. If you want to get multiple adresses, please seperate adresses by '|', and set *batch* as **TRUE**.\cr
 #' Maxmium seperated addresses is 10
+#' @param key Optional.\cr
+#' Amap Key. \cr
+#' Applied from AutoNavi Map API official website\url{https://lbs.amap.com/dev/}
 #' @param city Optional.\cr
 #' Specify the City. \cr
 #' Support: city in Chinese, full pinyin, citycode, adcode\url{https://lbs.amap.com/api/webservice/download}.\cr
@@ -31,7 +31,7 @@
 #' Please note, once to_table was set as TRUE, the output parameter will be replaced by XML
 #'
 #' @return
-#' Returns a JSON or XML of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
+#' Returns a JSON, XML or Tibble of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
 #' @export
 
 getCoord <-
