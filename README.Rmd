@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 ```
 
 # [amapGeocode](https://github.com/womeimingzi11/amapGeocode)
-![](resource/amapGeocode-sticker.png){width=100px}
+![](man/figures/hexSticker-logo.png){width=100px}
 <!-- badges: start -->
 <!-- badges: end -->
 

@@ -4,7 +4,7 @@
 [amapGeocode](https://github.com/womeimingzi11/amapGeocode)
 ===========================================================
 
-<img src="resource/amapGeocode-sticker.png" width="100" />
+<img src="man/figures/hexSticker-logo.png" width="100" />
 <!-- badges: start --> <!-- badges: end -->
 
 **amapGeocode** provides an interface for the AutoNavi(高德) Maps API
