@@ -2,7 +2,7 @@
 % Please edit documentation in R/getCoord.R
 \name{extractCoord}
 \alias{extractCoord}
-\title{Extract geocode from location}
+\title{Extract coordiniation from location request}
 \usage{
 extractCoord(res)
 }
@@ -11,8 +11,8 @@ extractCoord(res)
 Response from getCoord.}
 }
 \value{
-Returns a tibble which extracts detailed geocode information from results of getCoord. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
+Returns a tibble which extracts detailed coordiniation information from results of getCoord. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
 }
 \description{
-Extract geocoding result from Response of getCoord. For now, only single place response is supported.
+Extract coordiniation result from Response of getCoord. For now, only single place response is supported.
 }

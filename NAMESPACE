@@ -2,6 +2,7 @@
 
 export("%>%")
 export(extractCoord)
+export(extractLocation)
 export(getCoord)
-export(getLocal)
+export(getLocation)
 importFrom(magrittr,"%>%")

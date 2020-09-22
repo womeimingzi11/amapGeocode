@@ -50,7 +50,7 @@
 #' Returns a JSON, XML or Tibble of results containing detailed reverse geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
 #' @export
 
-getLocal <-
+getLocation <-
   function(lng,
            lat,
            key = NULL,
@@ -109,80 +109,82 @@ getLocal <-
 
     # Transform response to tibble or return directly -------------------------
 
-    # if(isTRUE(to_table)) {
-    #   extractCoord(res_content) %>%
-    #     return()
-    # } else {
+    if(isTRUE(to_table)) {
+      extractLocation(res_content) %>%
+        return()
+    } else {
       return(res_content)
-    # }
+    }
   }
 
+#' Extract location from coordiniation request
+#'
+#' Extract location result from Response of getCoord. For now, only single place response is supported.
+#'
+#' @param res. Required.\cr
+#' Response from getLocation.
+#'
+#' @return
+#' Returns a tibble which extracts detailed location information from results of getLocation. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
 
-# Detect what kind of response will be parse ------------------------------
-class_detect <-
-  dplyr::case_when(
-    any(stringr::str_detect(class(res), 'xml_document')) ~ 'xml',
-    # any(stringr::str_detect(class(res), 'tbl')) ~ 'tibble',
-    any(stringr::str_detect(class(res), 'list')) ~ 'json_list'
-  )
-
-
-# Parse xml ---------------------------------------------------------------
-if (class_detect == 'xml') {
-  # get the number of retruned address
-  obj_count <-
-    res %>% xml2::xml_find_all(
-      'count'
-    ) %>% xml2::xml_text()
-
-  # get geocodes node for futher parse
-  geocodes <-
-    res %>% xml2::xml_find_all('geocodes')
-
-  if (obj_count == 0) {
-    tibble::tibble(
-      lng = NA,
-      lat = NA,
-      formatted_address = NA,
-      country = NA,
-      province = NA,
-      city = NA,
-      district = NA,
-      township = NA,
-      street = NA,
-      number = NA,
-      citycode = NA,
-      adcode = NA
+#' @export
+extractLocation <- function(res) {
+  # Detect what kind of response will be parse ------------------------------
+  class_detect <-
+    dplyr::case_when(
+      any(stringr::str_detect(class(res), 'xml_document')) ~ 'xml',
+      # any(stringr::str_detect(class(res), 'tbl')) ~ 'tibble',
+      any(stringr::str_detect(class(res), 'list')) ~ 'json_list'
     )
-  } else if(obj_count == 1){
-    # get geocode from geocodes
-    geocode <-
-      geocodes %>% xml2::xml_find_all('geocode')
-    # parse lng and lat from location
-    location =
-      xml2::xml_find_all(geocode, 'location') %>% xml2::xml_text() %>%
-      stringr::str_split(pattern = ',',simplify = TRUE)
 
-    # assemble information tible
-    tibble::tibble(
-      lng = location[[1]],
-      lat = location[[2]],
-      formatted_address = xml2::xml_find_all(geocode, 'formatted_address') %>% xml2::xml_text(),
-      country = xml2::xml_find_all(geocode, 'country') %>% xml2::xml_text(),
-      province = xml2::xml_find_all(geocode, 'province') %>% xml2::xml_text(),
-      city = xml2::xml_find_all(geocode, 'city') %>% xml2::xml_text(),
-      district = xml2::xml_find_all(geocode, 'district') %>% xml2::xml_text(),
-      township = xml2::xml_find_all(geocode, 'township') %>% xml2::xml_text(),
-      street = xml2::xml_find_all(geocode, 'street') %>% xml2::xml_text(),
-      number = xml2::xml_find_all(geocode, 'number') %>% xml2::xml_text(),
-      citycode = xml2::xml_find_all(geocode, 'citycode') %>% xml2::xml_text(),
-      adcode = xml2::xml_find_all(geocode, 'adcode') %>% xml2::xml_text()
-    )
+
+  # Parse xml ---------------------------------------------------------------
+  if (class_detect == 'xml') {
+    # check the status of request
+    obj_stat <-
+      res %>% xml2::xml_find_all(
+        'status'
+      ) %>% xml2::xml_text()
+
+    # get geocodes node for futher parse
+    regeocode <-
+      res %>% xml2::xml_find_all('regeocode')
+
+    if (obj_stat == '0') {
+      tibble::tibble(
+        formatted_address = NA,
+        country = NA,
+        province = NA,
+        city = NA,
+        district = NA,
+        township = NA,
+        citycode = NA,
+        towncode = NA
+      )
+    } else if(obj_stat == '1'){
+      # get addressComponent from regeocode
+      addressComponent <-
+        regeocode %>% xml2::xml_find_all('addressComponent')
+
+      # assemble information tible
+      tibble::tibble(
+        formatted_address = regeocode %>% xml2::xml_find_all('formatted_address') %>% xml2::xml_text(),
+        country = addressComponent %>% xml2::xml_find_all('country') %>% xml2::xml_text(),
+        province = addressComponent %>% xml2::xml_find_all('province') %>% xml2::xml_text(),
+        city = addressComponent %>% xml2::xml_find_all('city') %>% xml2::xml_text(),
+        district = addressComponent %>% xml2::xml_find_all('district') %>% xml2::xml_text(),
+        township = addressComponent %>% xml2::xml_find_all('township') %>% xml2::xml_text(),
+        citycode = addressComponent %>% xml2::xml_find_all('citycode') %>% xml2::xml_text(),
+        towncode = addressComponent %>% xml2::xml_find_all('towncode') %>% xml2::xml_text()
+      )
+    } else {
+      stop(res %>% xml2::xml_find_all(
+        'info'
+      ) %>% xml2::xml_text())
+    }
+  } else if(class_detect == 'json_list'){
+    stop('Sorry, this function is not finished yet')
   } else {
-    stop('Do not support multiple return yet')
+    stop('Only support JSON and XML class.')
   }
-} else if(class_detect == 'json_list'){
-  stop('Sorry, this function is not finished yet')
-} else {
-  stop('Only support JSON and XML class.')
 }
