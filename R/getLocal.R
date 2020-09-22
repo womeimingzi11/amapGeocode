@@ -107,7 +107,7 @@ getLocation <-
     }
   }
 
-#' Extract location from coordiniation request
+#' Extract location from coordinate request
 #'
 #' Extract location result from Response of getCoord. For now, only single place response is supported.
 #'

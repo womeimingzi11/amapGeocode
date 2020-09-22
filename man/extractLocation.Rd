@@ -2,7 +2,7 @@
 % Please edit documentation in R/getLocal.R
 \name{extractLocation}
 \alias{extractLocation}
-\title{Extract location from coordiniation request}
+\title{Extract location from coordinate request}
 \usage{
 extractLocation(res)
 }

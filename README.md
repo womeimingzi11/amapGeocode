@@ -10,12 +10,12 @@
 **amapGeocode** provides an interface for the AutoNavi(高德) Maps API
 geocoding services. API docs can be foun [here](https://lbs.amap.com/)
 and [here](https://lbs.amap.com/api/webservice/summary/). For now,
-amapGeocode can be used for both forward and revese geocoding powered by
-high-precision AutoNavi Maps API.
+amapGeocode can be used for both forward and reverse geocoding powered
+by high-precision AutoNavi Maps API.
 
 This project is still in a very early stage and only the geocodig
 function has been developed. So all the functions may change or
-supersede, so it’s not recommanded to use this package in production
+supersede, so it’s not recommended to use this package in production
 environment till it goes to stable stage. When will the stable stage
 come? It depends my graduate progress.
 
@@ -65,14 +65,12 @@ Then get result of geocoding, by `getCoord` function.
 
 | lng        | lat       | formatted\_address               | country | province | city   | district | township | street | number | citycode | adcode |
 |:-----------|:----------|:---------------------------------|:--------|:---------|:-------|:---------|:---------|:-------|:-------|:---------|:-------|
-| 104.043284 | 30.666864 | 四川省成都市金牛区成都中医药大学 | 中国    | 四川省   | 成都市 | 金牛区   |          |        |        | 028      | 510106 |
+| 104.043284 | 30.666864 | 四川省成都市金牛区成都中医药大学 | 中国    | 四川省   | 成都市 | 金牛区   | NA       | NA     | NA     | 028      | 510106 |
 
 The response we get from **AutoNavi Map API** is **JSON** or **XML**.
 For readability, we transform them to `tibble`, [a modern reimagining of
 the data.frame](https://tibble.tidyverse.org/), by setting `to_table`
-argument as `FALSE` defaultly. At this situation, `getCoord` will
-automatically set `output` argument as `XML`, even this argument has
-setted as `JSON`.
+argument as `TRUE` by default.
 
 If anyone want to get response as **JSON** or **XML**, please set
 `to_table = TRUE`. If anyone want to extract information from **JSON**
@@ -105,7 +103,7 @@ or **XML**. The result can further be parsed by `extractCoord`.
 
 | lng        | lat       | formatted\_address               | country | province | city   | district | township | street | number | citycode | adcode |
 |:-----------|:----------|:---------------------------------|:--------|:---------|:-------|:---------|:---------|:-------|:-------|:---------|:-------|
-| 104.043284 | 30.666864 | 四川省成都市金牛区成都中医药大学 | 中国    | 四川省   | 成都市 | 金牛区   |          |        |        | 028      | 510106 |
+| 104.043284 | 30.666864 | 四川省成都市金牛区成都中医药大学 | 中国    | 四川省   | 成都市 | 金牛区   | NA       | NA     | NA     | 028      | 510106 |
 
 ### Reverse Geocoding
 
@@ -122,9 +120,7 @@ get result of reverse geocoding, by `get` function.
 The response we get from **AutoNavi Map API** is **JSON** or **XML**.
 For readability, we transform them to `tibble`, [a modern reimagining of
 the data.frame](https://tibble.tidyverse.org/), by setting `to_table`
-argument as `FALSE` defaultly. At this situation, `getLocation` will
-automatically set `output` argument as `XML`, even this argument has
-setted as `JSON`.
+argument as `TRUE` by default.
 
 If anyone want to get response as **JSON** or **XML**, please set
 `to_table = TRUE`. If anyone want to extract information from **JSON**
@@ -163,7 +159,7 @@ Bug report
 ----------
 
 It’s very common for API upgrades to make the downstream application,
-like amapGeocode, to be unavilable. Feel free to [let me
+like amapGeocode, to be unavailable. Feel free to [let me
 know](mailto://chenhan28@gmail.com) once it’s broken or just open an
 issue.
 

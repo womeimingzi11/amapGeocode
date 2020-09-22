@@ -2,9 +2,7 @@
 #'
 #' @param address Required.\cr
 #' Structured address information. \cr
-#' Rules: Country/Region, Province/State, City, County/District, Town, Country, Road, Number, Room, Building. \cr
-#' For instance '北京市朝阳区阜通东大街6号'. If you want to get multiple adresses, please seperate adresses by '|', and set *batch* as **TRUE**.\cr
-#' Maxmium seperated addresses is 10
+#' Rules: Country/Region, Province/State, City, County/District, Town, Country, Road, Number, Room, Building.
 #' @param key Optional.\cr
 #' Amap Key. \cr
 #' Applied from AutoNavi Map API official website\url{https://lbs.amap.com/dev/}
@@ -86,15 +84,15 @@ getCoord <-
     }
   }
 
-#' Extract coordiniation from location request
+#' Extract coordinate from location request
 #'
-#' Extract coordiniation result from Response of getCoord. For now, only single place response is supported.
+#' Extract coordinate result from Response of getCoord. For now, only single place response is supported.
 #'
 #' @param res Required.\cr
 #' Response from getCoord.
 #'
 #' @return
-#' Returns a tibble which extracts detailed coordiniation information from results of getCoord. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
+#' Returns a tibble which extracts detailed coordinate information from results of getCoord. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
 
 #' @export
 extractCoord <- function(res) {

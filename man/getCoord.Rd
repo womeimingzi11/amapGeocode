@@ -17,9 +17,7 @@ getCoord(
 \arguments{
 \item{address}{Required.\cr
 Structured address information. \cr
-Rules: Country/Region, Province/State, City, County/District, Town, Country, Road, Number, Room, Building. \cr
-For instance '北京市朝阳区阜通东大街6号'. If you want to get multiple adresses, please seperate adresses by '|', and set *batch* as **TRUE**.\cr
-Maxmium seperated addresses is 10}
+Rules: Country/Region, Province/State, City, County/District, Town, Country, Road, Number, Room, Building.}
 
 \item{key}{Optional.\cr
 Amap Key. \cr
