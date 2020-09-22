@@ -90,7 +90,7 @@ getCoord <-
 #'
 #' Extract coordiniation result from Response of getCoord. For now, only single place response is supported.
 #'
-#' @param res. Required.\cr
+#' @param res Required.\cr
 #' Response from getCoord.
 #'
 #' @return
@@ -158,7 +158,7 @@ extractCoord <- function(res) {
                      lat = location[[2]],
                      .) %>%
       # set name of tibble
-      setNames(c('lng', 'lat', var_name))
+      stats::setNames(c('lng', 'lat', var_name))
   } else {
     # to void multiple response make this strange.
     stop(res$info)

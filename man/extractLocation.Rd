@@ -7,7 +7,7 @@
 extractLocation(res)
 }
 \arguments{
-\item{res.}{Required.\cr
+\item{res}{Required.\cr
 Response from getLocation.}
 }
 \value{

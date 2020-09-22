@@ -2,7 +2,7 @@ Package: amapGeocode
 Type: Package
 Title: An Interface to the AutoNavi Maps API Geocoding Services
 Version: 0.1.0
-Author@R: c(
+Author: c(
     person("Han", "Chen", email = "chenhan28@gmail.com", role = c("aut", "cre")),
     person("Wanyanhan", "Jiang", email = "243016042@qq.com", role = c('ctb'))
     )
@@ -20,7 +20,8 @@ Imports:
     stringr,
     tibble,
     dplyr,
-    sjmisc
+    sjmisc,
+    stats
 URL: https://womeimingzi11.github.io
 Suggests: 
     testthat

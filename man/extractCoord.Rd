@@ -7,7 +7,7 @@
 extractCoord(res)
 }
 \arguments{
-\item{res.}{Required.\cr
+\item{res}{Required.\cr
 Response from getCoord.}
 }
 \value{

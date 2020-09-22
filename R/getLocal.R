@@ -111,7 +111,7 @@ getLocation <-
 #'
 #' Extract location result from Response of getCoord. For now, only single place response is supported.
 #'
-#' @param res. Required.\cr
+#' @param res Required.\cr
 #' Response from getLocation.
 #'
 #' @return
@@ -153,26 +153,26 @@ extractLocation <- function(res) {
     addressComponent <-
       regeocode$addressComponent
     # assemble information tible
-    var_name = c(
-      'country',
-      'province',
-      'city',
-      'district',
-      'township',
-      'citycode',
-      'towncode'
-    )
+    var_name = c('country',
+                 'province',
+                 'city',
+                 'district',
+                 'township',
+                 'citycode',
+                 'towncode')
     # extract value of above parameters
     lapply(var_name,
            function(x) {
-             x = ifelse(sjmisc::is_empty(addressComponent[[x]]), NA, addressComponent[[x]])
+             x = ifelse(sjmisc::is_empty(addressComponent[[x]]),
+                        NA,
+                        addressComponent[[x]])
            }) %>%
       as.data.frame() %>%
       tibble::tibble(formatted_address = regeocode$formatted_address[[1]],
                      .) %>%
       # set name of tibble
-      setNames(c('formatted_address', var_name))
+      stats::setNames(c('formatted_address', var_name))
   } else {
-  stop(res$info)
+    stop(res$info)
   }
-  }
+}
