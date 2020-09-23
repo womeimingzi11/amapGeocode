@@ -102,24 +102,140 @@ or **XML**. The result can further be parsed by `extractCoord`.
     res <-
       getCoord('成都中医药大学', to_table = FALSE)
     res
-    #> {xml_document}
-    #> <response>
-    #> [1] <status>1</status>
-    #> [2] <info>OK</info>
-    #> [3] <infocode>10000</infocode>
-    #> [4] <count>1</count>
-    #> [5] <geocodes type="list">\n  <geocode>\n    <formatted_address>四川省成都市金牛区成都中医 ...
+    #> $status
+    #> [1] "1"
+    #> 
+    #> $info
+    #> [1] "OK"
+    #> 
+    #> $infocode
+    #> [1] "10000"
+    #> 
+    #> $count
+    #> [1] "1"
+    #> 
+    #> $geocodes
+    #> $geocodes[[1]]
+    #> $geocodes[[1]]$formatted_address
+    #> [1] "四川省成都市金牛区成都中医药大学"
+    #> 
+    #> $geocodes[[1]]$country
+    #> [1] "中国"
+    #> 
+    #> $geocodes[[1]]$province
+    #> [1] "四川省"
+    #> 
+    #> $geocodes[[1]]$citycode
+    #> [1] "028"
+    #> 
+    #> $geocodes[[1]]$city
+    #> [1] "成都市"
+    #> 
+    #> $geocodes[[1]]$district
+    #> [1] "金牛区"
+    #> 
+    #> $geocodes[[1]]$township
+    #> list()
+    #> 
+    #> $geocodes[[1]]$neighborhood
+    #> $geocodes[[1]]$neighborhood$name
+    #> list()
+    #> 
+    #> $geocodes[[1]]$neighborhood$type
+    #> list()
+    #> 
+    #> 
+    #> $geocodes[[1]]$building
+    #> $geocodes[[1]]$building$name
+    #> list()
+    #> 
+    #> $geocodes[[1]]$building$type
+    #> list()
+    #> 
+    #> 
+    #> $geocodes[[1]]$adcode
+    #> [1] "510106"
+    #> 
+    #> $geocodes[[1]]$street
+    #> list()
+    #> 
+    #> $geocodes[[1]]$number
+    #> list()
+    #> 
+    #> $geocodes[[1]]$location
+    #> [1] "104.043284,30.666864"
+    #> 
+    #> $geocodes[[1]]$level
+    #> [1] "兴趣点"
 
 `extractCoord` is created to get result as tibble.
 
     res
-    #> {xml_document}
-    #> <response>
-    #> [1] <status>1</status>
-    #> [2] <info>OK</info>
-    #> [3] <infocode>10000</infocode>
-    #> [4] <count>1</count>
-    #> [5] <geocodes type="list">\n  <geocode>\n    <formatted_address>四川省成都市金牛区成都中医 ...
+    #> $status
+    #> [1] "1"
+    #> 
+    #> $info
+    #> [1] "OK"
+    #> 
+    #> $infocode
+    #> [1] "10000"
+    #> 
+    #> $count
+    #> [1] "1"
+    #> 
+    #> $geocodes
+    #> $geocodes[[1]]
+    #> $geocodes[[1]]$formatted_address
+    #> [1] "四川省成都市金牛区成都中医药大学"
+    #> 
+    #> $geocodes[[1]]$country
+    #> [1] "中国"
+    #> 
+    #> $geocodes[[1]]$province
+    #> [1] "四川省"
+    #> 
+    #> $geocodes[[1]]$citycode
+    #> [1] "028"
+    #> 
+    #> $geocodes[[1]]$city
+    #> [1] "成都市"
+    #> 
+    #> $geocodes[[1]]$district
+    #> [1] "金牛区"
+    #> 
+    #> $geocodes[[1]]$township
+    #> list()
+    #> 
+    #> $geocodes[[1]]$neighborhood
+    #> $geocodes[[1]]$neighborhood$name
+    #> list()
+    #> 
+    #> $geocodes[[1]]$neighborhood$type
+    #> list()
+    #> 
+    #> 
+    #> $geocodes[[1]]$building
+    #> $geocodes[[1]]$building$name
+    #> list()
+    #> 
+    #> $geocodes[[1]]$building$type
+    #> list()
+    #> 
+    #> 
+    #> $geocodes[[1]]$adcode
+    #> [1] "510106"
+    #> 
+    #> $geocodes[[1]]$street
+    #> list()
+    #> 
+    #> $geocodes[[1]]$number
+    #> list()
+    #> 
+    #> $geocodes[[1]]$location
+    #> [1] "104.043284,30.666864"
+    #> 
+    #> $geocodes[[1]]$level
+    #> [1] "兴趣点"
     tb <- 
       extractCoord(res)
     knitr::kable(tb)
@@ -152,22 +268,224 @@ or **XML**. The result can further be parsed by `extractLocation`.
     res <-
        getLocation(104.043284, 30.666864, to_table = FALSE)
     res
-    #> {xml_document}
-    #> <response>
-    #> [1] <status>1</status>
-    #> [2] <info>OK</info>
-    #> [3] <infocode>10000</infocode>
-    #> [4] <regeocode>\n  <formatted_address>四川省成都市金牛区西安路街道成都中医药大学附属医院腹泻门诊成都中医药大学(十二 ...
+    #> $status
+    #> [1] "1"
+    #> 
+    #> $regeocode
+    #> $regeocode$addressComponent
+    #> $regeocode$addressComponent$city
+    #> [1] "成都市"
+    #> 
+    #> $regeocode$addressComponent$province
+    #> [1] "四川省"
+    #> 
+    #> $regeocode$addressComponent$adcode
+    #> [1] "510106"
+    #> 
+    #> $regeocode$addressComponent$district
+    #> [1] "金牛区"
+    #> 
+    #> $regeocode$addressComponent$towncode
+    #> [1] "510106024000"
+    #> 
+    #> $regeocode$addressComponent$streetNumber
+    #> $regeocode$addressComponent$streetNumber$number
+    #> [1] "37--4号"
+    #> 
+    #> $regeocode$addressComponent$streetNumber$location
+    #> [1] "104.043881,30.665849"
+    #> 
+    #> $regeocode$addressComponent$streetNumber$direction
+    #> [1] "东南"
+    #> 
+    #> $regeocode$addressComponent$streetNumber$distance
+    #> [1] "126.5"
+    #> 
+    #> $regeocode$addressComponent$streetNumber$street
+    #> [1] "十二桥路"
+    #> 
+    #> 
+    #> $regeocode$addressComponent$country
+    #> [1] "中国"
+    #> 
+    #> $regeocode$addressComponent$township
+    #> [1] "西安路街道"
+    #> 
+    #> $regeocode$addressComponent$businessAreas
+    #> $regeocode$addressComponent$businessAreas[[1]]
+    #> $regeocode$addressComponent$businessAreas[[1]]$location
+    #> [1] "104.033983,30.676605"
+    #> 
+    #> $regeocode$addressComponent$businessAreas[[1]]$name
+    #> [1] "抚琴"
+    #> 
+    #> $regeocode$addressComponent$businessAreas[[1]]$id
+    #> [1] "510106"
+    #> 
+    #> 
+    #> $regeocode$addressComponent$businessAreas[[2]]
+    #> $regeocode$addressComponent$businessAreas[[2]]$location
+    #> [1] "104.036283,30.672559"
+    #> 
+    #> $regeocode$addressComponent$businessAreas[[2]]$name
+    #> [1] "白果林"
+    #> 
+    #> $regeocode$addressComponent$businessAreas[[2]]$id
+    #> [1] "510106"
+    #> 
+    #> 
+    #> $regeocode$addressComponent$businessAreas[[3]]
+    #> $regeocode$addressComponent$businessAreas[[3]]$location
+    #> [1] "104.019801,30.669817"
+    #> 
+    #> $regeocode$addressComponent$businessAreas[[3]]$name
+    #> [1] "清江"
+    #> 
+    #> $regeocode$addressComponent$businessAreas[[3]]$id
+    #> [1] "510105"
+    #> 
+    #> 
+    #> 
+    #> $regeocode$addressComponent$building
+    #> $regeocode$addressComponent$building$name
+    #> list()
+    #> 
+    #> $regeocode$addressComponent$building$type
+    #> list()
+    #> 
+    #> 
+    #> $regeocode$addressComponent$neighborhood
+    #> $regeocode$addressComponent$neighborhood$name
+    #> list()
+    #> 
+    #> $regeocode$addressComponent$neighborhood$type
+    #> list()
+    #> 
+    #> 
+    #> $regeocode$addressComponent$citycode
+    #> [1] "028"
+    #> 
+    #> 
+    #> $regeocode$formatted_address
+    #> [1] "四川省成都市金牛区西安路街道成都中医药大学附属医院腹泻门诊成都中医药大学(十二桥校区)"
+    #> 
+    #> 
+    #> $info
+    #> [1] "OK"
+    #> 
+    #> $infocode
+    #> [1] "10000"
 
 `extractLocation` is created to get result as tibble.
 
     res
-    #> {xml_document}
-    #> <response>
-    #> [1] <status>1</status>
-    #> [2] <info>OK</info>
-    #> [3] <infocode>10000</infocode>
-    #> [4] <regeocode>\n  <formatted_address>四川省成都市金牛区西安路街道成都中医药大学附属医院腹泻门诊成都中医药大学(十二 ...
+    #> $status
+    #> [1] "1"
+    #> 
+    #> $regeocode
+    #> $regeocode$addressComponent
+    #> $regeocode$addressComponent$city
+    #> [1] "成都市"
+    #> 
+    #> $regeocode$addressComponent$province
+    #> [1] "四川省"
+    #> 
+    #> $regeocode$addressComponent$adcode
+    #> [1] "510106"
+    #> 
+    #> $regeocode$addressComponent$district
+    #> [1] "金牛区"
+    #> 
+    #> $regeocode$addressComponent$towncode
+    #> [1] "510106024000"
+    #> 
+    #> $regeocode$addressComponent$streetNumber
+    #> $regeocode$addressComponent$streetNumber$number
+    #> [1] "37--4号"
+    #> 
+    #> $regeocode$addressComponent$streetNumber$location
+    #> [1] "104.043881,30.665849"
+    #> 
+    #> $regeocode$addressComponent$streetNumber$direction
+    #> [1] "东南"
+    #> 
+    #> $regeocode$addressComponent$streetNumber$distance
+    #> [1] "126.5"
+    #> 
+    #> $regeocode$addressComponent$streetNumber$street
+    #> [1] "十二桥路"
+    #> 
+    #> 
+    #> $regeocode$addressComponent$country
+    #> [1] "中国"
+    #> 
+    #> $regeocode$addressComponent$township
+    #> [1] "西安路街道"
+    #> 
+    #> $regeocode$addressComponent$businessAreas
+    #> $regeocode$addressComponent$businessAreas[[1]]
+    #> $regeocode$addressComponent$businessAreas[[1]]$location
+    #> [1] "104.033983,30.676605"
+    #> 
+    #> $regeocode$addressComponent$businessAreas[[1]]$name
+    #> [1] "抚琴"
+    #> 
+    #> $regeocode$addressComponent$businessAreas[[1]]$id
+    #> [1] "510106"
+    #> 
+    #> 
+    #> $regeocode$addressComponent$businessAreas[[2]]
+    #> $regeocode$addressComponent$businessAreas[[2]]$location
+    #> [1] "104.036283,30.672559"
+    #> 
+    #> $regeocode$addressComponent$businessAreas[[2]]$name
+    #> [1] "白果林"
+    #> 
+    #> $regeocode$addressComponent$businessAreas[[2]]$id
+    #> [1] "510106"
+    #> 
+    #> 
+    #> $regeocode$addressComponent$businessAreas[[3]]
+    #> $regeocode$addressComponent$businessAreas[[3]]$location
+    #> [1] "104.019801,30.669817"
+    #> 
+    #> $regeocode$addressComponent$businessAreas[[3]]$name
+    #> [1] "清江"
+    #> 
+    #> $regeocode$addressComponent$businessAreas[[3]]$id
+    #> [1] "510105"
+    #> 
+    #> 
+    #> 
+    #> $regeocode$addressComponent$building
+    #> $regeocode$addressComponent$building$name
+    #> list()
+    #> 
+    #> $regeocode$addressComponent$building$type
+    #> list()
+    #> 
+    #> 
+    #> $regeocode$addressComponent$neighborhood
+    #> $regeocode$addressComponent$neighborhood$name
+    #> list()
+    #> 
+    #> $regeocode$addressComponent$neighborhood$type
+    #> list()
+    #> 
+    #> 
+    #> $regeocode$addressComponent$citycode
+    #> [1] "028"
+    #> 
+    #> 
+    #> $regeocode$formatted_address
+    #> [1] "四川省成都市金牛区西安路街道成都中医药大学附属医院腹泻门诊成都中医药大学(十二桥校区)"
+    #> 
+    #> 
+    #> $info
+    #> [1] "OK"
+    #> 
+    #> $infocode
+    #> [1] "10000"
     tb <- 
       extractLocation(res)
     knitr::kable(tb)

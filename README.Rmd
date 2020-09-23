@@ -118,4 +118,4 @@ For more functions and improvements, Coming Soon!
 It's very common for API upgrades to make the downstream application, like amapGeocode, to be unavailable. Feel free to [let me know](mailto://chenhan28@gmail.com) once it's broken or just open an issue.
 
 ## Acknowledgements
-Hex Sticker was created by [hexSticker package](https://github.com/GuangchuangYu/hexSticker) with the world data from  [rnaturalearth](  https://CRAN.R-project.org/package=rnaturalearth).
+Hex Sticker was created by [hexSticker package](https://github.com/GuangchuangYu/hexSticker) with the world data from  [rnaturalearth](https://CRAN.R-project.org/package=rnaturalearth).
