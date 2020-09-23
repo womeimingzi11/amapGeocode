@@ -1,4 +1,4 @@
-# amapGeocode (development version)
+# amapGeocode 0.2.0
 
 # amapGeocode 0.1.0
 

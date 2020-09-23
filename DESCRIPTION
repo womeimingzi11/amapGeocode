@@ -1,7 +1,7 @@
 Type: Package
 Package: amapGeocode
 Title: An Interface to the AutoNavi Maps API Geocoding Services
-Version: 0.1.0.9000
+Version: 0.2.0
 Authors@R: 
     c(person(given = "Han",
              family = "Chen",
