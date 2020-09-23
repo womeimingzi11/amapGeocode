@@ -34,6 +34,8 @@
 #' @param output Optional.\cr
 #'  Output Data Structure. \cr
 #' Support JSON and XML. The default value is JSON.
+#' @param to_table Optional.\cr
+#' Transform response content to tibble.\cr
 #' @return
 #' Returns a JSON or XML of results containing detailed subordinate administrative region information. See \url{https://lbs.amap.com/api/webservice/guide/api/district} for more information.
 #' @export
@@ -46,7 +48,8 @@ getAdmin <-
            extensions = NULL,
            filter = NULL,
            callback = NULL,
-           output = 'JSON') {
+           output = 'JSON',
+           to_table = TRUE) {
     # Arguments check ---------------------------------------------------------
     # Check if key argument is set or not
     # If there is no key, try to get amap_key from option and set as key
@@ -83,11 +86,85 @@ getAdmin <-
       httr::content(res)
 
     # Transform response to tibble or return directly -------------------------
-#
-#     if (isTRUE(to_table)) {
-#       extractCoord(res_content) %>%
-#         return()
-#     } else {
+
+    if (isTRUE(to_table)) {
+      extractAdmin(res_content) %>%
+        return()
+    } else {
       return(res_content)
-#     }
+    }
   }
+
+#' Get Subordinate Administrative Region from getAdmin request
+#' Now, it only support extract the first layer of subordniate administrative region information.
+#'
+#' @param res
+#' Response from getAdmin.
+#'
+#' @return
+#' Returns a tibble which extracts detailed subordinate administrative region information from results of getCoord. See \url{https://lbs.amap.com/api/webservice/guide/api/district} for more information.
+#' @export
+extractAdmin <- function(res) {
+  # Detect what kind of response will be parse ------------------------------
+  xml_detect <-
+    any(stringr::str_detect(class(res), 'xml_document'))
+  # Convert xml2 to list
+  if (isTRUE(xml_detect)) {
+    # get the number of retruned address
+    res <-
+      res %>% xml2::as_list() %>% '$'('response')
+  }
+
+  # detect whether request succeed or not
+  if (res$status != 1) {
+    stop(res$info)
+  }
+
+  # detect thee number of response
+  obj_count <-
+    res$count
+  if (obj_count == 0) {
+    tibble::tibble(
+      lng = NA,
+      lat = NA,
+      name = NA,
+      level = NA,
+      citycode = NA,
+      adcode = NA
+    )
+  } else if (obj_count == 1) {
+    # Take Subordinate Administrative Regions out
+    sub_res <-
+      res$districts[[1]]
+    # Select what variable do we need, except coordinate point
+    var_name <-
+      c('name',
+        'level',
+        'citycode',
+        'adcode')
+
+
+    sub_res$districts %>%
+      lapply(function(district) {
+        # parse lng and lat from location
+        center =
+          district$center %>%
+          stringr::str_split(pattern = ',', simplify = TRUE)
+        # parse other information
+        ls_var <-
+          lapply(var_name, function(var_n) {
+            ifelse(sjmisc::is_empty(district[[var_n]]), NA, district[[var_n]])
+          }) %>%
+          as.data.frame() %>%
+          stats::setNames(var_name)
+        # assemble information and coordinate
+        tibble::tibble(lng = as.numeric(center[[1]]),
+                       lat = as.numeric(center[[2]]),
+                       ls_var)
+      }) %>%
+      dplyr::bind_rows()
+
+  } else {
+    'Not support current extraction task.'
+  }
+}

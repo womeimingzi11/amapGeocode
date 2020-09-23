@@ -107,8 +107,6 @@ getLocation <-
 
 #' Extract location from coordinate request
 #'
-#' Extract location result from Response of getCoord. For now, only single place response is supported.
-#'
 #' @param res Required.\cr
 #' Response from getLocation.
 #'

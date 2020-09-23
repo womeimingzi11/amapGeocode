@@ -14,5 +14,5 @@ Response from getLocation.}
 Returns a tibble which extracts detailed location information from results of getLocation. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
 }
 \description{
-Extract location result from Response of getCoord. For now, only single place response is supported.
+Extract location from coordinate request
 }

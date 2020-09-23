@@ -13,7 +13,8 @@ getAdmin(
   extensions = NULL,
   filter = NULL,
   callback = NULL,
-  output = "JSON"
+  output = "JSON",
+  to_table = TRUE
 )
 }
 \arguments{
@@ -59,6 +60,9 @@ If you don't understand, it means you don't need it, just like me.}
 \item{output}{Optional.\cr
  Output Data Structure. \cr
 Support JSON and XML. The default value is JSON.}
+
+\item{to_table}{Optional.\cr
+Transform response content to tibble.\cr}
 }
 \value{
 Returns a JSON or XML of results containing detailed subordinate administrative region information. See \url{https://lbs.amap.com/api/webservice/guide/api/district} for more information.
