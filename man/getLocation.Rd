@@ -13,7 +13,7 @@ getLocation(
   extensions = NULL,
   roadlevel = NULL,
   sig = NULL,
-  output = "XML",
+  output = "JSON",
   callback = NULL,
   homeorcorp = 0,
   to_table = TRUE
@@ -40,8 +40,8 @@ radius ranges from 0 to 3000, the default value is 1000, unit: meter.}
 
 \item{extensions}{Optional.\cr
 Return results controller.\cr
-Once it is `base`, the default value, it only return base information about coordinate.\cr
-Once it is `all`, it will return nearby POI, road information and cross information.}
+`base`: the default value, it only return base information about coordinate.\cr
+`all`: it will return nearby POI, road information and cross information.}
 
 \item{roadlevel}{Optional.\cr
 Road levels.\cr
@@ -70,9 +70,7 @@ When `extensions = all`, this argument makes sense. \cr
 `homeorcorp=2`, corporation related POIs are first, by default.\cr}
 
 \item{to_table}{Optional.\cr
-Transform response content to tibble.\cr
-If set to_table as TRUE, there is no necessary to parse result by extractCoord anymore.\cr
-Please note, once to_table was set as TRUE, the output parameter will be replaced by XML}
+Transform response content to tibble.\cr}
 }
 \value{
 Returns a JSON, XML or Tibble of results containing detailed reverse geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.

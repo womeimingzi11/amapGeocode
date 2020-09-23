@@ -21,10 +21,7 @@
 #' The value of callback is the customized function. Only available with JSON output.
 #' If you don't understand, it means you don't need it, just like me.
 #' @param to_table Optional.\cr
-#' Transform response content to tibble.\cr
-#' If set to_table as TRUE, there is no necessary to parse result by extractCoord anymore.\cr
-#' Please note, once to_table was set as TRUE, the output parameter will be replaced by XML
-#'
+#' Transform response content to tibble.\cr#'
 #' @return
 #' Returns a JSON, XML or Tibble of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
 #' @export
@@ -34,7 +31,7 @@ getCoord <-
            key = NULL,
            city = NULL,
            sig = NULL,
-           output = 'XML',
+           output = 'JSON',
            callback = NULL,
            to_table = TRUE) {
     # Arguments check ---------------------------------------------------------
