@@ -4,16 +4,39 @@
 [amapGeocode](https://github.com/womeimingzi11/amapGeocode)
 ===========================================================
 
+<!-- badges: start -->
+
 <img src="man/figures/hexSticker-logo.png" width="100" />
-<!-- badges: start --> <!-- badges: end -->
+<!-- badges: end -->
 
-**amapGeocode** provides an interface for the AutoNavi(高德) Maps API
-geocoding services. API docs can be foun [here](https://lbs.amap.com/)
-and [here](https://lbs.amap.com/api/webservice/summary/). For now,
-amapGeocode can be used for both forward and reverse geocoding powered
-by high-precision AutoNavi Maps API.
+Geocoding and Reverse Geocoding Services are widely used to provide data
+about coordinate and location information, including longitude,
+latitude, formatted location name, administrative region with different
+levels. There are some package can provide geocode service such as
+[tidygeocoder](https://cran.r-project.org/web/packages/tidygeocoder/index.html),
+[baidumap](https://github.com/badbye/baidumap) and
+[baidugeo](https://github.com/ChrisMuir/baidugeo). However, some of them
+not always provide precise information in China, and some of them is
+unavailable with upgrade backend API.
 
-This project is still in a very early stage and only the geocodig
+amapGeocode is built to provide high precise geocoding and reverse
+gecoding service, and it provides an interface for the AutoNavi(高德)
+Maps API geocoding services. API docs can be foun
+[here](https://lbs.amap.com/) and
+[here](https://lbs.amap.com/api/webservice/summary/). Here are two main
+functions to use are `getCoord()` which takes a character location name
+as an input and `getLocation()` which takes two numeric longitude and
+latitude values as inputs.
+
+The `getCoord()` function extracts coordinate information from input
+character location name and output the result as `tibble`, `XML` or
+`JSON (as list)`. And the `getLocation()` function extracts location
+information from input numeric longitude and latitude values and output
+the result as `tibble`, `XML` or `JSON (as list)`. With the `tibble`
+format as output, it’s highly readable and easy to be used to `tidy`
+workflow.
+
+This project is still in a very early stage and only the geocoding
 function has been developed. So all the functions may change or
 supersede, so it’s not recommended to use this package in production
 environment till it goes to stable stage. When will the stable stage
@@ -28,7 +51,7 @@ Baidu or AutoNavi? Here is the main differences:
 
 1.  AutoNavi has significant high precise, in my case, the Results from
     Baidu were unsatisfactory.
-2.  Baidu with free verification provices really high request:
+2.  Baidu with free verification provides really high request:
     300,000/month for each geocode/reverse-geocode, while AutoNavi only
     provide 6,000/month.
 
@@ -63,9 +86,9 @@ Then get result of geocoding, by `getCoord` function.
       getCoord('成都中医药大学')
     knitr::kable(res)
 
-| lng        | lat       | formatted\_address               | country | province | city   | district | township | street | number | citycode | adcode |
-|:-----------|:----------|:---------------------------------|:--------|:---------|:-------|:---------|:---------|:-------|:-------|:---------|:-------|
-| 104.043284 | 30.666864 | 四川省成都市金牛区成都中医药大学 | 中国    | 四川省   | 成都市 | 金牛区   | NA       | NA     | NA     | 028      | 510106 |
+|      lng |      lat | formatted\_address               | country | province | city   | district | township | street | number | citycode | adcode |
+|---------:|---------:|:---------------------------------|:--------|:---------|:-------|:---------|:---------|:-------|:-------|:---------|:-------|
+| 104.0433 | 30.66686 | 四川省成都市金牛区成都中医药大学 | 中国    | 四川省   | 成都市 | 金牛区   | NA       | NA     | NA     | 028      | 510106 |
 
 The response we get from **AutoNavi Map API** is **JSON** or **XML**.
 For readability, we transform them to `tibble`, [a modern reimagining of
@@ -101,9 +124,9 @@ or **XML**. The result can further be parsed by `extractCoord`.
       extractCoord(res)
     knitr::kable(tb)
 
-| lng        | lat       | formatted\_address               | country | province | city   | district | township | street | number | citycode | adcode |
-|:-----------|:----------|:---------------------------------|:--------|:---------|:-------|:---------|:---------|:-------|:-------|:---------|:-------|
-| 104.043284 | 30.666864 | 四川省成都市金牛区成都中医药大学 | 中国    | 四川省   | 成都市 | 金牛区   | NA       | NA     | NA     | 028      | 510106 |
+|      lng |      lat | formatted\_address               | country | province | city   | district | township | street | number | citycode | adcode |
+|---------:|---------:|:---------------------------------|:--------|:---------|:-------|:---------|:---------|:-------|:-------|:---------|:-------|
+| 104.0433 | 30.66686 | 四川省成都市金牛区成都中医药大学 | 中国    | 四川省   | 成都市 | 金牛区   | NA       | NA     | NA     | 028      | 510106 |
 
 ### Reverse Geocoding
 
@@ -169,4 +192,4 @@ Acknowledgements
 Hex Sticker was created by [hexSticker
 package](https://github.com/GuangchuangYu/hexSticker) with the world
 data from
-[rnaturalearth](https://cran.r-project.org/web/packages/rnaturalearth/README.html).
+[rnaturalearth](https://cran.r-project.org/web/packages/rnaturalearth/index.html).

@@ -1,26 +1,36 @@
-Package: amapGeocode
 Type: Package
+Package: amapGeocode
 Title: An Interface to the AutoNavi Maps API Geocoding Services
 Version: 0.1.0
-Authors@R: c(
-    person("Han", "Chen", email = "chenhan28@gmail.com", role = c("aut", "cre")),
-    person("Wanyanhan", "Jiang", email = "243016042@qq.com", role = c('ctb'))
-    )
-Description: Using R to get detailed coordinates and locations by the AutoNavi Maps API.
+Authors@R: 
+    c(person(given = "Han",
+             family = "Chen",
+             role = c("aut", "cre"),
+             email = "chenhan28@gmail.com"),
+      person(given = "Wanyanhan",
+             family = "Jiang",
+             role = "ctb",
+             email = "243016042@qq.com"))
+Description: Using R to get detailed coordinates and locations
+    by the AutoNavi Maps API.
 License: MIT + file LICENSE
+URL: https://womeimingzi11.github.io
+Imports: 
+    dplyr,
+    httr,
+    jsonlite,
+    magrittr,
+    sjmisc,
+    stats,
+    stringr,
+    tibble,
+    xml2
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat
+VignetteBuilder: 
+    knitr
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
-Imports: 
-    httr,
-    xml2,
-    jsonlite,
-    magrittr,
-    stringr,
-    tibble,
-    dplyr,
-    sjmisc,
-    stats
-URL: https://womeimingzi11.github.io
-Suggests: 
-    testthat

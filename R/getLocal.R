@@ -161,15 +161,17 @@ extractLocation <- function(res) {
                  'citycode',
                  'towncode')
     # extract value of above parameters
+    ls_var <-
     lapply(var_name,
            function(x) {
              x = ifelse(sjmisc::is_empty(addressComponent[[x]]),
                         NA,
                         addressComponent[[x]])
            }) %>%
-      as.data.frame() %>%
+      as.data.frame()
+
       tibble::tibble(formatted_address = regeocode$formatted_address[[1]],
-                     .) %>%
+                     ls_var) %>%
       # set name of tibble
       stats::setNames(c('formatted_address', var_name))
   } else {

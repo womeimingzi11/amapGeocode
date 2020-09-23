@@ -147,14 +147,15 @@ extractCoord <- function(res) {
         'adcode'
       )
     # extract value of above parameters
-    lapply(var_name,
+    ls_var <- lapply(var_name,
            function(x) {
              x = ifelse(sjmisc::is_empty(geocode[[x]]), NA, geocode[[x]])
            }) %>%
-      as.data.frame() %>%
-      tibble::tibble(lng = location[[1]],
-                     lat = location[[2]],
-                     .) %>%
+      as.data.frame()
+
+      tibble::tibble(lng = as.numeric(location[[1]]),
+                     lat = as.numeric(location[[2]]),
+                     ls_var) %>%
       # set name of tibble
       stats::setNames(c('lng', 'lat', var_name))
   } else {
