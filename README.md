@@ -13,7 +13,7 @@ Geocoding and Reverse Geocoding Services are widely used to provide data
 about coordinate and location information, including longitude,
 latitude, formatted location name, administrative region with different
 levels. There are some package can provide geocode service such as
-[tidygeocoder](https://cran.r-project.org/web/packages/tidygeocoder/index.html),
+[tidygeocoder](https://CRAN.R-project.org/package=tidygeocoder),
 [baidumap](https://github.com/badbye/baidumap) and
 [baidugeo](https://github.com/ChrisMuir/baidugeo). However, some of them
 not always provide precise information in China, and some of them is
@@ -192,4 +192,4 @@ Acknowledgements
 Hex Sticker was created by [hexSticker
 package](https://github.com/GuangchuangYu/hexSticker) with the world
 data from
-[rnaturalearth](https://cran.r-project.org/web/packages/rnaturalearth/index.html).
+[rnaturalearth](https://CRAN.R-project.org/package=rnaturalearth).

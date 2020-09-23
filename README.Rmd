@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 ![](man/figures/hexSticker-logo.png){width=100px}
 <!-- badges: end -->
 
-Geocoding and Reverse Geocoding Services are widely used to provide data about coordinate and location information, including longitude, latitude, formatted location name, administrative region with different levels. There are some package can provide geocode service such as [tidygeocoder](https://cran.r-project.org/web/packages/tidygeocoder/index.html), [baidumap](https://github.com/badbye/baidumap) and [baidugeo](https://github.com/ChrisMuir/baidugeo). However, some of them not always provide precise information in China, and some of them is unavailable with upgrade backend API.
+Geocoding and Reverse Geocoding Services are widely used to provide data about coordinate and location information, including longitude, latitude, formatted location name, administrative region with different levels. There are some package can provide geocode service such as [tidygeocoder](https://CRAN.R-project.org/package=tidygeocoder), [baidumap](https://github.com/badbye/baidumap) and [baidugeo](https://github.com/ChrisMuir/baidugeo). However, some of them not always provide precise information in China, and some of them is unavailable with upgrade backend API.
 
 amapGeocode is built to provide high precise geocoding and reverse gecoding service, and it provides an interface for the AutoNavi(高德) Maps API geocoding services. API docs can be foun [here](https://lbs.amap.com/) and [here](https://lbs.amap.com/api/webservice/summary/). Here are two main functions to use are `getCoord()` which takes a character location name as an input and `getLocation()` which takes two numeric longitude and latitude values as inputs.
 
@@ -118,4 +118,4 @@ For more functions and improvements, Coming Soon!
 It's very common for API upgrades to make the downstream application, like amapGeocode, to be unavailable. Feel free to [let me know](mailto://chenhan28@gmail.com) once it's broken or just open an issue.
 
 ## Acknowledgements
-Hex Sticker was created by [hexSticker package](https://github.com/GuangchuangYu/hexSticker) with the world data from  [rnaturalearth](https://cran.r-project.org/web/packages/rnaturalearth/index.html).
+Hex Sticker was created by [hexSticker package](https://github.com/GuangchuangYu/hexSticker) with the world data from  [rnaturalearth](  https://CRAN.R-project.org/package=rnaturalearth).
