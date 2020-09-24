@@ -125,9 +125,9 @@ extractCoord <- function(res) {
     geocode <-
       res$geocodes[[1]]
     # parse lng and lat from location
-    location =
+    location_in_coord =
       geocode$location %>%
-      stringr::str_split(pattern = ',', simplify = TRUE)
+      str_loc_to_coord()
     # set parameter name
     var_name <-
       c(
@@ -149,8 +149,8 @@ extractCoord <- function(res) {
            }) %>%
       as.data.frame()
 
-      tibble::tibble(lng = as.numeric(location[[1]]),
-                     lat = as.numeric(location[[2]]),
+      tibble::tibble(lng = location_in_coord[[1]],
+                     lat = location_in_coord[[2]],
                      ls_var) %>%
       # set name of tibble
       stats::setNames(c('lng', 'lat', var_name))

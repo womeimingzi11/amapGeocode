@@ -165,7 +165,6 @@ extractLocation <- function(res) {
                         addressComponent[[x]])
            }) %>%
       as.data.frame()
-
       tibble::tibble(formatted_address = regeocode$formatted_address[[1]],
                      ls_var) %>%
       # set name of tibble

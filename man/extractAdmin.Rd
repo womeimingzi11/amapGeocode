@@ -3,7 +3,7 @@
 \name{extractAdmin}
 \alias{extractAdmin}
 \title{Get Subordinate Administrative Region from getAdmin request
-Now, it only support extract the first layer of subordniate administrative region information.}
+Now, it only support extract the first layer of subordinate administrative region information.}
 \usage{
 extractAdmin(res)
 }
@@ -15,5 +15,5 @@ Returns a tibble which extracts detailed subordinate administrative region infor
 }
 \description{
 Get Subordinate Administrative Region from getAdmin request
-Now, it only support extract the first layer of subordniate administrative region information.
+Now, it only support extract the first layer of subordinate administrative region information.
 }

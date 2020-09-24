@@ -36,7 +36,7 @@ Display level of subordinate administrative regions. Available value: 0,1,2,3.\c
 
 \item{page}{Optional.\cr
 Which page to return.\cr
-Everytime the outmost layer will return a maximum of 20 records. If the limit is exceeded, please request the next page of records with the page argument.}
+Each time the outmost layer will return a maximum of 20 records. If the limit is exceeded, please request the next page of records with the page argument.}
 
 \item{offset}{Optional.\cr
 Maximum records per page.\cr

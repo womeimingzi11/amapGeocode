@@ -21,7 +21,7 @@ unavailable with upgrade backend API.
 
 amapGeocode is built to provide high precise geocoding and reverse
 gecoding service, and it provides an interface for the AutoNavi(高德)
-Maps API geocoding services. API docs can be foun
+Maps API geocoding services. API docs can be found
 [here](https://lbs.amap.com/) and
 [here](https://lbs.amap.com/api/webservice/summary/). Here are two main
 functions to use are `getCoord()` which takes a character location name

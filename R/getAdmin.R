@@ -15,7 +15,7 @@
 #' `3` return first three subordinate administrative regions.
 #' @param page Optional.\cr
 #' Which page to return.\cr
-#' Everytime the outmost layer will return a maximum of 20 records. If the limit is exceeded, please request the next page of records with the page argument.
+#' Each time the outmost layer will return a maximum of 20 records. If the limit is exceeded, please request the next page of records with the page argument.
 #' @param offset Optional.\cr
 #' Maximum records per page.\cr
 #' Maximum value is 20.
@@ -96,7 +96,7 @@ getAdmin <-
   }
 
 #' Get Subordinate Administrative Region from getAdmin request
-#' Now, it only support extract the first layer of subordniate administrative region information.
+#' Now, it only support extract the first layer of subordinate administrative region information.
 #'
 #' @param res
 #' Response from getAdmin.
@@ -146,10 +146,10 @@ extractAdmin <- function(res) {
 
     sub_res$districts %>%
       lapply(function(district) {
-        # parse lng and lat from location
-        center =
+        # parse lng and lat from location (district$center)
+        location_in_coord =
           district$center %>%
-          stringr::str_split(pattern = ',', simplify = TRUE)
+          str_loc_to_coord()
         # parse other information
         ls_var <-
           lapply(var_name, function(var_n) {
@@ -158,8 +158,8 @@ extractAdmin <- function(res) {
           as.data.frame() %>%
           stats::setNames(var_name)
         # assemble information and coordinate
-        tibble::tibble(lng = as.numeric(center[[1]]),
-                       lat = as.numeric(center[[2]]),
+        tibble::tibble(lng = location_in_coord[[1]],
+                       lat = location_in_coord[[2]],
                        ls_var)
       }) %>%
       dplyr::bind_rows()
