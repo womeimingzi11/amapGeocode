@@ -1,0 +1,150 @@
+---
+title: "Introduction to amapGeocode"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to amapGeocode}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  # amap_key = Sys.getenv('amap_key')
+  NOT_CRAN <- identical(tolower(Sys.getenv("NOT_CRAN")), "true"),
+  knitr::opts_chunk$set(purl = NOT_CRAN)
+  # source('/Users/chenhan/Git/R/r_package/offline_option_amap_key.R')
+)
+```
+
+Geocoding and Reverse Geocoding Services are widely used to provide data about coordinate and location information, including longitude, latitude, formatted location name, administrative region with different levels. There are some package can provide geocode service such as [tidygeocoder](https://CRAN.R-project.org/package=tidygeocoder), [baidumap](https://github.com/badbye/baidumap) and [baidugeo](https://github.com/ChrisMuir/baidugeo). However, some of them not always provide precise information in China, and some of them is unavailable with upgrade backend API.
+
+amapGeocode is built to provide high precise geocoding and reverse gecoding service which powered by AutoNavi Map API service. Here are two main functions to use are `getCoord()` which takes a character location name as an input and `getLocation()` which takes two numeric longitude and latitude values as inputs.
+
+The `getCoord()` function extracts coordinate information from input character location name and output the result as `tibble`, `XML` or `JSON (as list)`. And the `getLocation()` function extracts location information from input numeric longitude and latitude values and output the result as `tibble`, `XML` or `JSON (as list)`. With the `tibble` format as output, it's highly readable and easy to be used to `tidy` workflow.
+
+## Usage
+### Geocoding
+Before start geocoding and reverse geocoding, please apply a [AutoNavi Map API Key](https://lbs.amap.com/dev/). Set `amap_key` globally by following command:
+
+```{r set amap_key, eval=FALSE, include=FALSE}
+options(amap_key = 'REPLACE THIS BY YOUR KEY')
+```
+
+Then get result of geocoding, by `getCoord` function. 
+
+```{r getCoord_to_table_as_TRUE, eval = NOT_CRAN}
+library(amapGeocode)
+res <-
+  getCoord('成都中医药大学')
+knitr::kable(res)
+```
+
+The response we get from **AutoNavi Map API** is **JSON** or **XML**. For readability, we transform them to `tibble`, [a modern reimagining of the data.frame](https://tibble.tidyverse.org/), by setting `to_table` argument as `TRUE` by default.
+
+If anyone want to get response as **JSON** or **XML**, please set `to_table = TRUE`. If anyone want to extract information from **JSON** or **XML**. The result can further be parsed by `extractCoord`.
+
+```{r getCoord_to_table_as_FALSE, eval = NOT_CRAN}
+res <-
+  getCoord('成都中医药大学', output = 'XML',to_table = FALSE)
+res
+```
+
+`extractCoord` is created to get result as tibble.
+
+```{r extractCood, eval = NOT_CRAN}
+res
+tb <- 
+  extractCoord(res)
+knitr::kable(tb)
+```
+### Reverse Geocoding
+
+get result of reverse geocoding, by `getLocation` function. 
+
+```{r getLocation_to_table_as_TRUE, eval = NOT_CRAN, eval = NOT_CRAN}
+res <- 
+  getLocation(104.043284, 30.666864)
+knitr::kable(res)
+```
+
+The response we get from **AutoNavi Map API** is **JSON** or **XML**. For readability, we transform them to `tibble`, [a modern reimagining of the data.frame](https://tibble.tidyverse.org/), by setting `to_table` argument as `TRUE` by default.
+
+If anyone want to get response as **JSON** or **XML**, please set `to_table = TRUE`. If anyone want to extract information from **JSON** or **XML**. The result can further be parsed by `extractLocation`.
+
+```{r getLocation_to_table_as_FALSE, eval = NOT_CRAN}
+res <-
+   getLocation(104.043284, 30.666864, output = 'XML',to_table = FALSE)
+res
+```
+
+`extractLocation` is created to get result as tibble.
+
+```{r extractLocation, eval = NOT_CRAN}
+tb <- 
+  extractLocation(res)
+knitr::kable(tb)
+```
+
+### Get Subordinate Administrative Region
+
+get result of reverse geocoding, by `getAdmin` function. 
+
+```{r getAdmin_to_table_as_TRUE, eval = NOT_CRAN}
+res <- 
+  getAdmin('四川省')
+knitr::kable(res)
+```
+
+The response we get from **AutoNavi Map API** is **JSON** or **XML**. For readability, we transform them to `tibble`, [a modern reimagining of the data.frame](https://tibble.tidyverse.org/), by setting `to_table` argument as `TRUE` by default.
+
+If anyone want to get response as **JSON** or **XML**, please set `to_table = TRUE`. If anyone want to extract information from **JSON** or **XML**. The result can further be parsed by `extractLocation`.
+
+```{r getAdmin_to_table_as_FALSE, eval = NOT_CRAN}
+res <-
+   getAdmin('四川省', output = 'XML', to_table = FALSE)
+res
+```
+
+`extractAdmin` is created to get result as tibble.
+
+```{r extractAdmin, eval = NOT_CRAN}
+res
+tb <- 
+  extractAdmin(res)
+knitr::kable(tb)
+```
+
+### Convert coordinate point from other coordinate system to AutoNavi
+
+get result of reverse geocoding, by `convertCoord` function, here is how to convert coordinate from gps to AutoNavi
+
+```{r convertCoord_to_table_as_TRUE, eval = NOT_CRAN}
+res <- 
+  convertCoord('116.481499,39.990475',coordsys = 'gps')
+knitr::kable(res)
+```
+
+The response we get from **AutoNavi Map API** is **JSON** or **XML**. For readability, we transform them to `tibble`, [a modern reimagining of the data.frame](https://tibble.tidyverse.org/), by setting `to_table` argument as `TRUE` by default.
+
+If anyone want to get response as **JSON** or **XML**, please set `to_table = TRUE`. If anyone want to extract information from **JSON** or **XML**. The result can further be parsed by `extract`.
+
+```{r convertCoord_to_table_as_FALSE, eval = NOT_CRAN}
+res <-
+  convertCoord('116.481499,39.990475',coordsys = 'gps', to_table = FALSE)
+res
+```
+
+`extractConvertCood` is created to get result as tibble.
+
+```{r extractConvertCood, eval = NOT_CRAN}
+tb <- 
+  extractConvertCood(res)
+knitr::kable(tb)
+```
+
+For more functions and improvements, Coming Soon!
+
+## Bug report
+It's very common for API upgrades to make the downstream application, like amapGeocode, to be unavailable. Feel free to [let me know](mailto://chenhan28@gmail.com) once it's broken or just open an issue.
