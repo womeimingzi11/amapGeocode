@@ -31,7 +31,7 @@ getCoord <-
            key = NULL,
            city = NULL,
            sig = NULL,
-           output = 'JSON',
+           output = NULL,
            callback = NULL,
            to_table = TRUE) {
     # Arguments check ---------------------------------------------------------
@@ -92,7 +92,7 @@ getCoord <-
 
 #' @export
 extractCoord <- function(res) {
-  # Detect what kind of response will be parse ------------------------------
+  # Detect what kind of response will go to parse ------------------------------
   xml_detect <-
     any(stringr::str_detect(class(res), 'xml_document'))
   # Convert xml2 to list
@@ -127,7 +127,8 @@ extractCoord <- function(res) {
     # parse lng and lat from location
     location_in_coord =
       geocode$location %>%
-      str_loc_to_coord()
+      # Internal Function from Helpers, no export
+      str_loc_to_num_coord()
     # set parameter name
     var_name <-
       c(

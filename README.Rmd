@@ -29,10 +29,7 @@ This project is still in a very early stage and only the geocoding function has 
 
 amapGeocode is inspired by [baidumap](https://github.com/badbye/baidumap) and [baidugeo](https://github.com/ChrisMuir/baidugeo). If you want to choose the Baidu Map API, these packages are good choice.
 
-Baidu or AutoNavi? Here is the main differences:
-
-1. AutoNavi has significant high precise, in my case, the Results from Baidu were unsatisfactory.
-2. Baidu with free verification provides really high request: 300,000/month for each geocode/reverse-geocode, while AutoNavi only provide 6,000/month.
+However, AutoNavi has significant high precise, in my case, the Results from Baidu were unsatisfactory.
 
 ## Installation
 amapGeocode may be published to [CRAN](https://CRAN.R-project.org) once the first available version been finished.
@@ -71,7 +68,7 @@ If anyone want to get response as **JSON** or **XML**, please set `to_table = TR
 
 ```{r getCoord_to_table_as_FALSE}
 res <-
-  getCoord('成都中医药大学', to_table = FALSE)
+  getCoord('成都中医药大学', output = 'XML',to_table = FALSE)
 res
 ```
 
@@ -85,7 +82,7 @@ knitr::kable(tb)
 ```
 ### Reverse Geocoding
 
-get result of reverse geocoding, by `get` function. 
+get result of reverse geocoding, by `getLocation` function. 
 
 ```{r getLocation_to_table_as_TRUE}
 res <- 
@@ -99,20 +96,92 @@ If anyone want to get response as **JSON** or **XML**, please set `to_table = TR
 
 ```{r getLocation_to_table_as_FALSE}
 res <-
-   getLocation(104.043284, 30.666864, to_table = FALSE)
+   getLocation(104.043284, 30.666864, output = 'XML',to_table = FALSE)
 res
 ```
 
 `extractLocation` is created to get result as tibble.
 
 ```{r extractLocation}
-res
 tb <- 
   extractLocation(res)
 knitr::kable(tb)
 ```
 
+### Get Subordinate Administrative Region
+
+get result of reverse geocoding, by `getAdmin` function. 
+
+```{r getAdmin_to_table_as_TRUE}
+res <- 
+  getAdmin('四川省')
+knitr::kable(res)
+```
+
+The response we get from **AutoNavi Map API** is **JSON** or **XML**. For readability, we transform them to `tibble`, [a modern reimagining of the data.frame](https://tibble.tidyverse.org/), by setting `to_table` argument as `TRUE` by default.
+
+If anyone want to get response as **JSON** or **XML**, please set `to_table = TRUE`. If anyone want to extract information from **JSON** or **XML**. The result can further be parsed by `extractLocation`.
+
+```{r getAdmin_to_table_as_FALSE}
+res <-
+   getAdmin('四川省', output = 'XML', to_table = FALSE)
+res
+```
+
+`extractAdmin` is created to get result as tibble.
+
+```{r extractAdmin}
+res
+tb <- 
+  extractAdmin(res)
+knitr::kable(tb)
+```
+
+### Convert coordinate point from other coordinate system to AutoNavi
+
+get result of reverse geocoding, by `convertCoord` function, here is how to convert coordinate from gps to AutoNavi
+
+```{r convertCoord_to_table_as_TRUE}
+res <- 
+  convertCoord('116.481499,39.990475',coordsys = 'gps')
+knitr::kable(res)
+```
+
+The response we get from **AutoNavi Map API** is **JSON** or **XML**. For readability, we transform them to `tibble`, [a modern reimagining of the data.frame](https://tibble.tidyverse.org/), by setting `to_table` argument as `TRUE` by default.
+
+If anyone want to get response as **JSON** or **XML**, please set `to_table = TRUE`. If anyone want to extract information from **JSON** or **XML**. The result can further be parsed by `extract`.
+
+```{r convertCoord_to_table_as_FALSE}
+res <-
+  convertCoord('116.481499,39.990475',coordsys = 'gps', to_table = FALSE)
+res
+```
+
+`extractConvertCood` is created to get result as tibble.
+
+```{r extractConvertCood}
+tb <- 
+  extractConvertCood(res)
+knitr::kable(tb)
+```
+
 For more functions and improvements, Coming Soon!
+
+
+## FAQ
+
+### Can I input a data.frame to have a batch request?
+For this moment, it only can be code by yourself manually.
+However, I know this is one of the most important feature. So. I am working on it.
+
+### What about parallel?
+Unfortunately, there is no plan to add internal parallel support to amapGeocode. Here are some reasons:
+
+1. The aim of amapGeocode is to create a package which is easy to use. Indeed, the parallel operation can make many times performance improvement, especially there are half million queries. However, the parallel operation often platform limited, I don't have enough time and machine to test on different platforms. In fact even in macOS, the system I'm relatively familiar with, I have already encountered a lot of weird parallel issues and I don't have the intention or the experience to fix them.
+
+2. The queries limitation. For most of free users or developers, the daily query limitation and queries per second is absolutely enough: 30,000 queries per day and 200 queries per second. But for parallel operation, the limitation is relatively easy to exceed. For purchase developers, it may cause serious financial troubles.
+
+So for anybody who wants to send millions of request by amapGeocode, you are welcomed to make the parallel operations manually.
 
 ## Bug report
 It's very common for API upgrades to make the downstream application, like amapGeocode, to be unavailable. Feel free to [let me know](mailto://chenhan28@gmail.com) once it's broken or just open an issue.

@@ -13,7 +13,7 @@ getAdmin(
   extensions = NULL,
   filter = NULL,
   callback = NULL,
-  output = "JSON",
+  output = NULL,
   to_table = TRUE
 )
 }

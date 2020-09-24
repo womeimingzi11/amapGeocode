@@ -13,7 +13,7 @@ getLocation(
   extensions = NULL,
   roadlevel = NULL,
   sig = NULL,
-  output = "JSON",
+  output = NULL,
   callback = NULL,
   homeorcorp = 0,
   to_table = TRUE

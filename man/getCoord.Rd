@@ -9,7 +9,7 @@ getCoord(
   key = NULL,
   city = NULL,
   sig = NULL,
-  output = "JSON",
+  output = NULL,
   callback = NULL,
   to_table = TRUE
 )

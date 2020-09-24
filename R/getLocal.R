@@ -54,13 +54,11 @@ getLocation <-
            extensions = NULL,
            roadlevel = NULL,
            sig = NULL,
-           output = 'JSON',
+           output = NULL,
            callback = NULL,
            homeorcorp = 0,
            to_table = TRUE) {
     # Arguments check ---------------------------------------------------------
-    # Combine lng and lat as location which significant figures lower than 6
-    location = paste(round(lng, 6), round(lat, 6), sep = ',')
     # Check if key argument is set or not
     # If there is no key, try to get amap_key from option and set as key
     if (is.null(key)) {
@@ -72,7 +70,11 @@ getLocation <-
       }
       key = getOption('amap_key')
     }
+    # Combine lng and lat as location
+    # Internal Function from Helpers, no export
+    location = num_coord_to_str_loc(lng, lat)
     # assemble url and parameter ----------------------------------------------
+
     base_url = 'https://restapi.amap.com/v3/geocode/regeo'
 
     query_parm = list(
@@ -89,6 +91,7 @@ getLocation <-
     )
 
     # GET a response with full url --------------------------------------------
+
     res <-
       httr::RETRY('GET', url = base_url, query = query_parm)
     httr::stop_for_status(res)
@@ -115,7 +118,7 @@ getLocation <-
 
 #' @export
 extractLocation <- function(res) {
-  # Detect what kind of response will be parse ------------------------------
+  # Detect what kind of response will go to parse ------------------------------
   xml_detect <-
     any(stringr::str_detect(class(res), 'xml_document'))
   # Convert xml2 to list
@@ -129,47 +132,38 @@ extractLocation <- function(res) {
   request_stat <-
     res$status
 
+  # If request_stat is failure
+  # Return the failure information
   if (request_stat == '0') {
-    tibble::tibble(
-      formatted_address = NA,
-      country = NA,
-      province = NA,
-      city = NA,
-      district = NA,
-      township = NA,
-      citycode = NA,
-      towncode = NA
-    )
-  } else if (request_stat == '1') {
-    # get addressComponent from regeocode
-    # get geocodes node for futher parse
-    regeocode <-
-      res$regeocode
+    stop(res$info)
+  }
 
-    addressComponent <-
-      regeocode$addressComponent
-    # assemble information tible
-    var_name = c('country',
-                 'province',
-                 'city',
-                 'district',
-                 'township',
-                 'citycode',
-                 'towncode')
-    # extract value of above parameters
-    ls_var <-
+  # get addressComponent from regeocode
+  # get geocodes node for futher parse
+  regeocode <-
+    res$regeocode
+
+  addressComponent <-
+    regeocode$addressComponent
+  # assemble information tible
+  var_name = c('country',
+               'province',
+               'city',
+               'district',
+               'township',
+               'citycode',
+               'towncode')
+  # extract value of above parameters
+  ls_var <-
     lapply(var_name,
            function(x) {
              x = ifelse(sjmisc::is_empty(addressComponent[[x]]),
                         NA,
                         addressComponent[[x]])
            }) %>%
-      as.data.frame()
-      tibble::tibble(formatted_address = regeocode$formatted_address[[1]],
-                     ls_var) %>%
-      # set name of tibble
-      stats::setNames(c('formatted_address', var_name))
-  } else {
-    stop(res$info)
-  }
+    as.data.frame()
+  tibble::tibble(formatted_address = regeocode$formatted_address[[1]],
+                 ls_var) %>%
+    # set name of tibble
+    stats::setNames(c('formatted_address', var_name))
 }

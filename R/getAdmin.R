@@ -1,4 +1,4 @@
-#' Get Subordinate Administrative Region from location
+#' Get Subordinate Administrative Regions from location
 #'
 #' @param keywords Required.\cr
 #' Search keywords. \cr
@@ -48,7 +48,7 @@ getAdmin <-
            extensions = NULL,
            filter = NULL,
            callback = NULL,
-           output = 'JSON',
+           output = NULL,
            to_table = TRUE) {
     # Arguments check ---------------------------------------------------------
     # Check if key argument is set or not
@@ -105,7 +105,7 @@ getAdmin <-
 #' Returns a tibble which extracts detailed subordinate administrative region information from results of getCoord. See \url{https://lbs.amap.com/api/webservice/guide/api/district} for more information.
 #' @export
 extractAdmin <- function(res) {
-  # Detect what kind of response will be parse ------------------------------
+  # Detect what kind of response will go to parse ------------------------------
   xml_detect <-
     any(stringr::str_detect(class(res), 'xml_document'))
   # Convert xml2 to list
@@ -123,6 +123,7 @@ extractAdmin <- function(res) {
   # detect thee number of response
   obj_count <-
     res$count
+
   if (obj_count == 0) {
     tibble::tibble(
       lng = NA,
@@ -149,7 +150,8 @@ extractAdmin <- function(res) {
         # parse lng and lat from location (district$center)
         location_in_coord =
           district$center %>%
-          str_loc_to_coord()
+          # Internal Function from Helpers, no export
+          str_loc_to_num_coord()
         # parse other information
         ls_var <-
           lapply(var_name, function(var_n) {
