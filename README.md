@@ -3,9 +3,8 @@
 
 # [amapGeocode](https://github.com/womeimingzi11/amapGeocode)
 
-<!-- badges: start -->
-
-![](man/figures/hexSticker-logo.png) <!-- badges: end -->
+<img src="man/figures/hexSticker-logo.png" width="150"/>
+<!-- badges: start --> <!-- badges: end -->
 
 Geocoding and Reverse Geocoding Services are widely used to provide data
 about coordinate and location information, including longitude,
