@@ -5,8 +5,7 @@
 \title{Convert coordinate from different coordinate systems to AutoNavi system}
 \usage{
 convertCoord(
-  lng,
-  lat,
+  locations,
   key = NULL,
   coordsys = NULL,
   sig = NULL,
@@ -15,11 +14,8 @@ convertCoord(
 )
 }
 \arguments{
-\item{lng}{Required. \cr
-Longitude in decimal}
-
-\item{lat}{Required. \cr
-Latitude in decimal}
+\item{locations}{Required. \cr
+String coordinate point from other coordinate system}
 
 \item{key}{Optional.\cr
 Amap Key. \cr
@@ -41,7 +37,7 @@ Support JSON and XML. The default value is JSON.}
 Transform response content to tibble.\cr#'}
 }
 \value{
-Returns a JSON, XML or Tibble of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
+Returns a JSON, XML or Tibble of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/convert} for more information.
 }
 \description{
 Convert coordinate from different coordinate systems to AutoNavi system

@@ -2,7 +2,7 @@
 % Please edit documentation in R/getAdmin.R
 \name{getAdmin}
 \alias{getAdmin}
-\title{Get Subordinate Administrative Region from location}
+\title{Get Subordinate Administrative Regions from location}
 \usage{
 getAdmin(
   keywords,
@@ -68,5 +68,5 @@ Transform response content to tibble.\cr}
 Returns a JSON or XML of results containing detailed subordinate administrative region information. See \url{https://lbs.amap.com/api/webservice/guide/api/district} for more information.
 }
 \description{
-Get Subordinate Administrative Region from location
+Get Subordinate Administrative Regions from location
 }
