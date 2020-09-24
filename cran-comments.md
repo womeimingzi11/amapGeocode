@@ -7,4 +7,6 @@
 
 0 errors | 0 warnings | 1 note
 
-* An upgrae which adds `getAdmin` and `extractAdmin` functions
+* An upgrade:
+  1. adds `getAdmin` and `extractAdmin` functions
+  2. adds `convertCoord` and `extractConvertCoord` functions

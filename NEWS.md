@@ -1,5 +1,5 @@
 # amapGeocode 0.2.0
-* Add other two functions: `getAdmin` and `extractAdmin`
+* Add other three main functions: `getAdmin`, `extractAdmin` and `convertCoord`
 
 # amapGeocode 0.1.0
 
