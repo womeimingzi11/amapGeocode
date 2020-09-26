@@ -6,7 +6,7 @@
 #' Latitude in decimal
 #' @param key Optional.\cr
 #' Amap Key. \cr
-#' Applied from AutoNavi Map API official website\url{https://lbs.amap.com/dev/}
+#' Applied from 'AutoNavi' Map API official website\url{https://lbs.amap.com/dev/}
 #' @param poitype Optional.\cr
 #' Return nearby POI types.\cr
 #' When `extensions = all`, this argument makes sense. For detailed poitype type, please refer\url{https://lbs.amap.com/api/webservice/download}
@@ -44,6 +44,21 @@
 #' @return
 #' Returns a JSON, XML or Tibble of results containing detailed reverse geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
 #' @export
+#' @examples
+#' \dontrun{
+#' library(amapGeocode)
+#'
+#' # Set the amap_key which is applied from 'AutoNavi' Map Services for amapGeocde globally.
+#' options(amap_key = 'REPLACE THIS BY YOUR KEY')
+#
+#' # Get reverse-geocode as a tibble
+#' getLocation(104.043284, 30.666864)
+#' # Get reverse-geocode as a XML
+#' getLocation('104.043284, 30.666864', output = 'XML')
+#'
+#' }
+#'
+#' @seealso \code{\link{extractCoord}}
 
 getLocation <-
   function(lng,
@@ -115,8 +130,23 @@ getLocation <-
 #'
 #' @return
 #' Returns a tibble which extracts detailed location information from results of getLocation. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
-
 #' @export
+#' @examples
+#' \dontrun{
+#' library(dplyr)
+#' library(amapGeocode)
+#'
+#' # Set the amap_key which is applied from 'AutoNavi' Map Services for amapGeocde globally.
+#' options(amap_key = 'REPLACE THIS BY YOUR KEY')
+#
+#' # Get reverse-geocode as a XML
+#' getLocation(104.043284, 30.666864, output = 'XML') %>%
+#'    # extract reverse-geocode regions as a tibble
+#'    extractLocation()
+#' }
+#'
+#' @seealso \code{\link{getLocation}}
+
 extractLocation <- function(res) {
   # Detect what kind of response will go to parse ------------------------------
   xml_detect <-
