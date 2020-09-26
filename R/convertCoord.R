@@ -19,6 +19,20 @@
 #' @return
 #' Returns a JSON, XML or Tibble of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/convert} for more information.
 #' @export
+#' @examples
+#' \dontrun{
+#' library(amapGeocode)
+#'
+#' # Set the amap_key which is applied from 'AutoNavi' Map Services for amapGeocde globally.
+#' options(amap_key = 'REPLACE THIS BY YOUR KEY')
+#'
+#' # get result of converted coordinate system as a tibble
+#' convertCoord('116.481499,39.990475',coordsys = 'gps')
+#' # get result of converted coordinate system as a XML
+#' convertCoord('116.481499,39.990475',coordsys = 'gps', to_table = FALSE)
+#' }
+#'
+#' @seealso \code{\link{convertCoord}}
 convertCoord <- function(
   locations,
   key = NULL,
@@ -63,7 +77,7 @@ convertCoord <- function(
   # Transform response to tibble or return directly -------------------------
 
   if (isTRUE(to_table)) {
-    extractConvertCood(res_content) %>%
+    extractConvertCoord(res_content) %>%
       return()
   } else {
     return(res_content)
@@ -76,9 +90,25 @@ convertCoord <- function(
 #'
 #' @return
 #' Returns a tibble which extracts converted coordinate points from request of convertCoord. See \url{https://lbs.amap.com/api/webservice/guide/api/convert} for more information.
-
+#'
 #' @export
-extractConvertCood <- function(res) {
+#'
+#' @examples
+#' \dontrun{
+#' library(dplyr)
+#' library(amapGeocode)
+#'
+#' # Set the amap_key which is applied from 'AutoNavi' Map Services for amapGeocde globally.
+#' options(amap_key = 'REPLACE THIS BY YOUR KEY')
+#
+#' # get result of converted coordinate system as a XML
+#' convertCoord('116.481499,39.990475',coordsys = 'gps', to_table = FALSE) %>%
+#'    # extract result of converted coordinate system as a tibble
+#'    extractConvertCoord()
+#' }
+#'
+#' @seealso \code{\link{convertCoord}}
+extractConvertCoord <- function(res) {
   # Detect what kind of response will go to parse ------------------------------
   xml_detect <-
     any(stringr::str_detect(class(res), 'xml_document'))

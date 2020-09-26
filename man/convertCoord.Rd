@@ -42,3 +42,20 @@ Returns a JSON, XML or Tibble of results containing detailed geocode information
 \description{
 Convert coordinate from different coordinate systems to AutoNavi system
 }
+\examples{
+\dontrun{
+library(amapGeocode)
+
+# Set the amap_key which is applied from 'AutoNavi' Map Services for amapGeocde globally.
+options(amap_key = 'REPLACE THIS BY YOUR KEY')
+
+# get result of converted coordinate system as a tibble
+convertCoord('116.481499,39.990475',coordsys = 'gps')
+# get result of converted coordinate system as a XML
+convertCoord('116.481499,39.990475',coordsys = 'gps', to_table = FALSE)
+}
+
+}
+\seealso{
+\code{\link{convertCoord}}
+}

@@ -17,3 +17,21 @@ Returns a tibble which extracts detailed subordinate administrative region infor
 Get Subordinate Administrative Region from getAdmin request
 Now, it only support extract the first layer of subordinate administrative region information.
 }
+\examples{
+\dontrun{
+library(dplyr)
+library(amapGeocode)
+
+# Set the amap_key which is applied from 'AutoNavi' Map Services for amapGeocde globally.
+options(amap_key = 'REPLACE THIS BY YOUR KEY')
+
+#Get subordinate administrative regions as a XML
+getAdmin('Sichuan Province', output = 'XML') \%>\%
+   # extract subordinate administrative regions as a tibble
+   extractAdmin()
+}
+
+}
+\seealso{
+\code{\link{getAdmin}}
+}

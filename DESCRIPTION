@@ -1,6 +1,6 @@
 Type: Package
 Package: amapGeocode
-Title: An Interface to the AutoNavi Maps API Geocoding Services
+Title: An Interface to the 'AutoNavi Maps' API Geocoding Services
 Version: 0.2.0
 Authors@R: 
     c(person(given = "Han",
@@ -11,10 +11,9 @@ Authors@R:
              family = "Jiang",
              role = "ctb",
              email = "243016042@qq.com"))
-Description: Using R to get detailed coordinates and locations
-    by the AutoNavi Maps API.
+Description: Getting and parsing data of location geocode/reverse-geocode and administrative regions from 'AutoNavi Maps'<https://lbs.amap.com/api/webservice/summary> API.
 License: MIT + file LICENSE
-URL: https://womeimingzi11.github.io
+URL: https://github.com/womeimingzi11/amapGeocode
 Imports: 
     dplyr,
     httr,

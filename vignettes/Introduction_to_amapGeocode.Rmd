@@ -11,7 +11,6 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  # amap_key = Sys.getenv('amap_key')
   NOT_CRAN <- identical(tolower(Sys.getenv("NOT_CRAN")), "true"),
   knitr::opts_chunk$set(purl = NOT_CRAN)
   # source('/Users/chenhan/Git/R/r_package/offline_option_amap_key.R')
@@ -53,7 +52,7 @@ res
 
 `extractCoord` is created to get result as tibble.
 
-```{r extractCood, eval = NOT_CRAN}
+```{r extractCoord, eval = NOT_CRAN}
 res
 tb <- 
   extractCoord(res)
@@ -63,7 +62,7 @@ knitr::kable(tb)
 
 get result of reverse geocoding, by `getLocation` function. 
 
-```{r getLocation_to_table_as_TRUE, eval = NOT_CRAN, eval = NOT_CRAN}
+```{r getLocation_to_table_as_TRUE, eval = NOT_CRAN}
 res <- 
   getLocation(104.043284, 30.666864)
 knitr::kable(res)
@@ -136,11 +135,11 @@ res <-
 res
 ```
 
-`extractConvertCood` is created to get result as tibble.
+`extractConvertCoord` is created to get result as tibble.
 
-```{r extractConvertCood, eval = NOT_CRAN}
+```{r extractConvertCoord, eval = NOT_CRAN}
 tb <- 
-  extractConvertCood(res)
+  extractConvertCoord(res)
 knitr::kable(tb)
 ```
 

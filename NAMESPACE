@@ -3,7 +3,7 @@
 export("%>%")
 export(convertCoord)
 export(extractAdmin)
-export(extractConvertCood)
+export(extractConvertCoord)
 export(extractCoord)
 export(extractLocation)
 export(getAdmin)

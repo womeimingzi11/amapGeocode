@@ -5,7 +5,7 @@
 #' Rules: Country/Region, Province/State, City, County/District, Town, Country, Road, Number, Room, Building.
 #' @param key Optional.\cr
 #' Amap Key. \cr
-#' Applied from AutoNavi Map API official website\url{https://lbs.amap.com/dev/}
+#' Applied from 'AutoNavi' Map API official website\url{https://lbs.amap.com/dev/}
 #' @param subdistrict Optional.\cr
 #' Subordinate Administrative Level.\cr
 #' Display level of subordinate administrative regions. Available value: 0,1,2,3.\cr
@@ -39,6 +39,23 @@
 #' @return
 #' Returns a JSON or XML of results containing detailed subordinate administrative region information. See \url{https://lbs.amap.com/api/webservice/guide/api/district} for more information.
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' library(amapGeocode)
+#'
+#' # Set the amap_key which is applied from 'AutoNavi' Map Services for amapGeocde globally.
+#' options(amap_key = 'REPLACE THIS BY YOUR KEY')
+#
+#' # Get subordinate administrative regions as a tibble
+#' getAdmin('Sichuan Province')
+#' # Get subordinate administrative regions as a XML
+#' getCoord('Sichuan Province', output = 'XML')
+#'
+#' }
+#'
+#' @seealso \code{\link{extractAdmin}}
+
 getAdmin <-
   function(keywords,
            key = NULL,
@@ -104,6 +121,23 @@ getAdmin <-
 #' @return
 #' Returns a tibble which extracts detailed subordinate administrative region information from results of getCoord. See \url{https://lbs.amap.com/api/webservice/guide/api/district} for more information.
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' library(dplyr)
+#' library(amapGeocode)
+#'
+#' # Set the amap_key which is applied from 'AutoNavi' Map Services for amapGeocde globally.
+#' options(amap_key = 'REPLACE THIS BY YOUR KEY')
+#'
+#' #Get subordinate administrative regions as a XML
+#' getAdmin('Sichuan Province', output = 'XML') %>%
+#'    # extract subordinate administrative regions as a tibble
+#'    extractAdmin()
+#' }
+#'
+#' @seealso \code{\link{getAdmin}}
+
 extractAdmin <- function(res) {
   # Detect what kind of response will go to parse ------------------------------
   xml_detect <-

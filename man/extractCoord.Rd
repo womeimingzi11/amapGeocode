@@ -16,3 +16,20 @@ Returns a tibble which extracts detailed coordinate information from results of 
 \description{
 Extract coordinate from location request
 }
+\examples{
+\dontrun{
+library(dplyr)
+library(amapGeocode)
+
+# Set the amap_key which is applied from 'AutoNavi' Map Services for amapGeocde globally.
+options(amap_key = 'REPLACE THIS BY YOUR KEY')
+# Get geocode as a XML
+getCoord('IFS Chengdu', output = 'XML') \%>\%
+   # extract geocode regions as a tibble
+   extractCoord()
+}
+
+}
+\seealso{
+\code{\link{getCoord}}
+}

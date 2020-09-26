@@ -10,3 +10,4 @@
 * An upgrade:
   1. adds `getAdmin` and `extractAdmin` functions
   2. adds `convertCoord` and `extractConvertCoord` functions
+  3. Revise the DESCRIPTION to match the request of CRAN

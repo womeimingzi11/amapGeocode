@@ -24,7 +24,7 @@ Rules: Country/Region, Province/State, City, County/District, Town, Country, Roa
 
 \item{key}{Optional.\cr
 Amap Key. \cr
-Applied from AutoNavi Map API official website\url{https://lbs.amap.com/dev/}}
+Applied from 'AutoNavi' Map API official website\url{https://lbs.amap.com/dev/}}
 
 \item{subdistrict}{Optional.\cr
 Subordinate Administrative Level.\cr
@@ -69,4 +69,21 @@ Returns a JSON or XML of results containing detailed subordinate administrative 
 }
 \description{
 Get Subordinate Administrative Regions from location
+}
+\examples{
+\dontrun{
+library(amapGeocode)
+
+# Set the amap_key which is applied from 'AutoNavi' Map Services for amapGeocde globally.
+options(amap_key = 'REPLACE THIS BY YOUR KEY')
+# Get subordinate administrative regions as a tibble
+getAdmin('Sichuan Province')
+# Get subordinate administrative regions as a XML
+getCoord('Sichuan Province', output = 'XML')
+
+}
+
+}
+\seealso{
+\code{\link{extractAdmin}}
 }

@@ -5,7 +5,7 @@
 #' Rules: Country/Region, Province/State, City, County/District, Town, Country, Road, Number, Room, Building.
 #' @param key Optional.\cr
 #' Amap Key. \cr
-#' Applied from AutoNavi Map API official website\url{https://lbs.amap.com/dev/}
+#' Applied from 'AutoNavi' Map API official website\url{https://lbs.amap.com/dev/}
 #' @param city Optional.\cr
 #' Specify the City. \cr
 #' Support: city in Chinese, full pinyin, citycode, adcode\url{https://lbs.amap.com/api/webservice/download}.\cr
@@ -25,6 +25,22 @@
 #' @return
 #' Returns a JSON, XML or Tibble of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' library(amapGeocode)
+#'
+#' # Set the amap_key which is applied from 'AutoNavi' Map Services for amapGeocde globally.
+#' options(amap_key = 'REPLACE THIS BY YOUR KEY')
+#
+#' # Get geocode as a tibble
+#' getCoord('IFS Chengdu')
+#' # Get geocode as a XML
+#' getCoord('IFS Chengdu', output = 'XML')
+#'
+#' }
+#'
+#' @seealso \code{\link{extractCoord}}
 
 getCoord <-
   function(address,
@@ -83,14 +99,29 @@ getCoord <-
 
 #' Extract coordinate from location request
 #'
-#'
 #' @param res Required.\cr
 #' Response from getCoord.
 #'
 #' @return
 #' Returns a tibble which extracts detailed coordinate information from results of getCoord. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
-
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' library(dplyr)
+#' library(amapGeocode)
+#'
+#' # Set the amap_key which is applied from 'AutoNavi' Map Services for amapGeocde globally.
+#' options(amap_key = 'REPLACE THIS BY YOUR KEY')
+#
+#' # Get geocode as a XML
+#' getCoord('IFS Chengdu', output = 'XML') %>%
+#'    # extract geocode regions as a tibble
+#'    extractCoord()
+#' }
+#'
+#' @seealso \code{\link{getCoord}}
+
 extractCoord <- function(res) {
   # Detect what kind of response will go to parse ------------------------------
   xml_detect <-

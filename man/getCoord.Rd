@@ -21,7 +21,7 @@ Rules: Country/Region, Province/State, City, County/District, Town, Country, Roa
 
 \item{key}{Optional.\cr
 Amap Key. \cr
-Applied from AutoNavi Map API official website\url{https://lbs.amap.com/dev/}}
+Applied from 'AutoNavi' Map API official website\url{https://lbs.amap.com/dev/}}
 
 \item{city}{Optional.\cr
 Specify the City. \cr
@@ -49,4 +49,21 @@ Returns a JSON, XML or Tibble of results containing detailed geocode information
 }
 \description{
 Get coordinate from location
+}
+\examples{
+\dontrun{
+library(amapGeocode)
+
+# Set the amap_key which is applied from 'AutoNavi' Map Services for amapGeocde globally.
+options(amap_key = 'REPLACE THIS BY YOUR KEY')
+# Get geocode as a tibble
+getCoord('IFS Chengdu')
+# Get geocode as a XML
+getCoord('IFS Chengdu', output = 'XML')
+
+}
+
+}
+\seealso{
+\code{\link{extractCoord}}
 }
