@@ -43,6 +43,76 @@
 #' @seealso \code{\link{extractCoord}}
 
 getCoord <-
+  # A wrap of getCoord.individual
+  function(address,
+           key = NULL,
+           city = NULL,
+           sig = NULL,
+           output = NULL,
+           callback = NULL,
+           to_table = TRUE) {
+    if (length(address) == 1) {
+      # if there is one address, use getCoord.individual directly
+      getCoord.individual(
+        key = key,
+        address = address,
+        city = city,
+        sig = sig,
+        output = output,
+        callback = callback,
+        to_table = to_table
+      )
+    } else {
+      # if there is multiple addresses, use getCoord.individual by laapply
+      ls_queries <-
+        purrr::map(
+        address,
+        getCoord.individual,
+        key = key,
+        city = city,
+        sig = sig,
+        output = output,
+        callback = callback,
+        to_table = to_table
+      )
+      # detect return list of raw requests or `bind_rows` parsed tibble
+      if (isTRUE(to_table)) {
+        ls_queries %>%
+          dplyr::bind_rows() %>%
+          return()
+      } else {
+        return(ls_get_coord)
+      }
+    }
+  }
+
+#' Get an individual coordinate from location
+#'
+#' @param address Required.\cr
+#' Structured address information. \cr
+#' Rules: Country/Region, Province/State, City, County/District, Town, Country, Road, Number, Room, Building.
+#' @param key Optional.\cr
+#' Amap Key. \cr
+#' Applied from 'AutoNavi' Map API official website\url{https://lbs.amap.com/dev/}
+#' @param city Optional.\cr
+#' Specify the City. \cr
+#' Support: city in Chinese, full pinyin, citycode, adcode\url{https://lbs.amap.com/api/webservice/download}.\cr
+#' The default value is NULL which will search country-wide. The default value is NULL
+#' @param sig Optional.\cr
+#' Digital Signature.\cr
+#' How to use this argument? Please check here{https://lbs.amap.com/faq/account/key/72}
+#' @param output Optional.\cr
+#'  Output Data Structure. \cr
+#' Support JSON and XML. The default value is JSON.
+#' @param callback Optional.\cr
+#' Callback Function. \cr
+#' The value of callback is the customized function. Only available with JSON output.
+#' If you don't understand, it means you don't need it, just like me.
+#' @param to_table Optional.\cr
+#' Transform response content to tibble.\cr#'
+#' @return
+#' Returns a JSON, XML or Tibble of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
+getCoord.individual <-
   function(address,
            key = NULL,
            city = NULL,
@@ -132,6 +202,12 @@ extractCoord <- function(res) {
     res <-
       res %>% xml2::as_list() %>% '$'('response')
   }
+
+    # detect whether request succeed or not
+  if (res$status != 1) {
+    stop(res$info)
+  }
+
   # detect thee number of response
   obj_count <-
     res$count
@@ -176,18 +252,15 @@ extractCoord <- function(res) {
       )
     # extract value of above parameters
     ls_var <- lapply(var_name,
-           function(x) {
-             x = ifelse(sjmisc::is_empty(geocode[[x]]), NA, geocode[[x]])
-           }) %>%
+                     function(x) {
+                       x = ifelse(sjmisc::is_empty(geocode[[x]]), NA, geocode[[x]])
+                     }) %>%
       as.data.frame()
 
-      tibble::tibble(lng = location_in_coord[[1]],
-                     lat = location_in_coord[[2]],
-                     ls_var) %>%
+    tibble::tibble(lng = location_in_coord[[1]],
+                   lat = location_in_coord[[2]],
+                   ls_var) %>%
       # set name of tibble
       stats::setNames(c('lng', 'lat', var_name))
-  } else {
-    # to void multiple response make this strange.
-    stop(res$info)
   }
 }
