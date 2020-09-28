@@ -68,7 +68,7 @@ getAdmin <-
            to_table = TRUE) {
     if (length(keywords) == 1) {
       # if there is one address, use getCoord.individual directly
-      convertCoord.individual(
+      getAdmin.individual(
         keywords,
         key = key,
         subdistrict = subdistrict,
