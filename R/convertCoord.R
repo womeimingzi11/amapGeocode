@@ -75,10 +75,9 @@ convertCoord <-
           dplyr::bind_rows() %>%
           return()
       } else {
-        return(ls_get_coord)
+        return(ls_queries)
       }
     }
-
   }
 
 #' Convert an individual coordinate from different coordinate systems to AutoNavi system

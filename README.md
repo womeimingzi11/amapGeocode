@@ -1,8 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-[amapGeocode](https://github.com/womeimingzi11/amapGeocode)
-===========================================================
+# [amapGeocode](https://github.com/womeimingzi11/amapGeocode)
 
 <img src="man/figures/hexSticker-logo.png" width="150"/>
 <!-- badges: start --> <!-- badges: end -->
@@ -48,23 +47,26 @@ the Baidu Map API, these packages are good choice.
 However, AutoNavi has significant high precise, in my case, the Results
 from Baidu were unsatisfactory.
 
-Installation
-------------
+## Installation
 
 amapGeocode may be published to [CRAN](https://CRAN.R-project.org) once
 the first available version been finished.
 
 For now, please install amapGeocode from GitHub following this command:
 
-    remotes::install_github('womeimingzi11/amapGeocode')
+``` r
+remotes::install_github('womeimingzi11/amapGeocode')
+```
 
 <!-- You can install the released version of amapGeocode from [CRAN](https://CRAN.R-project.org) with: -->
+
 <!-- ``` r -->
+
 <!-- install.packages("amapGeocode") -->
+
 <!-- ``` -->
 
-Usage
------
+## Usage
 
 ### Geocoding
 
@@ -74,14 +76,16 @@ following command:
 
 Then get result of geocoding, by `getCoord` function.
 
-    library(amapGeocode)
-    res <-
-      getCoord('成都中医药大学')
-    knitr::kable(res)
+``` r
+library(amapGeocode)
+res <-
+  getCoord('四川省中医院')
+knitr::kable(res)
+```
 
-|      lng |      lat | formatted\_address               | country | province | city   | district | township | street | number | citycode | adcode |
-|---------:|---------:|:---------------------------------|:--------|:---------|:-------|:---------|:---------|:-------|:-------|:---------|:-------|
-| 104.0433 | 30.66686 | 四川省成都市金牛区成都中医药大学 | 中国    | 四川省   | 成都市 | 金牛区   | NA       | NA     | NA     | 028      | 510106 |
+|      lng |     lat | formatted\_address | country | province | city | district | township | street | number | citycode | adcode |
+| -------: | ------: | :----------------- | :------ | :------- | :--- | :------- | :------- | :----- | :----- | :------- | :----- |
+| 104.0431 | 30.6678 | 四川省成都市金牛区四川省中医院    | 中国      | 四川省      | 成都市  | 金牛区      | NA       | NA     | NA     | 028      | 510106 |
 
 The response we get from **AutoNavi Map API** is **JSON** or **XML**.
 For readability, we transform them to `tibble`, [a modern reimagining of
@@ -92,46 +96,52 @@ If anyone want to get response as **JSON** or **XML**, please set
 `to_table = TRUE`. If anyone want to extract information from **JSON**
 or **XML**. The result can further be parsed by `extractCoord`.
 
-    res <-
-      getCoord('成都中医药大学', output = 'XML',to_table = FALSE)
-    res
-    #> {xml_document}
-    #> <response>
-    #> [1] <status>1</status>
-    #> [2] <info>OK</info>
-    #> [3] <infocode>10000</infocode>
-    #> [4] <count>1</count>
-    #> [5] <geocodes type="list">\n  <geocode>\n    <formatted_address>四川省成都市金牛区成都中医 ...
+``` r
+res <-
+  getCoord('成都中医药大学', output = 'XML',to_table = FALSE)
+res
+#> {xml_document}
+#> <response>
+#> [1] <status>1</status>
+#> [2] <info>OK</info>
+#> [3] <infocode>10000</infocode>
+#> [4] <count>1</count>
+#> [5] <geocodes type="list">\n  <geocode>\n    <formatted_address>四川省成都市金牛区成都中医 ...
+```
 
 `extractCoord` is created to get result as tibble.
 
-    res
-    #> {xml_document}
-    #> <response>
-    #> [1] <status>1</status>
-    #> [2] <info>OK</info>
-    #> [3] <infocode>10000</infocode>
-    #> [4] <count>1</count>
-    #> [5] <geocodes type="list">\n  <geocode>\n    <formatted_address>四川省成都市金牛区成都中医 ...
-    tb <- 
-      extractCoord(res)
-    knitr::kable(tb)
+``` r
+res
+#> {xml_document}
+#> <response>
+#> [1] <status>1</status>
+#> [2] <info>OK</info>
+#> [3] <infocode>10000</infocode>
+#> [4] <count>1</count>
+#> [5] <geocodes type="list">\n  <geocode>\n    <formatted_address>四川省成都市金牛区成都中医 ...
+tb <- 
+  extractCoord(res)
+knitr::kable(tb)
+```
 
-|      lng |      lat | formatted\_address               | country | province | city   | district | township | street | number | citycode | adcode |
-|---------:|---------:|:---------------------------------|:--------|:---------|:-------|:---------|:---------|:-------|:-------|:---------|:-------|
-| 104.0433 | 30.66686 | 四川省成都市金牛区成都中医药大学 | 中国    | 四川省   | 成都市 | 金牛区   | NA       | NA     | NA     | 028      | 510106 |
+|      lng |      lat | formatted\_address | country | province | city | district | township | street | number | citycode | adcode |
+| -------: | -------: | :----------------- | :------ | :------- | :--- | :------- | :------- | :----- | :----- | :------- | :----- |
+| 104.0433 | 30.66686 | 四川省成都市金牛区成都中医药大学   | 中国      | 四川省      | 成都市  | 金牛区      | NA       | NA     | NA     | 028      | 510106 |
 
 ### Reverse Geocoding
 
 get result of reverse geocoding, by `getLocation` function.
 
-    res <- 
-      getLocation(104.043284, 30.666864)
-    knitr::kable(res)
+``` r
+res <- 
+  getLocation(104.043284, 30.666864)
+knitr::kable(res)
+```
 
-| formatted\_address                                                                   | country | province | city   | district | township   | citycode | towncode     |
-|:-------------------------------------------------------------------------------------|:--------|:---------|:-------|:---------|:-----------|:---------|:-------------|
-| 四川省成都市金牛区西安路街道成都中医药大学附属医院腹泻门诊成都中医药大学(十二桥校区) | 中国    | 四川省   | 成都市 | 金牛区   | 西安路街道 | 028      | 510106024000 |
+| formatted\_address                          | country | province | city | district | township | citycode | towncode     |
+| :------------------------------------------ | :------ | :------- | :--- | :------- | :------- | :------- | :----------- |
+| 四川省成都市金牛区西安路街道成都中医药大学附属医院腹泻门诊成都中医药大学(十二桥校区) | 中国      | 四川省      | 成都市  | 金牛区      | 西安路街道    | 028      | 510106024000 |
 
 The response we get from **AutoNavi Map API** is **JSON** or **XML**.
 For readability, we transform them to `tibble`, [a modern reimagining of
@@ -142,57 +152,63 @@ If anyone want to get response as **JSON** or **XML**, please set
 `to_table = TRUE`. If anyone want to extract information from **JSON**
 or **XML**. The result can further be parsed by `extractLocation`.
 
-    res <-
-       getLocation(104.043284, 30.666864, output = 'XML',to_table = FALSE)
-    res
-    #> {xml_document}
-    #> <response>
-    #> [1] <status>1</status>
-    #> [2] <info>OK</info>
-    #> [3] <infocode>10000</infocode>
-    #> [4] <regeocode>\n  <formatted_address>四川省成都市金牛区西安路街道成都中医药大学附属医院腹泻门诊成都中医药大学(十二 ...
+``` r
+res <-
+   getLocation(104.043284, 30.666864, output = 'XML',to_table = FALSE)
+res
+#> {xml_document}
+#> <response>
+#> [1] <status>1</status>
+#> [2] <info>OK</info>
+#> [3] <infocode>10000</infocode>
+#> [4] <regeocode>\n  <formatted_address>四川省成都市金牛区西安路街道成都中医药大学附属医院腹泻门诊成都中医药大学(十二 ...
+```
 
 `extractLocation` is created to get result as tibble.
 
-    tb <- 
-      extractLocation(res)
-    knitr::kable(tb)
+``` r
+tb <- 
+  extractLocation(res)
+knitr::kable(tb)
+```
 
-| formatted\_address                                                                   | country | province | city   | district | township   | citycode | towncode     |
-|:-------------------------------------------------------------------------------------|:--------|:---------|:-------|:---------|:-----------|:---------|:-------------|
-| 四川省成都市金牛区西安路街道成都中医药大学附属医院腹泻门诊成都中医药大学(十二桥校区) | 中国    | 四川省   | 成都市 | 金牛区   | 西安路街道 | 028      | 510106024000 |
+| formatted\_address                          | country | province | city | district | township | citycode | towncode     |
+| :------------------------------------------ | :------ | :------- | :--- | :------- | :------- | :------- | :----------- |
+| 四川省成都市金牛区西安路街道成都中医药大学附属医院腹泻门诊成都中医药大学(十二桥校区) | 中国      | 四川省      | 成都市  | 金牛区      | 西安路街道    | 028      | 510106024000 |
 
 ### Get Subordinate Administrative Region
 
 get result of reverse geocoding, by `getAdmin` function.
 
-    res <- 
-      getAdmin('四川省')
-    knitr::kable(res)
+``` r
+res <- 
+  getAdmin('四川省')
+knitr::kable(res)
+```
 
-|      lng |      lat | name               | level | citycode | adcode |
-|---------:|---------:|:-------------------|:------|:---------|:-------|
-| 106.7537 | 31.85881 | 巴中市             | city  | 0827     | 511900 |
-| 104.0657 | 30.65946 | 成都市             | city  | 028      | 510100 |
-| 104.3987 | 31.12799 | 德阳市             | city  | 0838     | 510600 |
-| 105.8298 | 32.43367 | 广元市             | city  | 0839     | 510800 |
-| 105.5713 | 30.51331 | 遂宁市             | city  | 0825     | 510900 |
-| 104.6419 | 30.12221 | 资阳市             | city  | 0832     | 512000 |
-| 104.7417 | 31.46402 | 绵阳市             | city  | 0816     | 510700 |
-| 106.6334 | 30.45640 | 广安市             | city  | 0826     | 511600 |
-| 107.5023 | 31.20948 | 达州市             | city  | 0818     | 511700 |
-| 106.0830 | 30.79528 | 南充市             | city  | 0817     | 511300 |
-| 105.0661 | 29.58708 | 内江市             | city  | 1832     | 511000 |
-| 104.6308 | 28.76019 | 宜宾市             | city  | 0831     | 511500 |
-| 105.4433 | 28.88914 | 泸州市             | city  | 0830     | 510500 |
+|      lng |      lat | name      | level | citycode | adcode |
+| -------: | -------: | :-------- | :---- | :------- | :----- |
+| 106.7537 | 31.85881 | 巴中市       | city  | 0827     | 511900 |
+| 104.0657 | 30.65946 | 成都市       | city  | 028      | 510100 |
+| 104.3987 | 31.12799 | 德阳市       | city  | 0838     | 510600 |
+| 105.8298 | 32.43367 | 广元市       | city  | 0839     | 510800 |
+| 105.5713 | 30.51331 | 遂宁市       | city  | 0825     | 510900 |
+| 104.6419 | 30.12221 | 资阳市       | city  | 0832     | 512000 |
+| 104.7417 | 31.46402 | 绵阳市       | city  | 0816     | 510700 |
+| 106.6334 | 30.45640 | 广安市       | city  | 0826     | 511600 |
+| 107.5023 | 31.20948 | 达州市       | city  | 0818     | 511700 |
+| 106.0830 | 30.79528 | 南充市       | city  | 0817     | 511300 |
+| 105.0661 | 29.58708 | 内江市       | city  | 1832     | 511000 |
+| 104.6308 | 28.76019 | 宜宾市       | city  | 0831     | 511500 |
+| 105.4433 | 28.88914 | 泸州市       | city  | 0830     | 510500 |
 | 102.2214 | 31.89979 | 阿坝藏族羌族自治州 | city  | 0837     | 513200 |
-| 104.7734 | 29.35277 | 自贡市             | city  | 0813     | 510300 |
-| 103.0010 | 29.98772 | 雅安市             | city  | 0835     | 511800 |
-| 103.8318 | 30.04832 | 眉山市             | city  | 1833     | 511400 |
-| 103.7613 | 29.58202 | 乐山市             | city  | 0833     | 511100 |
-| 101.7160 | 26.58045 | 攀枝花市           | city  | 0812     | 510400 |
-| 102.2587 | 27.88676 | 凉山彝族自治州     | city  | 0834     | 513400 |
-| 101.9638 | 30.05066 | 甘孜藏族自治州     | city  | 0836     | 513300 |
+| 104.7734 | 29.35277 | 自贡市       | city  | 0813     | 510300 |
+| 103.0010 | 29.98772 | 雅安市       | city  | 0835     | 511800 |
+| 103.8318 | 30.04832 | 眉山市       | city  | 1833     | 511400 |
+| 103.7613 | 29.58202 | 乐山市       | city  | 0833     | 511100 |
+| 101.7160 | 26.58045 | 攀枝花市      | city  | 0812     | 510400 |
+| 102.2587 | 27.88676 | 凉山彝族自治州   | city  | 0834     | 513400 |
+| 101.9638 | 30.05066 | 甘孜藏族自治州   | city  | 0836     | 513300 |
 
 The response we get from **AutoNavi Map API** is **JSON** or **XML**.
 For readability, we transform them to `tibble`, [a modern reimagining of
@@ -203,68 +219,74 @@ If anyone want to get response as **JSON** or **XML**, please set
 `to_table = TRUE`. If anyone want to extract information from **JSON**
 or **XML**. The result can further be parsed by `extractLocation`.
 
-    res <-
-       getAdmin('四川省', output = 'XML', to_table = FALSE)
-    res
-    #> {xml_document}
-    #> <response>
-    #> [1] <status>1</status>
-    #> [2] <info>OK</info>
-    #> [3] <infocode>10000</infocode>
-    #> [4] <count>1</count>
-    #> [5] <suggestion>\n  <keywords type="list"/>\n  <cities type="list"/>\n</sugge ...
-    #> [6] <districts type="list">\n  <district>\n    <citycode/>\n    <adcode>51000 ...
+``` r
+res <-
+   getAdmin('四川省', output = 'XML', to_table = FALSE)
+res
+#> {xml_document}
+#> <response>
+#> [1] <status>1</status>
+#> [2] <info>OK</info>
+#> [3] <infocode>10000</infocode>
+#> [4] <count>1</count>
+#> [5] <suggestion>\n  <keywords type="list"/>\n  <cities type="list"/>\n</sugge ...
+#> [6] <districts type="list">\n  <district>\n    <citycode/>\n    <adcode>51000 ...
+```
 
 `extractAdmin` is created to get result as tibble.
 
-    res
-    #> {xml_document}
-    #> <response>
-    #> [1] <status>1</status>
-    #> [2] <info>OK</info>
-    #> [3] <infocode>10000</infocode>
-    #> [4] <count>1</count>
-    #> [5] <suggestion>\n  <keywords type="list"/>\n  <cities type="list"/>\n</sugge ...
-    #> [6] <districts type="list">\n  <district>\n    <citycode/>\n    <adcode>51000 ...
-    tb <- 
-      extractAdmin(res)
-    knitr::kable(tb)
+``` r
+res
+#> {xml_document}
+#> <response>
+#> [1] <status>1</status>
+#> [2] <info>OK</info>
+#> [3] <infocode>10000</infocode>
+#> [4] <count>1</count>
+#> [5] <suggestion>\n  <keywords type="list"/>\n  <cities type="list"/>\n</sugge ...
+#> [6] <districts type="list">\n  <district>\n    <citycode/>\n    <adcode>51000 ...
+tb <- 
+  extractAdmin(res)
+knitr::kable(tb)
+```
 
-|      lng |      lat | name               | level | citycode | adcode |
-|---------:|---------:|:-------------------|:------|:---------|:-------|
-| 106.7537 | 31.85881 | 巴中市             | city  | 0827     | 511900 |
-| 104.0657 | 30.65946 | 成都市             | city  | 028      | 510100 |
-| 104.3987 | 31.12799 | 德阳市             | city  | 0838     | 510600 |
-| 105.8298 | 32.43367 | 广元市             | city  | 0839     | 510800 |
-| 105.5713 | 30.51331 | 遂宁市             | city  | 0825     | 510900 |
-| 104.6419 | 30.12221 | 资阳市             | city  | 0832     | 512000 |
-| 104.7417 | 31.46402 | 绵阳市             | city  | 0816     | 510700 |
-| 106.6334 | 30.45640 | 广安市             | city  | 0826     | 511600 |
-| 107.5023 | 31.20948 | 达州市             | city  | 0818     | 511700 |
-| 106.0830 | 30.79528 | 南充市             | city  | 0817     | 511300 |
-| 105.0661 | 29.58708 | 内江市             | city  | 1832     | 511000 |
-| 104.6308 | 28.76019 | 宜宾市             | city  | 0831     | 511500 |
-| 105.4433 | 28.88914 | 泸州市             | city  | 0830     | 510500 |
+|      lng |      lat | name      | level | citycode | adcode |
+| -------: | -------: | :-------- | :---- | :------- | :----- |
+| 106.7537 | 31.85881 | 巴中市       | city  | 0827     | 511900 |
+| 104.0657 | 30.65946 | 成都市       | city  | 028      | 510100 |
+| 104.3987 | 31.12799 | 德阳市       | city  | 0838     | 510600 |
+| 105.8298 | 32.43367 | 广元市       | city  | 0839     | 510800 |
+| 105.5713 | 30.51331 | 遂宁市       | city  | 0825     | 510900 |
+| 104.6419 | 30.12221 | 资阳市       | city  | 0832     | 512000 |
+| 104.7417 | 31.46402 | 绵阳市       | city  | 0816     | 510700 |
+| 106.6334 | 30.45640 | 广安市       | city  | 0826     | 511600 |
+| 107.5023 | 31.20948 | 达州市       | city  | 0818     | 511700 |
+| 106.0830 | 30.79528 | 南充市       | city  | 0817     | 511300 |
+| 105.0661 | 29.58708 | 内江市       | city  | 1832     | 511000 |
+| 104.6308 | 28.76019 | 宜宾市       | city  | 0831     | 511500 |
+| 105.4433 | 28.88914 | 泸州市       | city  | 0830     | 510500 |
 | 102.2214 | 31.89979 | 阿坝藏族羌族自治州 | city  | 0837     | 513200 |
-| 104.7734 | 29.35277 | 自贡市             | city  | 0813     | 510300 |
-| 103.0010 | 29.98772 | 雅安市             | city  | 0835     | 511800 |
-| 103.8318 | 30.04832 | 眉山市             | city  | 1833     | 511400 |
-| 103.7613 | 29.58202 | 乐山市             | city  | 0833     | 511100 |
-| 101.7160 | 26.58045 | 攀枝花市           | city  | 0812     | 510400 |
-| 102.2587 | 27.88676 | 凉山彝族自治州     | city  | 0834     | 513400 |
-| 101.9638 | 30.05066 | 甘孜藏族自治州     | city  | 0836     | 513300 |
+| 104.7734 | 29.35277 | 自贡市       | city  | 0813     | 510300 |
+| 103.0010 | 29.98772 | 雅安市       | city  | 0835     | 511800 |
+| 103.8318 | 30.04832 | 眉山市       | city  | 1833     | 511400 |
+| 103.7613 | 29.58202 | 乐山市       | city  | 0833     | 511100 |
+| 101.7160 | 26.58045 | 攀枝花市      | city  | 0812     | 510400 |
+| 102.2587 | 27.88676 | 凉山彝族自治州   | city  | 0834     | 513400 |
+| 101.9638 | 30.05066 | 甘孜藏族自治州   | city  | 0836     | 513300 |
 
 ### Convert coordinate point from other coordinate system to AutoNavi
 
 get result of reverse geocoding, by `convertCoord` function, here is how
 to convert coordinate from gps to AutoNavi
 
-    res <- 
-      convertCoord('116.481499,39.990475',coordsys = 'gps')
-    knitr::kable(res)
+``` r
+res <- 
+  convertCoord('116.481499,39.990475',coordsys = 'gps')
+knitr::kable(res)
+```
 
 |      lng |      lat |
-|---------:|---------:|
+| -------: | -------: |
 | 116.4876 | 39.99175 |
 
 The response we get from **AutoNavi Map API** is **JSON** or **XML**.
@@ -276,35 +298,38 @@ If anyone want to get response as **JSON** or **XML**, please set
 `to_table = TRUE`. If anyone want to extract information from **JSON**
 or **XML**. The result can further be parsed by `extract`.
 
-    res <-
-      convertCoord('116.481499,39.990475',coordsys = 'gps', to_table = FALSE)
-    res
-    #> $status
-    #> [1] "1"
-    #> 
-    #> $info
-    #> [1] "ok"
-    #> 
-    #> $infocode
-    #> [1] "10000"
-    #> 
-    #> $locations
-    #> [1] "116.487585177952,39.991754014757"
+``` r
+res <-
+  convertCoord('116.481499,39.990475',coordsys = 'gps', to_table = FALSE)
+res
+#> $status
+#> [1] "1"
+#> 
+#> $info
+#> [1] "ok"
+#> 
+#> $infocode
+#> [1] "10000"
+#> 
+#> $locations
+#> [1] "116.487585177952,39.991754014757"
+```
 
 `extractConvertCoord` is created to get result as tibble.
 
-    tb <- 
-      extractConvertCoord(res)
-    knitr::kable(tb)
+``` r
+tb <- 
+  extractConvertCoord(res)
+knitr::kable(tb)
+```
 
 |      lng |      lat |
-|---------:|---------:|
+| -------: | -------: |
 | 116.4876 | 39.99175 |
 
-For more functions and improvements, Coming Soon!
+For more functions and improvements, Coming Soon\!
 
-FAQ
----
+## FAQ
 
 ### Can I input a data.frame to have a batch request?
 
@@ -334,16 +359,14 @@ amapGeocode. Here are some reasons:
 So for anybody who wants to send millions of request by amapGeocode, you
 are welcomed to make the parallel operations manually.
 
-Bug report
-----------
+## Bug report
 
 It’s very common for API upgrades to make the downstream application,
 like amapGeocode, to be unavailable. Feel free to [let me
 know](mailto://chenhan28@gmail.com) once it’s broken or just open an
 issue.
 
-Acknowledgements
-----------------
+## Acknowledgements
 
 Hex Sticker was created by [hexSticker
 package](https://github.com/GuangchuangYu/hexSticker) with the world

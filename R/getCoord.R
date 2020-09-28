@@ -81,7 +81,7 @@ getCoord <-
           dplyr::bind_rows() %>%
           return()
       } else {
-        return(ls_get_coord)
+        return(ls_queries)
       }
     }
   }

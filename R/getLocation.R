@@ -115,7 +115,7 @@ getLocation <-
           dplyr::bind_rows() %>%
           return()
       } else {
-        return(ls_query)
+        return(ls_queries)
       }
     }
   }

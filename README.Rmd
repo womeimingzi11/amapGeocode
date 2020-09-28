@@ -58,7 +58,7 @@ Then get result of geocoding, by `getCoord` function.
 ```{r getCoord_to_table_as_TRUE}
 library(amapGeocode)
 res <-
-  getCoord('成都中医药大学')
+  getCoord('四川省中医院')
 knitr::kable(res)
 ```
 
