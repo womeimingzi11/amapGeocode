@@ -1,3 +1,5 @@
+# amapGeocode 0.3.0
+
 # amapGeocode 0.2.0
 * Add other three main functions: `getAdmin()`, `extractAdmin()` and `convertCoord()`
 
