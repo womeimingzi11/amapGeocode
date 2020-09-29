@@ -1,4 +1,5 @@
 # amapGeocode 0.3.1
+* Improve the examples of functions
 
 # amapGeocode 0.3.0
 * Added ability to batch process requests for `getAdmin()`, `getLocation()`, `getCoord()`, `convertCoord()` functions
