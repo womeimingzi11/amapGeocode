@@ -567,7 +567,7 @@ or **XML**. The result can further be parsed by `extractLocation`.
 get result of reverse geocoding, by `convertCoord` function, here is how
 to convert coordinate from gps to AutoNavi.
 
-**Please not, this is still a very experimental function becasue I have
+**Please not, this is still a very experimental function because I have
 no experience at converting coordinates. The implementation of this
 input method is not as delicate as I expect. If you have any good idea,
 please let me know or just fork repo and pull a reques.**

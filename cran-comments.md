@@ -6,8 +6,10 @@
 ## R CMD check results
 
 0 errors | 0 warnings | 1 note
+> unable to verify current time
 
 * An upgrade:
-  1. adds `getAdmin` and `extractAdmin` functions
-  2. adds `convertCoord` and `extractConvertCoord` functions
-  3. Revise the DESCRIPTION to match the request of CRAN
+  1. add `getAdmin` and `extractAdmin` functions
+  2. add `convertCoord` and `extractConvertCoord` functions
+  3. revise the DESCRIPTION to match the request of CRAN
+  4. add batch process ability

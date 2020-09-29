@@ -30,9 +30,10 @@
 #' \dontrun{
 #' library(amapGeocode)
 #'
-#' # Set the amap_key which is applied from 'AutoNavi' Map Services for amapGeocde globally.
-#' options(amap_key = 'REPLACE THIS BY YOUR KEY')
-#
+#' # Before the `getCoord()` is executed,
+#' # the token should be set by `option(amap_key = 'key')`
+#' # or set by key argument in `getCoord()`
+#'
 #' # Get geocode as a tibble
 #' getCoord('IFS Chengdu')
 #' # Get geocode as a XML
@@ -181,9 +182,10 @@ getCoord.individual <-
 #' library(dplyr)
 #' library(amapGeocode)
 #'
-#' # Set the amap_key which is applied from 'AutoNavi' Map Services for amapGeocde globally.
-#' options(amap_key = 'REPLACE THIS BY YOUR KEY')
-#
+#' # Before the `getCoord()` is executed,
+#' # the token should be set by `option(amap_key = 'key')`
+#' # or set by key argument in `getCoord()`
+#'
 #' # Get geocode as a XML
 #' getCoord('IFS Chengdu', output = 'XML') %>%
 #'    # extract geocode regions as a tibble

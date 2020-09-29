@@ -21,8 +21,9 @@ Extract location from coordinate request
 library(dplyr)
 library(amapGeocode)
 
-# Set the amap_key which is applied from 'AutoNavi' Map Services for amapGeocde globally.
-options(amap_key = 'REPLACE THIS BY YOUR KEY')
+# Before the `getLocation()` is executed,
+# the token should be set by `option(amap_key = 'key')`
+# or set by key argument in `getLocation()`
 # Get reverse-geocode as a XML
 getLocation(104.043284, 30.666864, output = 'XML') \%>\%
    # extract reverse-geocode regions as a tibble

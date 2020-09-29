@@ -49,8 +49,9 @@ Please consider carefully if introduced this function in product environment.
 \dontrun{
 library(amapGeocode)
 
-# Set the amap_key which is applied from 'AutoNavi' Map Services for amapGeocde globally.
-options(amap_key = 'REPLACE THIS BY YOUR KEY')
+# Before the `convertCoord()` is executed,
+# the token should be set by `option(amap_key = 'key')`
+# or set by key argument in `convertCoord()`
 
 # get result of converted coordinate system as a tibble
 convertCoord('116.481499,39.990475',coordsys = 'gps')

@@ -74,8 +74,10 @@ Get Subordinate Administrative Regions from location
 \dontrun{
 library(amapGeocode)
 
-# Set the amap_key which is applied from 'AutoNavi' Map Services for amapGeocde globally.
-options(amap_key = 'REPLACE THIS BY YOUR KEY')
+# Before the `getAdmin()` is executed,
+# the token should be set by `option(amap_key = 'key')`
+# or set by key argument in `getAdmin()`
+
 # Get subordinate administrative regions as a tibble
 getAdmin('Sichuan Province')
 # Get subordinate administrative regions as a XML
