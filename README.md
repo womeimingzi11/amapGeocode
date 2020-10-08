@@ -12,6 +12,8 @@ status](https://www.r-pkg.org/badges/version/amapGeocode)](https://CRAN.R-projec
 maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![License:
 MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Total downloads
+badge](https://cranlogs.r-pkg.org/badges/grand-total/amapGeocode?color=blue)](https://CRAN.R-project.org/package=amapGeocode)
 <!-- badges: end -->
 
 Introduction <img src="man/figures/hexSticker-logo.png" align="right" width="100"/>
