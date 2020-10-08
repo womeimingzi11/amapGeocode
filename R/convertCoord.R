@@ -1,5 +1,88 @@
 #' Convert coordinate from different coordinate systems to AutoNavi system
 #'
+#' \Sexpr[results=rd]{lifecycle::badge("experimental")}
+#' This function is a wrap of coordinate convert API of AutoNavi Map Service.\cr
+#' While how to input the origin coordinate is sill unstable and 95\% sure that it will have a breaking change in the future.
+#' Please consider carefully if introduced this function in product environment.
+#'
+#' @param locations Required. \cr
+#' String coordinate point from other coordinate system
+#' @param key Optional.\cr
+#' Amap Key. \cr
+#' Applied from AutoNavi Map API official website\url{https://lbs.amap.com/dev/}
+#' @param coordsys Optional.\cr
+#' Coordinate System. \cr
+#' Support: `gps`,`mapbar`,`baidu` and `autonavi`-not convert
+#' @param sig Optional.\cr
+#' Digital Signature.\cr
+#' How to use this argument? Please check here{https://lbs.amap.com/faq/account/key/72}
+#' @param output Optional.\cr
+#'  Output Data Structure. \cr
+#' Support JSON and XML. The default value is JSON.
+#' @param to_table Optional.\cr
+#' Transform response content to tibble.
+#' @return
+#' Returns a JSON, XML or Tibble of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/convert} for more information.
+#' @export
+#' @examples
+#' \dontrun{
+#' library(amapGeocode)
+#'
+#' # Before the `convertCoord()` is executed,
+#' # the token should be set by `option(amap_key = 'key')`
+#' # or set by key argument in `convertCoord()`
+#'
+#' # get result of converted coordinate system as a tibble
+#' convertCoord('116.481499,39.990475',coordsys = 'gps')
+#' # get result of converted coordinate system as a XML
+#' convertCoord('116.481499,39.990475',coordsys = 'gps', to_table = FALSE)
+#' }
+#'
+#' @seealso \code{\link{convertCoord}}
+convertCoord <-
+  function(
+    locations,
+    key = NULL,
+    coordsys = NULL,
+    sig = NULL,
+    output = NULL,
+    to_table = TRUE
+  ){
+    if (length(locations) == 1) {
+      # if there is one address, use getCoord.individual directly
+      convertCoord.individual(
+        locations = locations,
+        key = key,
+        coordsys = coordsys,
+        sig = sig,
+        output = output,
+        to_table = to_table
+      )
+    } else {
+      # if there is multiple addresses, use getCoord.individual by laapply
+      ls_queries <-
+        purrr::map(
+          locations,
+          convertCoord.individual,
+          key = key,
+          coordsys = coordsys,
+          sig = sig,
+          output = output,
+          to_table = to_table
+        )
+      # detect return list of raw requests or `bind_rows` parsed tibble
+      if (isTRUE(to_table)) {
+        ls_queries %>%
+          dplyr::bind_rows() %>%
+          return()
+      } else {
+        return(ls_queries)
+      }
+    }
+  }
+
+#' Convert an individual coordinate from different coordinate systems to AutoNavi system
+#'
 #' @param locations Required. \cr
 #' String coordinate point from other coordinate system
 #' @param key Optional.\cr
@@ -18,22 +101,7 @@
 #' Transform response content to tibble.\cr#'
 #' @return
 #' Returns a JSON, XML or Tibble of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/convert} for more information.
-#' @export
-#' @examples
-#' \dontrun{
-#' library(amapGeocode)
-#'
-#' # Set the amap_key which is applied from 'AutoNavi' Map Services for amapGeocde globally.
-#' options(amap_key = 'REPLACE THIS BY YOUR KEY')
-#'
-#' # get result of converted coordinate system as a tibble
-#' convertCoord('116.481499,39.990475',coordsys = 'gps')
-#' # get result of converted coordinate system as a XML
-#' convertCoord('116.481499,39.990475',coordsys = 'gps', to_table = FALSE)
-#' }
-#'
-#' @seealso \code{\link{convertCoord}}
-convertCoord <- function(
+convertCoord.individual <- function(
   locations,
   key = NULL,
   coordsys = NULL,
@@ -98,9 +166,10 @@ convertCoord <- function(
 #' library(dplyr)
 #' library(amapGeocode)
 #'
-#' # Set the amap_key which is applied from 'AutoNavi' Map Services for amapGeocde globally.
-#' options(amap_key = 'REPLACE THIS BY YOUR KEY')
-#
+#' # Before the `convertCoord()` is executed,
+#' # the token should be set by `option(amap_key = 'key')`
+#' # or set by key argument in `convertCoord()`
+#'
 #' # get result of converted coordinate system as a XML
 #' convertCoord('116.481499,39.990475',coordsys = 'gps', to_table = FALSE) %>%
 #'    # extract result of converted coordinate system as a tibble

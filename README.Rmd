@@ -57,8 +57,15 @@ Then get result of geocoding, by `getCoord` function.
 
 ```{r getCoord_to_table_as_TRUE}
 library(amapGeocode)
+# An individual request
 res <-
-  getCoord('成都中医药大学')
+  getCoord('四川省中医院')
+knitr::kable(res)
+# Batch requests
+res <-
+  getCoord(c('四川省中医院',
+             '四川省人民医院',
+             '成都中医药大学十二桥校区'))
 knitr::kable(res)
 ```
 
@@ -67,9 +74,14 @@ The response we get from **AutoNavi Map API** is **JSON** or **XML**. For readab
 If anyone want to get response as **JSON** or **XML**, please set `to_table = TRUE`. If anyone want to extract information from **JSON** or **XML**. The result can further be parsed by `extractCoord`.
 
 ```{r getCoord_to_table_as_FALSE}
+# An individual request
 res <-
   getCoord('成都中医药大学', output = 'XML',to_table = FALSE)
 res
+# Batch requests
+  getCoord(c('四川省中医院',
+             '四川省人民医院',
+             '成都中医药大学十二桥校区'), to_table = FALSE)
 ```
 
 `extractCoord` is created to get result as tibble.
@@ -110,11 +122,19 @@ knitr::kable(tb)
 
 ### Get Subordinate Administrative Region
 
-get result of reverse geocoding, by `getAdmin` function. 
+get result of reverse geocoding, by `getAdmin` function.
+
+There is a difference between getAdmin and other function, no matter the `to_table` argument is `TRUE` or `FALSE` the result won't be a jointed table by different parent administrative region. For example, with the `to_table = TRUE`, all the lower level administrative region of Province A and Province B will be binded as one tibble, respectively. But the tibble province A and tibble province B won't be binded further.
+
+This is becasue, this function support different administrative region levels, bind their result is nonsense.
 
 ```{r getAdmin_to_table_as_TRUE}
 res <- 
   getAdmin('四川省')
+knitr::kable(res)
+
+res <-
+  getAdmin(c('四川省','成都市','重庆市'))
 knitr::kable(res)
 ```
 
@@ -139,7 +159,9 @@ knitr::kable(tb)
 
 ### Convert coordinate point from other coordinate system to AutoNavi
 
-get result of reverse geocoding, by `convertCoord` function, here is how to convert coordinate from gps to AutoNavi
+get result of reverse geocoding, by `convertCoord` function, here is how to convert coordinate from gps to AutoNavi.
+
+**Please not, this is still a very experimental function because I have no experience at converting coordinates. The implementation of this input method is not as delicate as I expect. If you have any good idea, please let me know or just fork repo and pull a reques.**
 
 ```{r convertCoord_to_table_as_TRUE}
 res <- 
@@ -171,8 +193,10 @@ For more functions and improvements, Coming Soon!
 ## FAQ
 
 ### Can I input a data.frame to have a batch request?
-For this moment, it only can be code by yourself manually.
-However, I know this is one of the most important feature. So. I am working on it.
+Yes! Feel free to input a list, a vector and a column of a table as what you do in other packages.
+
+~~For this moment, it only can be code by yourself manually.~~
+~~However, I know this is one of the most important feature. So. I am working on it.~~
 
 ### What about parallel?
 Unfortunately, there is no plan to add internal parallel support to amapGeocode. Here are some reasons:
