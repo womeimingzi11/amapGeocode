@@ -4,8 +4,16 @@
 [amapGeocode](https://github.com/womeimingzi11/amapGeocode)
 ===========================================================
 
-<img src="man/figures/hexSticker-logo.png" width="150"/>
-<!-- badges: start --> <!-- badges: end -->
+<!-- badges: start -->
+
+[![CRAN
+status](https://www.r-pkg.org/badges/version/amapGeocode)](https://CRAN.R-project.org/package=amapGeocode)
+[![Lifecycle:
+stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
+<!-- badges: end -->
+
+Introduction <img src="man/figures/hexSticker-logo.png" align="right" width="100"/>
+-----------------------------------------------------------------------------------
 
 Geocoding and Reverse Geocoding Services are widely used to provide data
 about coordinate and location information, including longitude,

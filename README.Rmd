@@ -15,9 +15,12 @@ knitr::opts_chunk$set(
 
 # [amapGeocode](https://github.com/womeimingzi11/amapGeocode)
 
-<img src="man/figures/hexSticker-logo.png" width="150"/>
 <!-- badges: start -->
+[![CRAN status](https://www.r-pkg.org/badges/version/amapGeocode)](https://CRAN.R-project.org/package=amapGeocode)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
 <!-- badges: end -->
+
+## Introduction  <img src="man/figures/hexSticker-logo.png" align="right" width="100"/>
 
 Geocoding and Reverse Geocoding Services are widely used to provide data about coordinate and location information, including longitude, latitude, formatted location name, administrative region with different levels. There are some package can provide geocode service such as [tidygeocoder](https://CRAN.R-project.org/package=tidygeocoder), [baidumap](https://github.com/badbye/baidumap) and [baidugeo](https://github.com/ChrisMuir/baidugeo). However, some of them not always provide precise information in China, and some of them is unavailable with upgrade backend API.
 
