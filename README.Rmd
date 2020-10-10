@@ -16,11 +16,14 @@ knitr::opts_chunk$set(
 # [amapGeocode](https://github.com/womeimingzi11/amapGeocode)
 
 <!-- badges: start -->
+[![Total downloads badge](https://cranlogs.r-pkg.org/badges/grand-total/amapGeocode?color=blue)](https://CRAN.R-project.org/package=amapGeocode)
 [![CRAN status](https://www.r-pkg.org/badges/version/amapGeocode)](https://CRAN.R-project.org/package=amapGeocode)
 [![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Total downloads badge](https://cranlogs.r-pkg.org/badges/grand-total/amapGeocode?color=blue)](https://CRAN.R-project.org/package=amapGeocode)
+[![DOI](https://zenodo.org/badge/297431889.svg)](https://zenodo.org/badge/latestdoi/297431889)
 <!-- badges: end -->
+
+中文版介绍: [博客](https://blog.washman.top/post/amapgeocode-%E4%BD%BF%E7%94%A8r%E8%BF%9B%E8%A1%8C%E9%AB%98%E5%BE%B7%E5%9C%B0%E5%9B%BE%E5%9C%B0%E7%90%86%E7%BC%96%E7%A0%81-%E9%80%86%E7%BC%96%E7%A0%81.zh-hans/) or [知乎](https://zhuanlan.zhihu.com/p/264281505)
 
 ## Introduction  <img src="man/figures/hexSticker-logo.png" align="right" width="100"/>
 
@@ -37,18 +40,15 @@ amapGeocode is inspired by [baidumap](https://github.com/badbye/baidumap) and [b
 However, AutoNavi has significant high precise, in my case, the Results from Baidu were unsatisfactory.
 
 ## Installation
-amapGeocode may be published to [CRAN](https://CRAN.R-project.org) once the first available version been finished.
 
-For now, please install amapGeocode from GitHub following this command:
-```{r install by remotes, eval=FALSE, message=TRUE, include=TRUE}
+You can install the released version of amapGeocode from [CRAN](https://CRAN.R-project.org/package=amapGeocode) with:
+``` r
+install.packages("amapGeocode")
+```
+To install the development version, run following command:
+``` r
 remotes::install_github('womeimingzi11/amapGeocode')
 ```
-
-<!-- You can install the released version of amapGeocode from [CRAN](https://CRAN.R-project.org) with: -->
-
-<!-- ``` r -->
-<!-- install.packages("amapGeocode") -->
-<!-- ``` -->
 
 ## Usage
 ### Geocoding
@@ -83,16 +83,11 @@ If anyone want to get response as **JSON** or **XML**, please set `to_table = TR
 res <-
   getCoord('成都中医药大学', output = 'XML',to_table = FALSE)
 res
-# Batch requests
-  getCoord(c('四川省中医院',
-             '四川省人民医院',
-             '成都中医药大学十二桥校区'), to_table = FALSE)
 ```
 
 `extractCoord` is created to get result as tibble.
 
 ```{r extractCoord}
-res
 tb <- 
   extractCoord(res)
 knitr::kable(tb)
@@ -134,12 +129,8 @@ There is a difference between getAdmin and other function, no matter the `to_tab
 This is becasue, this function support different administrative region levels, bind their result is nonsense.
 
 ```{r getAdmin_to_table_as_TRUE}
-res <- 
-  getAdmin('四川省')
-knitr::kable(res)
-
 res <-
-  getAdmin(c('四川省','成都市','重庆市'))
+  getAdmin(c('四川省','成都市','济宁市'))
 knitr::kable(res)
 ```
 
@@ -200,17 +191,15 @@ For more functions and improvements, Coming Soon!
 ### Can I input a data.frame to have a batch request?
 Yes! Feel free to input a list, a vector and a column of a table as what you do in other packages.
 
-~~For this moment, it only can be code by yourself manually.~~
-~~However, I know this is one of the most important feature. So. I am working on it.~~
-
 ### What about parallel?
-Unfortunately, there is no plan to add internal parallel support to amapGeocode. Here are some reasons:
+I have changed my mind! It should come someday.
+~~Unfortunately, there is no plan to add internal parallel support to amapGeocode. Here are some reasons:~~
 
-1. The aim of amapGeocode is to create a package which is easy to use. Indeed, the parallel operation can make many times performance improvement, especially there are half million queries. However, the parallel operation often platform limited, I don't have enough time and machine to test on different platforms. In fact even in macOS, the system I'm relatively familiar with, I have already encountered a lot of weird parallel issues and I don't have the intention or the experience to fix them.
+~~1. The aim of amapGeocode is to create a package which is easy to use. Indeed, the parallel operation can make many times performance improvement, especially there are half million queries. However, the parallel operation often platform limited, I don't have enough time and machine to test on different platforms. In fact even in macOS, the system I'm relatively familiar with, I have already encountered a lot of weird parallel issues and I don't have the intention or the experience to fix them.~~
 
-2. The queries limitation. For most of free users or developers, the daily query limitation and queries per second is absolutely enough: 30,000 queries per day and 200 queries per second. But for parallel operation, the limitation is relatively easy to exceed. For purchase developers, it may cause serious financial troubles.
+~~2. The queries limitation. For most of free users or developers, the daily query limitation and queries per second is absolutely enough: 30,000 queries per day and 200 queries per second. But for parallel operation, the limitation is relatively easy to exceed. For purchase developers, it may cause serious financial troubles.~~
 
-So for anybody who wants to send millions of request by amapGeocode, you are welcomed to make the parallel operations manually.
+~~So for anybody who wants to send millions of request by amapGeocode, you are welcomed to make the parallel operations manually.~~
 
 ## Bug report
 It's very common for API upgrades to make the downstream application, like amapGeocode, to be unavailable. Feel free to [let me know](mailto://chenhan28@gmail.com) once it's broken or just open an issue.
