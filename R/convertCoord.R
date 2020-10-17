@@ -66,7 +66,7 @@ convertCoord <-
     } else {
       # if there is multiple addresses, use getCoord.individual by laapply
       ls_queries <-
-        purrr::map(
+        lapply(
           locations,
           convertCoord.individual,
           key = key,
