@@ -82,7 +82,8 @@ getAdmin <-
         filter = filter,
         callback = callback,
         output = output,
-        to_table = to_table
+        to_table = to_table,
+        keep_bad_request = keep_bad_request
       )
     } else {
       # if there is multiple addresses, use getCoord.individual by laapply

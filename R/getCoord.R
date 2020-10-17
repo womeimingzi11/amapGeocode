@@ -64,7 +64,8 @@ getCoord <-
         sig = sig,
         output = output,
         callback = callback,
-        to_table = to_table
+        to_table = to_table,
+        keep_bad_request = keep_bad_requests
       )
     } else {
       # if there is multiple addresses, use getCoord.individual by laapply

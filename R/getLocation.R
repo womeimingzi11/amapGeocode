@@ -39,7 +39,9 @@
 #' `homeorcorp=1`, home related POIs are first, by default.\cr
 #' `homeorcorp=2`, corporation related POIs are first, by default.\cr
 #' @param to_table Optional.\cr
-#' Transform response content to tibble.\cr
+#' Transform response content to tibble.
+#' @param keep_bad_request Optional.\cr
+#' Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request
 #'
 #' @return
 #' Returns a JSON, XML or Tibble of results containing detailed reverse geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
@@ -72,7 +74,8 @@ getLocation <-
            output = NULL,
            callback = NULL,
            homeorcorp = 0,
-           to_table = TRUE) {
+           to_table = TRUE,
+           keep_bad_request = TRUE) {
     if (length(lng) != length(lat)) {
       stop('The numbers of Longitude and Latitude are mismatched')
     }
@@ -90,7 +93,8 @@ getLocation <-
         output = output,
         callback = callback,
         homeorcorp = homeorcorp,
-        to_table = to_table
+        to_table = to_table,
+        keep_bad_request = keep_bad_request
       )
     } else {
       # if there is multiple addresses, use getCoord.individual by laapply
@@ -108,7 +112,8 @@ getLocation <-
           output = output,
           callback = callback,
           homeorcorp = homeorcorp,
-          to_table = to_table
+          to_table = to_table,
+          keep_bad_request = keep_bad_request
         )
       # detect return list of raw requests or `bind_rows` parsed tibble
       if (isTRUE(to_table)) {
@@ -162,7 +167,9 @@ getLocation <-
 #' `homeorcorp=1`, home related POIs are first, by default.\cr
 #' `homeorcorp=2`, corporation related POIs are first, by default.\cr
 #' @param to_table Optional.\cr
-#' Transform response content to tibble.\cr
+#' Transform response content to tibble.
+#' @param keep_bad_request Optional.\cr
+#' Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request
 #'
 #' @return
 #' Returns a JSON, XML or Tibble of results containing detailed reverse geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
@@ -215,7 +222,13 @@ getLocation.individual <-
 
     res <-
       httr::RETRY('GET', url = base_url, query = query_parm)
-    httr::stop_for_status(res)
+
+    if (!keep_bad_request) {
+      httr::stop_for_status(res)
+    } else {
+      httr::warn_for_status(res, paste0(location, 'makes an unsuccessfully request'))
+    }
+
     res_content <-
       httr::content(res)
 
@@ -256,40 +269,10 @@ getLocation.individual <-
 
 extractLocation <- function(res) {
   # Detect what kind of response will go to parse ------------------------------
-  xml_detect <-
-    any(stringr::str_detect(class(res), 'xml_document'))
-  # Convert xml2 to list
-  if (isTRUE(xml_detect)) {
-    # get the number of retruned address
-    res <-
-      res %>% xml2::as_list() %>% '$'('response')
-  }
-
-  # check the status of request
-  request_stat <-
-    res$status
-
-  # If request_stat is failure
-  # Return the failure information
-  if (request_stat == '0') {
-    stop(res$info)
-  }
-
-  # get addressComponent from regeocode
-  regeocode <-
-    res$regeocode
-
-  # detect thee number of response
-  # there is no count parameter in this query
-  # due to this, use the number of formatted_address
-  # as the count of queries.
-  obj_count <-
-    regeocode$formatted_address %>%
-    length()
-
-  if (obj_count == 0) {
+  # If there is a bad request, return a tibble directly.
+  if (length(res) == 0) {
     tibble::tibble(
-      country = NA,
+      country = 'Bad Request',
       province = NA,
       city = NA,
       district = NA,
@@ -298,28 +281,71 @@ extractLocation <- function(res) {
       towncode = NA
     )
   } else {
-    addressComponent <-
-      regeocode$addressComponent
-    # assemble information tible
-    var_name = c('country',
-                 'province',
-                 'city',
-                 'district',
-                 'township',
-                 'citycode',
-                 'towncode')
-    # extract value of above parameters
-    ls_var <-
-      lapply(var_name,
-             function(x) {
-               x = ifelse(sjmisc::is_empty(addressComponent[[x]]),
-                          NA,
-                          addressComponent[[x]])
-             }) %>%
-      as.data.frame()
-    tibble::tibble(formatted_address = regeocode$formatted_address[[1]],
-                   ls_var) %>%
-      # set name of tibble
-      stats::setNames(c('formatted_address', var_name))
+    xml_detect <-
+      any(stringr::str_detect(class(res), 'xml_document'))
+    # Convert xml2 to list
+    if (isTRUE(xml_detect)) {
+      # get the number of retruned address
+      res <-
+        res %>% xml2::as_list() %>% '$'('response')
+    }
+
+    # check the status of request
+    request_stat <-
+      res$status
+
+    # If request_stat is failure
+    # Return the failure information
+    if (request_stat == '0') {
+      stop(res$info)
+    }
+
+    # get addressComponent from regeocode
+    regeocode <-
+      res$regeocode
+
+    # detect thee number of response
+    # there is no count parameter in this query
+    # due to this, use the number of formatted_address
+    # as the count of queries.
+    obj_count <-
+      regeocode$formatted_address %>%
+      length()
+
+    if (obj_count == 0) {
+      tibble::tibble(
+        country = NA,
+        province = NA,
+        city = NA,
+        district = NA,
+        township = NA,
+        citycode  = NA,
+        towncode = NA
+      )
+    } else {
+      addressComponent <-
+        regeocode$addressComponent
+      # assemble information tible
+      var_name = c('country',
+                   'province',
+                   'city',
+                   'district',
+                   'township',
+                   'citycode',
+                   'towncode')
+      # extract value of above parameters
+      ls_var <-
+        lapply(var_name,
+               function(x) {
+                 x = ifelse(sjmisc::is_empty(addressComponent[[x]]),
+                            NA,
+                            addressComponent[[x]])
+               }) %>%
+        as.data.frame()
+      tibble::tibble(formatted_address = regeocode$formatted_address[[1]],
+                     ls_var) %>%
+        # set name of tibble
+        stats::setNames(c('formatted_address', var_name))
+    }
   }
 }

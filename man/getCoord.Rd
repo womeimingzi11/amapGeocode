@@ -11,7 +11,8 @@ getCoord(
   sig = NULL,
   output = NULL,
   callback = NULL,
-  to_table = TRUE
+  to_table = TRUE,
+  keep_bad_request = TRUE
 )
 }
 \arguments{
@@ -42,7 +43,10 @@ The value of callback is the customized function. Only available with JSON outpu
 If you don't understand, it means you don't need it, just like me.}
 
 \item{to_table}{Optional.\cr
-Transform response content to tibble.\cr#'}
+Transform response content to tibble.}
+
+\item{keep_bad_request}{Optional.\cr
+Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request}
 }
 \value{
 Returns a JSON, XML or Tibble of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
