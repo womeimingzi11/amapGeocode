@@ -1,3 +1,6 @@
+# amapGeocode (development version)
+* Return bad request as NA tibble
+
 # amapGeocode 0.3.1
 * Improve the examples of functions
 
