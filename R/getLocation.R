@@ -185,7 +185,8 @@ getLocation.individual <-
            output = NULL,
            callback = NULL,
            homeorcorp = 0,
-           to_table = TRUE) {
+           to_table = TRUE,
+           keep_bad_request = TRUE) {
     # Arguments check ---------------------------------------------------------
     # Check if key argument is set or not
     # If there is no key, try to get amap_key from option and set as key

@@ -21,6 +21,9 @@
 #' Support JSON and XML. The default value is JSON.
 #' @param to_table Optional.\cr
 #' Transform response content to tibble.
+#' @param keep_bad_request Optional.\cr
+#' Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request
+#'
 #' @return
 #' Returns a JSON, XML or Tibble of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/convert} for more information.
 #' @export
@@ -46,7 +49,8 @@ convertCoord <-
     coordsys = NULL,
     sig = NULL,
     output = NULL,
-    to_table = TRUE
+    to_table = TRUE,
+    keep_bad_request = TRUE
   ){
     if (length(locations) == 1) {
       # if there is one address, use getCoord.individual directly
@@ -56,7 +60,8 @@ convertCoord <-
         coordsys = coordsys,
         sig = sig,
         output = output,
-        to_table = to_table
+        to_table = to_table,
+        keep_bad_request = keep_bad_request
       )
     } else {
       # if there is multiple addresses, use getCoord.individual by laapply
@@ -68,7 +73,8 @@ convertCoord <-
           coordsys = coordsys,
           sig = sig,
           output = output,
-          to_table = to_table
+          to_table = to_table,
+          keep_bad_request = keep_bad_request
         )
       # detect return list of raw requests or `bind_rows` parsed tibble
       if (isTRUE(to_table)) {
@@ -98,7 +104,10 @@ convertCoord <-
 #'  Output Data Structure. \cr
 #' Support JSON and XML. The default value is JSON.
 #' @param to_table Optional.\cr
-#' Transform response content to tibble.\cr#'
+#' Transform response content to tibble.
+#' @param keep_bad_request Optional.\cr
+#' Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request
+#'
 #' @return
 #' Returns a JSON, XML or Tibble of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/convert} for more information.
 convertCoord.individual <- function(
@@ -138,15 +147,20 @@ convertCoord.individual <- function(
 
   res <-
     httr::RETRY('GET', url = base_url, query = query_parm)
-  httr::stop_for_status(res)
+
+  if (!keep_bad_request) {
+    httr::stop_for_status(res)
+  } else {
+    httr::warn_for_status(res, paste0(locations, 'makes an unsuccessfully request'))
+  }
+
   res_content <-
     httr::content(res)
 
   # Transform response to tibble or return directly -------------------------
 
   if (isTRUE(to_table)) {
-    extractConvertCoord(res_content) %>%
-      return()
+    return(extractConvertCoord(res_content))
   } else {
     return(res_content)
   }
@@ -179,7 +193,13 @@ convertCoord.individual <- function(
 #' @seealso \code{\link{convertCoord}}
 extractConvertCoord <- function(res) {
   # Detect what kind of response will go to parse ------------------------------
-  xml_detect <-
+  # If there is a bad request, return a tibble directly.
+  if (length(res) == 0) {
+    tibble::tibble(
+      lng = 'Bad Request',
+      lat = 'Bad Request'
+    )
+  } else {  xml_detect <-
     any(stringr::str_detect(class(res), 'xml_document'))
   # Convert xml2 to list
   if (isTRUE(xml_detect)) {
@@ -206,5 +226,5 @@ extractConvertCoord <- function(res) {
   tibble::tibble(
     lng = location_in_coord[[1]],
     lat = location_in_coord[[2]]
-  )
+  )}
 }
