@@ -63,7 +63,7 @@ If you don't understand, it means you don't need it, just like me.}
 Support JSON and XML. The default value is JSON.}
 
 \item{to_table}{Optional.\cr
-Transform response content to tibble.}
+Transform response content to data.table.}
 
 \item{keep_bad_request}{Optional.\cr
 Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request}
@@ -82,7 +82,7 @@ library(amapGeocode)
 # the token should be set by `option(amap_key = 'key')`
 # or set by key argument in `getAdmin()`
 
-# Get subordinate administrative regions as a tibble
+# Get subordinate administrative regions as a data.table
 getAdmin('Sichuan Province')
 # Get subordinate administrative regions as a XML
 getCoord('Sichuan Province', output = 'XML')

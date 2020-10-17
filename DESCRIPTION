@@ -22,7 +22,6 @@ Imports:
     stats,
     stringr,
     xml2,
-    purrr,
     lifecycle,
     data.table
 Suggests: 

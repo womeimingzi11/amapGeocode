@@ -99,21 +99,26 @@ getLocation <-
     } else {
       # if there is multiple addresses, use getCoord.individual by laapply
       ls_queries <-
-        purrr::map2(
+        mapply(
+          getLocation.individual,
           lng,
           lat,
-          getLocation.individual,
-          key = key,
-          poitype = poitype,
-          radius = radius,
-          extensions = extensions,
-          roadlevel = roadlevel,
-          sig = sig,
-          output = output,
-          callback = callback,
-          homeorcorp = homeorcorp,
-          to_table = to_table,
-          keep_bad_request = keep_bad_request
+          MoreArgs = list(
+            key = key,
+            poitype = poitype,
+            radius = radius,
+            extensions = extensions,
+            roadlevel = roadlevel,
+            sig = sig,
+            output = output,
+            callback = callback,
+            homeorcorp = homeorcorp,
+            to_table = to_table,
+            keep_bad_request = keep_bad_request
+          ),
+          # Set SIMPLIFY to keep result as a list not parsed to matrix by column bind
+          #  to merge all elements. rbindlist will be used later
+          SIMPLIFY = FALSE
         )
       # detect return list of raw requests or `rbindlist` parsed data.table
       if (isTRUE(to_table)) {

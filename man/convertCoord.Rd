@@ -35,13 +35,13 @@ How to use this argument? Please check here{https://lbs.amap.com/faq/account/key
 Support JSON and XML. The default value is JSON.}
 
 \item{to_table}{Optional.\cr
-Transform response content to tibble.}
+Transform response content to data.table.}
 
 \item{keep_bad_request}{Optional.\cr
 Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request}
 }
 \value{
-Returns a JSON, XML or Tibble of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/convert} for more information.
+Returns a JSON, XML or data.table of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/convert} for more information.
 }
 \description{
 \Sexpr[results=rd]{lifecycle::badge("experimental")}
@@ -57,7 +57,7 @@ library(amapGeocode)
 # the token should be set by `option(amap_key = 'key')`
 # or set by key argument in `convertCoord()`
 
-# get result of converted coordinate system as a tibble
+# get result of converted coordinate system as a data.table
 convertCoord('116.481499,39.990475',coordsys = 'gps')
 # get result of converted coordinate system as a XML
 convertCoord('116.481499,39.990475',coordsys = 'gps', to_table = FALSE)

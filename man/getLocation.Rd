@@ -71,13 +71,13 @@ When `extensions = all`, this argument makes sense. \cr
 `homeorcorp=2`, corporation related POIs are first, by default.\cr}
 
 \item{to_table}{Optional.\cr
-Transform response content to tibble.}
+Transform response content to a table.}
 
 \item{keep_bad_request}{Optional.\cr
 Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request}
 }
 \value{
-Returns a JSON, XML or Tibble of results containing detailed reverse geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
+Returns a JSON, XML or data.table of results containing detailed reverse geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
 }
 \description{
 Get location from coordinate
@@ -90,7 +90,7 @@ library(amapGeocode)
 # the token should be set by `option(amap_key = 'key')`
 # or set by key argument in `getLocation()`
 
-# Get reverse-geocode as a tibble
+# Get reverse-geocode as a table
 getLocation(104.043284, 30.666864)
 # Get reverse-geocode as a XML
 getLocation('104.043284, 30.666864', output = 'XML')

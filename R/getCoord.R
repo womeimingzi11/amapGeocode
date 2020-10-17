@@ -70,7 +70,7 @@ getCoord <-
     } else {
       # if there is multiple addresses, use getCoord.individual by laapply
       ls_queries <-
-        purrr::map(
+        lapply(
           address,
           getCoord.individual,
           key = key,

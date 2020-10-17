@@ -11,7 +11,7 @@ extractAdmin(res)
 \item{res}{Response from getAdmin.}
 }
 \value{
-Returns a tibble which extracts detailed subordinate administrative region information from results of getCoord. See \url{https://lbs.amap.com/api/webservice/guide/api/district} for more information.
+Returns a data.table which extracts detailed subordinate administrative region information from results of getCoord. See \url{https://lbs.amap.com/api/webservice/guide/api/district} for more information.
 }
 \description{
 Get Subordinate Administrative Region from getAdmin request
@@ -28,7 +28,7 @@ library(amapGeocode)
 
 #Get subordinate administrative regions as a XML
 getAdmin('Sichuan Province', output = 'XML') \%>\%
-   # extract subordinate administrative regions as a tibble
+   # extract subordinate administrative regions as a data.table
    extractAdmin()
 }
 

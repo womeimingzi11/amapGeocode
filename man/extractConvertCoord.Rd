@@ -11,7 +11,7 @@ extractConvertCoord(res)
 Response from convertCoord.}
 }
 \value{
-Returns a tibble which extracts converted coordinate points from request of convertCoord. See \url{https://lbs.amap.com/api/webservice/guide/api/convert} for more information.
+Returns a data.table which extracts converted coordinate points from request of convertCoord. See \url{https://lbs.amap.com/api/webservice/guide/api/convert} for more information.
 }
 \description{
 Extract converted coordinate points from convertCoord request
@@ -27,7 +27,7 @@ library(amapGeocode)
 
 # get result of converted coordinate system as a XML
 convertCoord('116.481499,39.990475',coordsys = 'gps', to_table = FALSE) \%>\%
-   # extract result of converted coordinate system as a tibble
+   # extract result of converted coordinate system as a data.table
    extractConvertCoord()
 }
 

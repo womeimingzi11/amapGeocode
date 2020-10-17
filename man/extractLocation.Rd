@@ -11,7 +11,7 @@ extractLocation(res)
 Response from getLocation.}
 }
 \value{
-Returns a tibble which extracts detailed location information from results of getLocation. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
+Returns a data.table which extracts detailed location information from results of getLocation. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
 }
 \description{
 Extract location from coordinate request
@@ -26,7 +26,7 @@ library(amapGeocode)
 # or set by key argument in `getLocation()`
 # Get reverse-geocode as a XML
 getLocation(104.043284, 30.666864, output = 'XML') \%>\%
-   # extract reverse-geocode regions as a tibble
+   # extract reverse-geocode regions as a table
    extractLocation()
 }
 

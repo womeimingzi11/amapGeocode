@@ -71,13 +71,13 @@ When `extensions = all`, this argument makes sense. \cr
 `homeorcorp=2`, corporation related POIs are first, by default.\cr}
 
 \item{to_table}{Optional.\cr
-Transform response content to tibble.}
+Transform response content to table}
 
 \item{keep_bad_request}{Optional.\cr
 Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request}
 }
 \value{
-Returns a JSON, XML or Tibble of results containing detailed reverse geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
+Returns a JSON, XML or data.table of results containing detailed reverse geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
 }
 \description{
 Get an individual location from coordinate
