@@ -42,18 +42,12 @@ as an input and `getLocation()` which takes two numeric longitude and
 latitude values as inputs.
 
 The `getCoord()` function extracts coordinate information from input
-character location name and output the result as `tibble`, `XML` or
+character location name and output the result as `data.table`, `XML` or
 `JSON (as list)`. And the `getLocation()` function extracts location
 information from input numeric longitude and latitude values and output
-the result as `tibble`, `XML` or `JSON (as list)`. With the `tibble`
-format as output, it’s highly readable and easy to be used to `tidy`
-workflow.
-
-This project is still in a very early stage and only the geocoding
-function has been developed. So all the functions may change or
-supersede, so it’s not recommended to use this package in production
-environment till it goes to stable stage. When will the stable stage
-come? It depends my graduate progress.
+the result as `data.table`, `XML` or `JSON (as list)`. With the
+`data.table` format as output, it’s highly readable and can be used as
+an alternative of `data.frame`
 
 amapGeocode is inspired by
 [baidumap](https://github.com/badbye/baidumap) and
@@ -116,12 +110,12 @@ knitr::kable(res)
 | 104.0439 | 30.66629 | 四川省成都市金牛区成都中医药大学十二桥校区 | 中国      | 四川省      | 成都市  | 金牛区      | NA       | NA     | NA     | 028      | 510106 |
 
 The response we get from **AutoNavi Map API** is **JSON** or **XML**.
-For readability, we transform them to `tibble`, [a modern reimagining of
-the data.frame](https://tibble.tidyverse.org/), by setting `to_table`
-argument as `TRUE` by default.
+For readability, we transform them to
+[`data.table`](https://CRAN.R-project.org/package=data.table), by
+setting `to_table` argument as `TRUE` by default.
 
-If anyone want to get response as **JSON** or **XML**, please set
-`to_table = TRUE`. If anyone want to extract information from **JSON**
+If anyone want to get response as **JSON** or **XML**, just set
+`to_table = FALSE`. If anyone want to extract information from **JSON**
 or **XML**. The result can further be parsed by `extractCoord`.
 
 ``` r
@@ -138,7 +132,7 @@ res
 #> [5] <geocodes type="list">\n  <geocode>\n    <formatted_address>四川省成都市金牛区成都中医 ...
 ```
 
-`extractCoord` is created to get result as tibble.
+`extractCoord` is created to get a result as a data.table.
 
 ``` r
 tb <- 
@@ -164,15 +158,6 @@ knitr::kable(res)
 | :------------------------------------------ | :------ | :------- | :--- | :------- | :------- | :------- | :----------- |
 | 四川省成都市金牛区西安路街道成都中医药大学附属医院腹泻门诊成都中医药大学(十二桥校区) | 中国      | 四川省      | 成都市  | 金牛区      | 西安路街道    | 028      | 510106024000 |
 
-The response we get from **AutoNavi Map API** is **JSON** or **XML**.
-For readability, we transform them to `tibble`, [a modern reimagining of
-the data.frame](https://tibble.tidyverse.org/), by setting `to_table`
-argument as `TRUE` by default.
-
-If anyone want to get response as **JSON** or **XML**, please set
-`to_table = TRUE`. If anyone want to extract information from **JSON**
-or **XML**. The result can further be parsed by `extractLocation`.
-
 ``` r
 res <-
    getLocation(104.043284, 30.666864, output = 'XML',to_table = FALSE)
@@ -185,7 +170,7 @@ res
 #> [4] <regeocode>\n  <formatted_address>四川省成都市金牛区西安路街道成都中医药大学附属医院腹泻门诊成都中医药大学(十二 ...
 ```
 
-`extractLocation` is created to get result as tibble.
+`extractLocation` is created to get a result as a data.table.
 
 ``` r
 tb <- 
@@ -205,8 +190,8 @@ There is a difference between getAdmin and other function, no matter the
 `to_table` argument is `TRUE` or `FALSE` the result won’t be a jointed
 table by different parent administrative region. For example, with the
 `to_table = TRUE`, all the lower level administrative region of Province
-A and Province B will be binded as one tibble, respectively. But the
-tibble province A and tibble province B won’t be binded further.
+A and Province B will be binded as one data.table, respectively. But the
+table of province A and table of province B won’t be binded further.
 
 This is becasue, this function support different administrative region
 levels, bind their result is nonsense.
@@ -302,15 +287,6 @@ knitr::kable(res)
 
 </table>
 
-The response we get from **AutoNavi Map API** is **JSON** or **XML**.
-For readability, we transform them to `tibble`, [a modern reimagining of
-the data.frame](https://tibble.tidyverse.org/), by setting `to_table`
-argument as `TRUE` by default.
-
-If anyone want to get response as **JSON** or **XML**, please set
-`to_table = TRUE`. If anyone want to extract information from **JSON**
-or **XML**. The result can further be parsed by `extractLocation`.
-
 ``` r
 res <-
    getAdmin('四川省', output = 'XML', to_table = FALSE)
@@ -386,15 +362,6 @@ knitr::kable(res)
 | -------: | -------: |
 | 116.4876 | 39.99175 |
 
-The response we get from **AutoNavi Map API** is **JSON** or **XML**.
-For readability, we transform them to `tibble`, [a modern reimagining of
-the data.frame](https://tibble.tidyverse.org/), by setting `to_table`
-argument as `TRUE` by default.
-
-If anyone want to get response as **JSON** or **XML**, please set
-`to_table = TRUE`. If anyone want to extract information from **JSON**
-or **XML**. The result can further be parsed by `extract`.
-
 ``` r
 res <-
   convertCoord('116.481499,39.990475',coordsys = 'gps', to_table = FALSE)
@@ -412,7 +379,7 @@ res
 #> [1] "116.487585177952,39.991754014757"
 ```
 
-`extractConvertCoord` is created to get result as tibble.
+`extractConvertCoord` is created to get result as data.table.
 
 ``` r
 tb <- 

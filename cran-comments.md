@@ -1,5 +1,5 @@
 ## Test environments
-* local R installation, R 4.0.2
+* local R installation, R 4.1.0 devel
 * ubuntu 16.04 (on travis-ci), R 4.0.2
 * win-builder (devel)
 
@@ -9,7 +9,9 @@
 > unable to verify current time
 
 * An upgrade:
-  1. add `getAdmin` and `extractAdmin` functions
-  2. add `convertCoord` and `extractConvertCoord` functions
-  3. revise the DESCRIPTION to match the request of CRAN
-  4. add batch process ability
+
+  1. Replace the class of result from `tibble` to `data.table`
+  
+  2. Remove some package dependencies
+  
+  3. Some code improvements
