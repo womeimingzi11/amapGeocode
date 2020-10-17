@@ -39,12 +39,12 @@
 #' `homeorcorp=1`, home related POIs are first, by default.\cr
 #' `homeorcorp=2`, corporation related POIs are first, by default.\cr
 #' @param to_table Optional.\cr
-#' Transform response content to tibble.
+#' Transform response content to a table.
 #' @param keep_bad_request Optional.\cr
 #' Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request
 #'
 #' @return
-#' Returns a JSON, XML or Tibble of results containing detailed reverse geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
+#' Returns a JSON, XML or data.table of results containing detailed reverse geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
 #' @export
 #' @examples
 #' \dontrun{
@@ -54,7 +54,7 @@
 #' # the token should be set by `option(amap_key = 'key')`
 #' # or set by key argument in `getLocation()`
 #'
-#' # Get reverse-geocode as a tibble
+#' # Get reverse-geocode as a table
 #' getLocation(104.043284, 30.666864)
 #' # Get reverse-geocode as a XML
 #' getLocation('104.043284, 30.666864', output = 'XML')
@@ -115,9 +115,9 @@ getLocation <-
           to_table = to_table,
           keep_bad_request = keep_bad_request
         )
-      # detect return list of raw requests or `bind_rows` parsed tibble
+      # detect return list of raw requests or `rbindlist` parsed data.table
       if (isTRUE(to_table)) {
-        return(dplyr::bind_rows(ls_queries))
+        return(data.table::rbindlist(ls_queries))
       } else {
         return(ls_queries)
       }
@@ -165,12 +165,12 @@ getLocation <-
 #' `homeorcorp=1`, home related POIs are first, by default.\cr
 #' `homeorcorp=2`, corporation related POIs are first, by default.\cr
 #' @param to_table Optional.\cr
-#' Transform response content to tibble.
+#' Transform response content to table
 #' @param keep_bad_request Optional.\cr
 #' Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request
 #'
 #' @return
-#' Returns a JSON, XML or Tibble of results containing detailed reverse geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
+#' Returns a JSON, XML or data.table of results containing detailed reverse geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
 getLocation.individual <-
   function(lng,
            lat,
@@ -231,7 +231,7 @@ getLocation.individual <-
     res_content <-
       httr::content(res)
 
-    # Transform response to tibble or return directly -------------------------
+    # Transform response to table or return directly -------------------------
 
     if (isTRUE(to_table)) {
       return(extractLocation(res_content))
@@ -246,7 +246,7 @@ getLocation.individual <-
 #' Response from getLocation.
 #'
 #' @return
-#' Returns a tibble which extracts detailed location information from results of getLocation. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
+#' Returns a data.table which extracts detailed location information from results of getLocation. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
 #' @export
 #' @examples
 #' \dontrun{
@@ -259,7 +259,7 @@ getLocation.individual <-
 #
 #' # Get reverse-geocode as a XML
 #' getLocation(104.043284, 30.666864, output = 'XML') %>%
-#'    # extract reverse-geocode regions as a tibble
+#'    # extract reverse-geocode regions as a table
 #'    extractLocation()
 #' }
 #'
@@ -267,9 +267,9 @@ getLocation.individual <-
 
 extractLocation <- function(res) {
   # Detect what kind of response will go to parse ------------------------------
-  # If there is a bad request, return a tibble directly.
+  # If there is a bad request, return a table directly.
   if (length(res) == 0) {
-    tibble::tibble(
+    data.table::data.table(
       country = 'Bad Request',
       province = NA,
       city = NA,
@@ -312,7 +312,7 @@ extractLocation <- function(res) {
       length(regeocode$formatted_address)
 
     if (obj_count == 0) {
-      tibble::tibble(
+      data.table::data.table(
         country = NA,
         province = NA,
         city = NA,
@@ -341,9 +341,9 @@ extractLocation <- function(res) {
                             addressComponent[[x]])
                }) %>%
         as.data.frame()
-      tibble::tibble(formatted_address = regeocode$formatted_address[[1]],
-                     ls_var) %>%
-        # set name of tibble
+      data.table::data.table(formatted_address = regeocode$formatted_address[[1]],
+                             ls_var) %>%
+        # set name of table
         stats::setNames(c('formatted_address', var_name))
     }
   }

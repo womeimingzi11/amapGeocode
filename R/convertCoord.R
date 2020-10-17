@@ -20,12 +20,12 @@
 #'  Output Data Structure. \cr
 #' Support JSON and XML. The default value is JSON.
 #' @param to_table Optional.\cr
-#' Transform response content to tibble.
+#' Transform response content to data.table.
 #' @param keep_bad_request Optional.\cr
 #' Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request
 #'
 #' @return
-#' Returns a JSON, XML or Tibble of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/convert} for more information.
+#' Returns a JSON, XML or data.table of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/convert} for more information.
 #' @export
 #' @examples
 #' \dontrun{
@@ -35,7 +35,7 @@
 #' # the token should be set by `option(amap_key = 'key')`
 #' # or set by key argument in `convertCoord()`
 #'
-#' # get result of converted coordinate system as a tibble
+#' # get result of converted coordinate system as a data.table
 #' convertCoord('116.481499,39.990475',coordsys = 'gps')
 #' # get result of converted coordinate system as a XML
 #' convertCoord('116.481499,39.990475',coordsys = 'gps', to_table = FALSE)
@@ -76,9 +76,9 @@ convertCoord <-
           to_table = to_table,
           keep_bad_request = keep_bad_request
         )
-      # detect return list of raw requests or `bind_rows` parsed tibble
+      # detect return list of raw requests or `rbindlist` parsed data.table
       if (isTRUE(to_table)) {
-          return(dplyr::bind_rows(ls_queries))
+        return(data.table::rbindlist(ls_queries))
       } else {
         return(ls_queries)
       }
@@ -102,12 +102,12 @@ convertCoord <-
 #'  Output Data Structure. \cr
 #' Support JSON and XML. The default value is JSON.
 #' @param to_table Optional.\cr
-#' Transform response content to tibble.
+#' Transform response content to data.table.
 #' @param keep_bad_request Optional.\cr
 #' Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request
 #'
 #' @return
-#' Returns a JSON, XML or Tibble of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/convert} for more information.
+#' Returns a JSON, XML or data.table of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/convert} for more information.
 convertCoord.individual <- function(
   locations,
   key = NULL,
@@ -156,7 +156,7 @@ convertCoord.individual <- function(
   res_content <-
     httr::content(res)
 
-  # Transform response to tibble or return directly -------------------------
+  # Transform response to data.table or return directly -------------------------
 
   if (isTRUE(to_table)) {
     return(extractConvertCoord(res_content))
@@ -170,7 +170,7 @@ convertCoord.individual <- function(
 #' Response from convertCoord.
 #'
 #' @return
-#' Returns a tibble which extracts converted coordinate points from request of convertCoord. See \url{https://lbs.amap.com/api/webservice/guide/api/convert} for more information.
+#' Returns a data.table which extracts converted coordinate points from request of convertCoord. See \url{https://lbs.amap.com/api/webservice/guide/api/convert} for more information.
 #'
 #' @export
 #'
@@ -185,16 +185,16 @@ convertCoord.individual <- function(
 #'
 #' # get result of converted coordinate system as a XML
 #' convertCoord('116.481499,39.990475',coordsys = 'gps', to_table = FALSE) %>%
-#'    # extract result of converted coordinate system as a tibble
+#'    # extract result of converted coordinate system as a data.table
 #'    extractConvertCoord()
 #' }
 #'
 #' @seealso \code{\link{convertCoord}}
 extractConvertCoord <- function(res) {
   # Detect what kind of response will go to parse ------------------------------
-  # If there is a bad request, return a tibble directly.
+  # If there is a bad request, return a data.table directly.
   if (length(res) == 0) {
-    tibble::tibble(
+    data.table::data.table(
       lng = 'Bad Request',
       lat = 'Bad Request'
     )
@@ -223,7 +223,7 @@ extractConvertCoord <- function(res) {
   location_in_coord =
     # Internal Function from Helpers, no export
     str_loc_to_num_coord(res$locations)
-  tibble::tibble(
+  data.table::data.table(
     lng = location_in_coord[[1]],
     lat = location_in_coord[[2]]
   )}

@@ -21,11 +21,11 @@
 #' The value of callback is the customized function. Only available with JSON output.
 #' If you don't understand, it means you don't need it, just like me.
 #' @param to_table Optional.\cr
-#' Transform response content to tibble.
+#' Transform response content to data.table.
 #' @param keep_bad_request Optional.\cr
 #' Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request
 #' @return
-#' Returns a JSON, XML or Tibble of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
+#' Returns a JSON, XML or data.table of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
 #' @export
 #'
 #' @examples
@@ -36,7 +36,7 @@
 #' # the token should be set by `option(amap_key = 'key')`
 #' # or set by key argument in `getCoord()`
 #'
-#' # Get geocode as a tibble
+#' # Get geocode as a data.table
 #' getCoord('IFS Chengdu')
 #' # Get geocode as a XML
 #' getCoord('IFS Chengdu', output = 'XML')
@@ -81,9 +81,9 @@ getCoord <-
           to_table = to_table,
           keep_bad_request = keep_bad_request
         )
-      # detect return list of raw requests or `bind_rows` parsed tibble
+      # detect return list of raw requests or `rbindlist` parsed data.table
       if (isTRUE(to_table)) {
-        return(dplyr::bind_rows(ls_queries))
+        return(data.table::rbindlist(ls_queries))
       } else {
         return(ls_queries)
       }
@@ -113,11 +113,11 @@ getCoord <-
 #' The value of callback is the customized function. Only available with JSON output.
 #' If you don't understand, it means you don't need it, just like me.
 #' @param to_table Optional.\cr
-#' Transform response content to tibble.\cr
+#' Transform response content to data.table.\cr
 #' @param keep_bad_request Optional.\cr
 #' Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request
 #' @return
-#' Returns a JSON, XML or Tibble of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
+#' Returns a JSON, XML or data.table of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
 getCoord.individual <-
   function(address,
            key = NULL,
@@ -169,7 +169,7 @@ getCoord.individual <-
     res_content <-
       httr::content(res)
 
-    # Transform response to tibble or return directly -------------------------
+    # Transform response to data.table or return directly -------------------------
 
     if (isTRUE(to_table)) {
       return(extractCoord(res_content))
@@ -184,7 +184,7 @@ getCoord.individual <-
 #' Response from getCoord.
 #'
 #' @return
-#' Returns a tibble which extracts detailed coordinate information from results of getCoord. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
+#' Returns a data.table which extracts detailed coordinate information from results of getCoord. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
 #' @export
 #'
 #' @examples
@@ -198,16 +198,16 @@ getCoord.individual <-
 #'
 #' # Get geocode as a XML
 #' getCoord('IFS Chengdu', output = 'XML') %>%
-#'    # extract geocode regions as a tibble
+#'    # extract geocode regions as a data.table
 #'    extractCoord()
 #' }
 #'
 #' @seealso \code{\link{getCoord}}
 
 extractCoord <- function(res) {
-  # If there is a bad request, return a tibble directly.
+  # If there is a bad request, return a data.table directly.
   if (length(res) == 0) {
-    tibble::tibble(
+    data.table::data.table(
       lng = NA,
       lat = NA,
       formatted_address = 'Bad Request',
@@ -244,7 +244,7 @@ extractCoord <- function(res) {
       res$count
     # Return a row with all NA
     if (obj_count == 0) {
-      tibble::tibble(
+      data.table::data.table(
         lng = NA,
         lat = NA,
         formatted_address = NA,
@@ -287,10 +287,10 @@ extractCoord <- function(res) {
                        }) %>%
         as.data.frame()
 
-      tibble::tibble(lng = location_in_coord[[1]],
-                     lat = location_in_coord[[2]],
-                     ls_var) %>%
-        # set name of tibble
+      data.table::data.table(lng = location_in_coord[[1]],
+                             lat = location_in_coord[[2]],
+                             ls_var) %>%
+        # set name of
         stats::setNames(c('lng', 'lat', var_name))
     }
   }

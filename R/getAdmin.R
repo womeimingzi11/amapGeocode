@@ -35,7 +35,7 @@
 #'  Output Data Structure. \cr
 #' Support JSON and XML. The default value is JSON.
 #' @param to_table Optional.\cr
-#' Transform response content to tibble.
+#' Transform response content to data.table.
 #' @param keep_bad_request Optional.\cr
 #' Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request
 #' @return
@@ -50,7 +50,7 @@
 #' # the token should be set by `option(amap_key = 'key')`
 #' # or set by key argument in `getAdmin()`
 #'
-#' # Get subordinate administrative regions as a tibble
+#' # Get subordinate administrative regions as a data.table
 #' getAdmin('Sichuan Province')
 #' # Get subordinate administrative regions as a XML
 #' getCoord('Sichuan Province', output = 'XML')
@@ -102,14 +102,14 @@ getAdmin <-
           to_table = to_table,
           keep_bad_request = keep_bad_request
         )
-      # here, getAdmin doesn't support bind_rows
-      # because what the `getAdmin.individual` get general is a tibble
-      # `bind_rows` has the potential probability to confuse the dimension of tibbles
+      # here, getAdmin doesn't support bind rows
+      # because what the `getAdmin.individual` get general is a data.table
+      # `rbindlist` has the potential probability to confuse the dimension of data.tables
       return(ls_queries)
     }
   }
 
-#' Get an individual tibble of Subordinate Administrative Regions from location
+#' Get an individual data.table of Subordinate Administrative Regions from location
 #'
 #' @param keywords Required.\cr
 #' Search keywords. \cr
@@ -146,7 +146,7 @@ getAdmin <-
 #'  Output Data Structure. \cr
 #' Support JSON and XML. The default value is JSON.
 #' @param to_table Optional.\cr
-#' Transform response content to tibble.
+#' Transform response content to data.table.
 #' @param keep_bad_request Optional.\cr
 #' Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request
 #' @return
@@ -204,7 +204,7 @@ getAdmin.individual <-
     res_content <-
       httr::content(res)
 
-    # Transform response to tibble or return directly -------------------------
+    # Transform response to data.table or return directly -------------------------
 
     if (isTRUE(to_table)) {
       return(extractAdmin(res_content))
@@ -220,7 +220,7 @@ getAdmin.individual <-
 #' Response from getAdmin.
 #'
 #' @return
-#' Returns a tibble which extracts detailed subordinate administrative region information from results of getCoord. See \url{https://lbs.amap.com/api/webservice/guide/api/district} for more information.
+#' Returns a data.table which extracts detailed subordinate administrative region information from results of getCoord. See \url{https://lbs.amap.com/api/webservice/guide/api/district} for more information.
 #' @export
 #'
 #' @examples
@@ -234,7 +234,7 @@ getAdmin.individual <-
 #'
 #' #Get subordinate administrative regions as a XML
 #' getAdmin('Sichuan Province', output = 'XML') %>%
-#'    # extract subordinate administrative regions as a tibble
+#'    # extract subordinate administrative regions as a data.table
 #'    extractAdmin()
 #' }
 #'
@@ -243,9 +243,9 @@ getAdmin.individual <-
 extractAdmin <- function(res) {
   # Detect what kind of response will go to parse ------------------------------
 
-  # If there is a bad request, return a tibble directly.
+  # If there is a bad request, return a data.table directly.
   if (length(res) == 0) {
-    tibble::tibble(
+    data.table::data.table(
       lng = NA,
       lat = NA,
       name = 'Bad Request',
@@ -275,7 +275,7 @@ extractAdmin <- function(res) {
       res$count
 
     if (obj_count == 0) {
-      tibble::tibble(
+      data.table::data.table(
         lng = NA,
         lat = NA,
         name = NA,
@@ -294,25 +294,24 @@ extractAdmin <- function(res) {
           'citycode',
           'adcode')
 
-        lapply(sub_res$districts, function(district) {
-          # parse lng and lat from location (district$center)
-          location_in_coord =
-            # Internal Function from Helpers, no export
-            str_loc_to_num_coord(district$center)
-          # parse other information
-          ls_var <-
-            lapply(var_name, function(var_n) {
-              ifelse(sjmisc::is_empty(district[[var_n]]), NA, district[[var_n]])
-            }) %>%
-            as.data.frame() %>%
-            stats::setNames(var_name)
-          # assemble information and coordinate
-          tibble::tibble(lng = location_in_coord[[1]],
-                         lat = location_in_coord[[2]],
-                         ls_var)
-        }) %>%
-        dplyr::bind_rows()
-
+      lapply(sub_res$districts, function(district) {
+        # parse lng and lat from location (district$center)
+        location_in_coord =
+          # Internal Function from Helpers, no export
+          str_loc_to_num_coord(district$center)
+        # parse other information
+        ls_var <-
+          lapply(var_name, function(var_n) {
+            ifelse(sjmisc::is_empty(district[[var_n]]), NA, district[[var_n]])
+          }) %>%
+          as.data.frame() %>%
+          stats::setNames(var_name)
+        # assemble information and coordinate
+        data.table::data.table(lng = location_in_coord[[1]],
+                               lat = location_in_coord[[2]],
+                               ls_var)
+      }) %>%
+        data.table::rbindlist()
     } else {
       'Not support current extraction task.'
     }

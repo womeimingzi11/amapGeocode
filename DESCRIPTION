@@ -15,17 +15,16 @@ Description: Getting and parsing data of location geocode/reverse-geocode and ad
 License: MIT + file LICENSE
 URL: https://github.com/womeimingzi11/amapGeocode
 Imports: 
-    dplyr,
     httr,
     jsonlite,
     magrittr,
     sjmisc,
     stats,
     stringr,
-    tibble,
     xml2,
     purrr,
-    lifecycle
+    lifecycle,
+    data.table
 Suggests: 
     knitr,
     rmarkdown,
