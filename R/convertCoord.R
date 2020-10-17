@@ -78,9 +78,7 @@ convertCoord <-
         )
       # detect return list of raw requests or `bind_rows` parsed tibble
       if (isTRUE(to_table)) {
-        ls_queries %>%
-          dplyr::bind_rows() %>%
-          return()
+          return(dplyr::bind_rows(ls_queries))
       } else {
         return(ls_queries)
       }
@@ -206,7 +204,9 @@ extractConvertCoord <- function(res) {
   if (isTRUE(xml_detect)) {
     # get the number of retruned address
     res <-
-      res %>% xml2::as_list() %>% '$'('response')
+      xml2::as_list(res)
+    res <-
+      res$response
   }
 
   # check the status of request
@@ -221,9 +221,8 @@ extractConvertCoord <- function(res) {
 
   # parse lng and lat from location
   location_in_coord =
-    res$locations %>%
     # Internal Function from Helpers, no export
-    str_loc_to_num_coord()
+    str_loc_to_num_coord(res$locations)
   tibble::tibble(
     lng = location_in_coord[[1]],
     lat = location_in_coord[[2]]

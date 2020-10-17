@@ -117,9 +117,7 @@ getLocation <-
         )
       # detect return list of raw requests or `bind_rows` parsed tibble
       if (isTRUE(to_table)) {
-        ls_queries %>%
-          dplyr::bind_rows() %>%
-          return()
+        return(dplyr::bind_rows(ls_queries))
       } else {
         return(ls_queries)
       }
@@ -236,8 +234,7 @@ getLocation.individual <-
     # Transform response to tibble or return directly -------------------------
 
     if (isTRUE(to_table)) {
-      extractLocation(res_content) %>%
-        return()
+      return(extractLocation(res_content))
     } else {
       return(res_content)
     }
@@ -288,7 +285,9 @@ extractLocation <- function(res) {
     if (isTRUE(xml_detect)) {
       # get the number of retruned address
       res <-
-        res %>% xml2::as_list() %>% '$'('response')
+        xml2::as_list(res)
+      res <-
+        res$response
     }
 
     # check the status of request
@@ -310,8 +309,7 @@ extractLocation <- function(res) {
     # due to this, use the number of formatted_address
     # as the count of queries.
     obj_count <-
-      regeocode$formatted_address %>%
-      length()
+      length(regeocode$formatted_address)
 
     if (obj_count == 0) {
       tibble::tibble(

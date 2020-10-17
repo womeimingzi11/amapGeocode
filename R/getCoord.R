@@ -264,9 +264,8 @@ extractCoord <- function(res) {
         res$geocodes[[1]]
       # parse lng and lat from location
       location_in_coord =
-        geocode$location %>%
         # Internal Function from Helpers, no export
-        str_loc_to_num_coord()
+        str_loc_to_num_coord(geocode$location)
       # set parameter name
       var_name <-
         c(

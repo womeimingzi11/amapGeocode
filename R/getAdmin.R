@@ -260,7 +260,9 @@ extractAdmin <- function(res) {
     if (isTRUE(xml_detect)) {
       # get the number of retruned address
       res <-
-        res %>% xml2::as_list() %>% '$'('response')
+        xml2::as_list(res)
+      res <-
+        res$response
     }
 
     # detect whether request succeed or not
@@ -292,14 +294,11 @@ extractAdmin <- function(res) {
           'citycode',
           'adcode')
 
-
-      sub_res$districts %>%
-        lapply(function(district) {
+        lapply(sub_res$districts, function(district) {
           # parse lng and lat from location (district$center)
           location_in_coord =
-            district$center %>%
             # Internal Function from Helpers, no export
-            str_loc_to_num_coord()
+            str_loc_to_num_coord(district$center)
           # parse other information
           ls_var <-
             lapply(var_name, function(var_n) {
