@@ -116,7 +116,8 @@ convertCoord.individual <- function(
   coordsys = NULL,
   sig = NULL,
   output = NULL,
-  to_table = TRUE
+  to_table = TRUE,
+  keep_bad_request = TRUE
 ) {
   # Arguments check ---------------------------------------------------------
   # Check if key argument is set or not

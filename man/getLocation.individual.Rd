@@ -16,7 +16,8 @@ getLocation.individual(
   output = NULL,
   callback = NULL,
   homeorcorp = 0,
-  to_table = TRUE
+  to_table = TRUE,
+  keep_bad_request = TRUE
 )
 }
 \arguments{
