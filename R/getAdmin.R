@@ -38,6 +38,11 @@
 #' Transform response content to data.table.
 #' @param keep_bad_request Optional.\cr
 #' Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request
+#' @param max_core Optional.\cr
+#' A threshold of max cores for parallel operation. There is no need to set a `max_core` generally.
+#' But for some extreme high performance case, like `AMD Threadripper` and `Intel Xeon`,
+#' super multiple-core CPU will meet the limitation of queries per second.
+#'
 #' @return
 #' Returns a JSON or XML of results containing detailed subordinate administrative region information. See \url{https://lbs.amap.com/api/webservice/guide/api/district} for more information.
 #' @export
@@ -69,7 +74,8 @@ getAdmin <-
            callback = NULL,
            output = NULL,
            to_table = TRUE,
-           keep_bad_request = TRUE) {
+           keep_bad_request = TRUE,
+           max_core = NULL) {
     if (length(keywords) == 1) {
       # if there is one address, use getCoord.individual directly
       getAdmin.individual(
@@ -86,9 +92,12 @@ getAdmin <-
         keep_bad_request = keep_bad_request
       )
     } else {
-      # if there is multiple addresses, use getCoord.individual by laapply
+      # Create local parallel cluster
+      cluster <- parallel_cluster_maker(max_core = max_core)
+      # if there is multiple addresses, use getAdmin.individual by parLapply
       ls_queries <-
-        lapply(
+        parallel::parLapply(
+          cl = cluster,
           keywords,
           getAdmin.individual,
           key = key,
@@ -102,6 +111,8 @@ getAdmin <-
           to_table = to_table,
           keep_bad_request = keep_bad_request
         )
+      # stop cluster
+      parallel::stopCluster(cluster)
       # here, getAdmin doesn't support bind rows
       # because what the `getAdmin.individual` get general is a data.table
       # `rbindlist` has the potential probability to confuse the dimension of data.tables

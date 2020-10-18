@@ -1,6 +1,10 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+<!-- Place this tag in your head or just before your close body tag. -->
+
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
 # [amapGeocode](https://github.com/womeimingzi11/amapGeocode)
 
 <!-- badges: start -->
@@ -52,7 +56,7 @@ an alternative of `data.frame`
 amapGeocode is inspired by
 [baidumap](https://github.com/badbye/baidumap) and
 [baidugeo](https://github.com/ChrisMuir/baidugeo). If you want to choose
-the Baidu Map API, these packages are good choice.
+the Baidu Map API, these packages are good choices.
 
 However, AutoNavi has significant high precise, in my case, the Results
 from Baidu were unsatisfactory.
@@ -402,9 +406,14 @@ what you do in other packages.
 
 ### What about parallel?
 
-I have changed my mind\! It should come someday. ~~Unfortunately, there
-is no plan to add internal parallel support to amapGeocode. Here are
-some reasons:~~
+Yes\! The parallel operation is automatic.
+
+However, because more testing is needed, there may be some potential
+problems. Feel free to open an
+<a class="github-button" href="https://github.com/womeimingzi11/amapGeocode/issues" data-color-scheme="no-preference: light; light: light; dark: dark;" data-size="large" aria-label="Issue womeimingzi11/amapGeocode on GitHub">Issue</a>！
+
+~~Unfortunately, there is no plan to add internal parallel support to
+amapGeocode. Here are some reasons:~~
 
 ~~1. The aim of amapGeocode is to create a package which is easy to use.
 Indeed, the parallel operation can make many times performance
@@ -429,7 +438,7 @@ you are welcomed to make the parallel operations manually.~~
 It’s very common for API upgrades to make the downstream application,
 like amapGeocode, to be unavailable. Feel free to [let me
 know](mailto://chenhan28@gmail.com) once it’s broken or just open an
-issue.
+<a class="github-button" href="https://github.com/womeimingzi11/amapGeocode/issues" data-color-scheme="no-preference: light; light: light; dark: dark;" data-size="large" aria-label="Issue womeimingzi11/amapGeocode on GitHub">Issue</a>.
 
 ## Acknowledgements
 

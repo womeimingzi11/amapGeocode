@@ -17,7 +17,8 @@ getLocation(
   callback = NULL,
   homeorcorp = 0,
   to_table = TRUE,
-  keep_bad_request = TRUE
+  keep_bad_request = TRUE,
+  max_core = NULL
 )
 }
 \arguments{
@@ -75,6 +76,11 @@ Transform response content to a table.}
 
 \item{keep_bad_request}{Optional.\cr
 Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request}
+
+\item{max_core}{Optional.\cr
+A threshold of max cores for parallel operation. There is no need to set a `max_core` generally.
+But for some extreme high performance case, like `AMD Threadripper` and `Intel Xeon`,
+super multiple-core CPU will meet the limitation of queries per second.}
 }
 \value{
 Returns a JSON, XML or data.table of results containing detailed reverse geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.

@@ -1,3 +1,5 @@
+# amapGeocode 0.5.0
+
 # amapGeocode 0.4.0
 * Return bad request as NA tibble
 * Replace `tibble` by `data.table`

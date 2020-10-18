@@ -42,6 +42,10 @@
 #' Transform response content to a table.
 #' @param keep_bad_request Optional.\cr
 #' Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request
+#' @param max_core Optional.\cr
+#' A threshold of max cores for parallel operation. There is no need to set a `max_core` generally.
+#' But for some extreme high performance case, like `AMD Threadripper` and `Intel Xeon`,
+#' super multiple-core CPU will meet the limitation of queries per second.
 #'
 #' @return
 #' Returns a JSON, XML or data.table of results containing detailed reverse geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
@@ -75,7 +79,8 @@ getLocation <-
            callback = NULL,
            homeorcorp = 0,
            to_table = TRUE,
-           keep_bad_request = TRUE) {
+           keep_bad_request = TRUE,
+           max_core = NULL) {
     if (length(lng) != length(lat)) {
       stop('The numbers of Longitude and Latitude are mismatched')
     }
@@ -97,9 +102,12 @@ getLocation <-
         keep_bad_request = keep_bad_request
       )
     } else {
+      # Create local parallel cluster
+      cluster <- parallel_cluster_maker(max_core = max_core)
       # if there is multiple addresses, use getCoord.individual by laapply
       ls_queries <-
-        mapply(
+        parallel::clusterMap(
+          cl = cluster,
           getLocation.individual,
           lng,
           lat,
@@ -120,6 +128,8 @@ getLocation <-
           #  to merge all elements. rbindlist will be used later
           SIMPLIFY = FALSE
         )
+      # stop cluster
+      parallel::stopCluster(cluster)
       # detect return list of raw requests or `rbindlist` parsed data.table
       if (isTRUE(to_table)) {
         return(data.table::rbindlist(ls_queries))
