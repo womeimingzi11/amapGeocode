@@ -1,4 +1,5 @@
 # amapGeocode 0.5.0
+* Add parallel operation
 
 # amapGeocode 0.4.0
 * Return bad request as NA tibble

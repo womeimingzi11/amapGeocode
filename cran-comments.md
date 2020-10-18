@@ -9,8 +9,4 @@
 
 * An upgrade:
 
-  1. Replace the class of result from `tibble` to `data.table`
-  
-  2. Remove some package dependencies
-  
-  3. Some code improvements
+  Replace `lapply` and `mapply` by `parLapply` and `clusterMap` to add parallel operation support
