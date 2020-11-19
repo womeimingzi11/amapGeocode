@@ -134,7 +134,8 @@ convertCoord.individual <- function(
     if (is.null(getOption('amap_key'))) {
       stop(
         'Please set key argument or set amap_key globally by this command
-                 options(amap_key = your key)'
+                 options(amap_key = your key)',
+        call. = FALSE
       )
     }
     key = getOption('amap_key')
@@ -226,7 +227,8 @@ extractConvertCoord <- function(res) {
   # If request_stat is failure
   # Return the failure information
   if(request_stat == '0'){
-    stop(res$info)
+    stop(res$info,
+         call. = FALSE)
   }
 
   # parse lng and lat from location

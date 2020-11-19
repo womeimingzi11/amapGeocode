@@ -82,7 +82,7 @@ getLocation <-
            keep_bad_request = TRUE,
            max_core = NULL) {
     if (length(lng) != length(lat)) {
-      stop('The numbers of Longitude and Latitude are mismatched')
+      stop('The numbers of Longitude and Latitude are mismatched', call. = FALSE)
     }
     if (length(lng) == 1) {
       # if there is one address, use getCoord.individual directly
@@ -207,7 +207,8 @@ getLocation.individual <-
       if (is.null(getOption('amap_key'))) {
         stop(
           'Please set key argument or set amap_key globally by this command
-             options(amap_key = your key)'
+             options(amap_key = your key)',
+          call. = FALSE
         )
       }
       key = getOption('amap_key')
@@ -312,7 +313,7 @@ extractLocation <- function(res) {
     # If request_stat is failure
     # Return the failure information
     if (request_stat == '0') {
-      stop(res$info)
+      stop(res$info, call. = FALSE)
     }
 
     # get addressComponent from regeocode

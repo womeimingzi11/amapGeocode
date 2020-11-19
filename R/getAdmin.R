@@ -181,7 +181,8 @@ getAdmin.individual <-
       if (is.null(getOption('amap_key'))) {
         stop(
           'Please set key argument or set amap_key globally by this command
-               options(amap_key = your key)'
+               options(amap_key = your key)',
+          call. = FALSE
         )
       }
       key = getOption('amap_key')
@@ -278,7 +279,7 @@ extractAdmin <- function(res) {
 
     # detect whether request succeed or not
     if (res$status != 1) {
-      stop(res$info)
+      stop(res$info, call. = FALSE)
     }
 
     # detect thee number of response
