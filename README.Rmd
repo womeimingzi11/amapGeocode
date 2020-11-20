@@ -9,7 +9,8 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
-  out.width = "100%"
+  out.width = "100%",
+  tidy = TRUE
 )
 ```
 
@@ -39,6 +40,41 @@ The `getCoord()` function extracts coordinate information from input character l
 amapGeocode is inspired by [baidumap](https://github.com/badbye/baidumap) and [baidugeo](https://github.com/ChrisMuir/baidugeo). If you want to choose the Baidu Map API, these packages are good choices.
 
 However, AutoNavi has significant high precise, in my case, the Results from Baidu were unsatisfactory.
+
+## BIG NEWS: Parallel is Here!
+Since `v0.5`, parallel operation finally come to `amapGeocode` with the `parallel` package as the backend. There is a really huge performance improvement for batch queries. Here is a demo from my PC with below specification 
+
+>
+  1. CPU: AMD Ryzen 3600 @ 3.6GHz (6 cores with 12 threads)
+  2. RAM: 32GB DDR4 2933MHz
+  3. System Disk: Sandisk Ultra 3D NVME aka. WD SN550 with 1TB
+  4. OS: Windows 10 Pro @ Insider Fast Ring (Build 20257.1)
+  5. Internet: CMCC @ 200Mbps from Chengdu, Sichuan, China
+
+```{r parallel_performance_revealR, message=FALSE}
+library(amapGeocode)
+library(readr)
+sample_site <- 
+read_csv('sample_site.csv')
+
+str(sample_site)
+
+# Here is the old implement
+start_time <- proc.time()
+old <- lapply(sample_site$address, amapGeocode:::getCoord.individual)
+proc.time() - start_time
+
+# Here is the new implement
+start_time <- proc.time()
+new <- getCoord(sample_site$address)
+proc.time() - start_time
+```
+
+Around 10 TIMES FASTER!
+
+All you need to do is **upgrade** `amapGeocode` to the **latest version** without changing any code!
+
+*While parallel support is a totally threads depending operation, so you will get completely different speed on different devices.*
 
 ## Installation
 
