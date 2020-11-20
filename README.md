@@ -66,7 +66,7 @@ from Baidu were unsatisfactory.
 Since `v0.5`, parallel operation finally come to `amapGeocode` with the
 `parallel` package as the backend. There is a really huge performance
 improvement for batch queries. Here is a demo from my PC with below
-specification
+specification.
 
 > 1.  CPU: AMD Ryzen 3600 @ 3.6GHz (6 cores with 12 threads)
 > 2.  RAM: 32GB DDR4 2933MHz
@@ -77,7 +77,7 @@ specification
 ``` r
 library(amapGeocode)
 library(readr)
-sample_site <- read_csv("sample_site.csv")
+sample_site <- read_csv("https://gist.githubusercontent.com/womeimingzi11/0fa3f4744f3ebc0f4484a52649f556e5/raw/47a69157f3e26c4d3bc993f3715b9ba88cda9d93/sample_site.csv")
 
 str(sample_site)
 #> tibble [300 x 1] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
@@ -92,17 +92,17 @@ start_time <- proc.time()
 old <- lapply(sample_site$address, amapGeocode:::getCoord.individual)
 proc.time() - start_time
 #>    user  system elapsed 
-#>    3.17    0.34   80.91
+#>    2.80    0.33   76.83
 
 # Here is the new implement
 start_time <- proc.time()
 new <- getCoord(sample_site$address)
 proc.time() - start_time
 #>    user  system elapsed 
-#>    0.02    0.14    9.20
+#>    0.03    0.12    8.09
 ```
 
-Around 10 TIMES FASTER\!
+Around 8-10 TIMES FASTER with 300 records.
 
 All you need to do is **upgrade** `amapGeocode` to the **latest
 version** without changing any code\!
