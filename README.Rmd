@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 ```
 
 <!-- Place this tag in your head or just before your close body tag. -->
-<script async defer src="https://buttons.github.io/buttons.js"></script>
+<!-- <script async defer src="https://buttons.github.io/buttons.js"></script> -->
 
 # [amapGeocode](https://github.com/womeimingzi11/amapGeocode)
 
@@ -207,27 +207,6 @@ tb <-
   extractConvertCoord(res)
 knitr::kable(tb)
 ```
-
-For more functions and improvements, Coming Soon!
-
-
-## FAQ
-
-### Can I input a data.frame to have a batch request?
-Yes! Feel free to input a list, a vector and a column of a table as what you do in other packages.
-
-### What about parallel?
-Yes! The parallel operation is automatic.
-
-However, because more testing is needed, there may be some potential problems. Feel free to open an <a class="github-button" href="https://github.com/womeimingzi11/amapGeocode/issues" data-color-scheme="no-preference: light; light: light; dark: dark;" data-size="large" aria-label="Issue womeimingzi11/amapGeocode on GitHub">Issue</a>！
-
-~~Unfortunately, there is no plan to add internal parallel support to amapGeocode. Here are some reasons:~~
-
-~~1. The aim of amapGeocode is to create a package which is easy to use. Indeed, the parallel operation can make many times performance improvement, especially there are half million queries. However, the parallel operation often platform limited, I don't have enough time and machine to test on different platforms. In fact even in macOS, the system I'm relatively familiar with, I have already encountered a lot of weird parallel issues and I don't have the intention or the experience to fix them.~~
-
-~~2. The queries limitation. For most of free users or developers, the daily query limitation and queries per second is absolutely enough: 30,000 queries per day and 200 queries per second. But for parallel operation, the limitation is relatively easy to exceed. For purchase developers, it may cause serious financial troubles.~~
-
-~~So for anybody who wants to send millions of request by amapGeocode, you are welcomed to make the parallel operations manually.~~
 
 ## Bug report
 It's very common for API upgrades to make the downstream application, like amapGeocode, to be unavailable. Feel free to [let me know](mailto://chenhan28@gmail.com) once it's broken or just open an <a class="github-button" href="https://github.com/womeimingzi11/amapGeocode/issues" data-color-scheme="no-preference: light; light: light; dark: dark;" data-size="large" aria-label="Issue womeimingzi11/amapGeocode on GitHub">Issue</a>.

@@ -3,7 +3,7 @@
 
 <!-- Place this tag in your head or just before your close body tag. -->
 
-<script async defer src="https://buttons.github.io/buttons.js"></script>
+<!-- <script async defer src="https://buttons.github.io/buttons.js"></script> -->
 
 # [amapGeocode](https://github.com/womeimingzi11/amapGeocode)
 
@@ -92,14 +92,14 @@ start_time <- proc.time()
 old <- lapply(sample_site$address, amapGeocode:::getCoord.individual)
 proc.time() - start_time
 #>    user  system elapsed 
-#>    2.80    0.33   76.83
+#>    2.92    0.30   62.50
 
 # Here is the new implement
 start_time <- proc.time()
 new <- getCoord(sample_site$address)
 proc.time() - start_time
 #>    user  system elapsed 
-#>    0.03    0.12    8.09
+#>    0.06    0.08    7.48
 ```
 
 Around 8-10 TIMES FASTER with 300 records.
@@ -428,44 +428,6 @@ knitr::kable(tb)
 |      lng |      lat |
 | -------: | -------: |
 | 116.4876 | 39.99175 |
-
-For more functions and improvements, Coming Soon\!
-
-## FAQ
-
-### Can I input a data.frame to have a batch request?
-
-Yes\! Feel free to input a list, a vector and a column of a table as
-what you do in other packages.
-
-### What about parallel?
-
-Yes\! The parallel operation is automatic.
-
-However, because more testing is needed, there may be some potential
-problems. Feel free to open an
-<a class="github-button" href="https://github.com/womeimingzi11/amapGeocode/issues" data-color-scheme="no-preference: light; light: light; dark: dark;" data-size="large" aria-label="Issue womeimingzi11/amapGeocode on GitHub">Issue</a>！
-
-~~Unfortunately, there is no plan to add internal parallel support to
-amapGeocode. Here are some reasons:~~
-
-~~1. The aim of amapGeocode is to create a package which is easy to use.
-Indeed, the parallel operation can make many times performance
-improvement, especially there are half million queries. However, the
-parallel operation often platform limited, I don’t have enough time and
-machine to test on different platforms. In fact even in macOS, the
-system I’m relatively familiar with, I have already encountered a lot of
-weird parallel issues and I don’t have the intention or the experience
-to fix them.~~
-
-~~2. The queries limitation. For most of free users or developers, the
-daily query limitation and queries per second is absolutely enough:
-30,000 queries per day and 200 queries per second. But for parallel
-operation, the limitation is relatively easy to exceed. For purchase
-developers, it may cause serious financial troubles.~~
-
-~~So for anybody who wants to send millions of request by amapGeocode,
-you are welcomed to make the parallel operations manually.~~
 
 ## Bug report
 
