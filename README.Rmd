@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 ```
 
 <!-- Place this tag in your head or just before your close body tag. -->
-<!-- <script async defer src="https://buttons.github.io/buttons.js"></script> -->
+ <script async defer src="https://buttons.github.io/buttons.js"></script>
 
 # [amapGeocode](https://github.com/womeimingzi11/amapGeocode)
 
@@ -44,18 +44,23 @@ However, AutoNavi has significant high precise, in my case, the Results from Bai
 ## BIG NEWS: Parallel is Here!
 Since `v0.5`, parallel operation finally come to `amapGeocode` with the `parallel` package as the backend. There is a really huge performance improvement for batch queries. Here is a demo from my PC with below specification.
 
+>MacBook Pro (Retina, 15-inch, Mid 2015)
 >
-  1. CPU: AMD Ryzen 3600 @ 3.6GHz (6 cores with 12 threads)
-  2. RAM: 32GB DDR4 2933MHz
-  3. System Disk: Sandisk Ultra 3D NVME aka. WD SN550 with 1TB
-  4. OS: Windows 10 Pro @ Insider Fast Ring (Build 20257.1)
-  5. Internet: CMCC @ 200Mbps from Chengdu, Sichuan, China
+>  CPU: Intel Core i7 Quad Cores @ 2.2GHz (4 cores with 8 threads)
+>
+>  RAM: 16GB RAM
+>
+>  System Disk: Intel 760P with 512GB
+>
+>  OS: macOS 11.0.1 Big Sur (20B29)
+>
+>  Internet: CMCC @ 200Mbps from Chengdu, Sichuan, China
 
 ```{r parallel_performance_revealR, message=FALSE}
 library(amapGeocode)
 library(readr)
-sample_site <- 
-read_csv('https://gist.githubusercontent.com/womeimingzi11/0fa3f4744f3ebc0f4484a52649f556e5/raw/47a69157f3e26c4d3bc993f3715b9ba88cda9d93/sample_site.csv')
+sample_site <-
+  read_csv("https://gist.githubusercontent.com/womeimingzi11/0fa3f4744f3ebc0f4484a52649f556e5/raw/47a69157f3e26c4d3bc993f3715b9ba88cda9d93/sample_site.csv")
 
 str(sample_site)
 
@@ -92,7 +97,7 @@ remotes::install_github('womeimingzi11/amapGeocode')
 Before start geocoding and reverse geocoding, please apply a [AutoNavi Map API Key](https://lbs.amap.com/dev/). Set `amap_key` globally by following command:
 
 ```{r set amap_key, eval=FALSE, include=FALSE}
-options(amap_key = 'REPLACE THIS BY YOUR KEY')
+options(amap_key = "REPLACE THIS BY YOUR KEY")
 ```
 
 Then get result of geocoding, by `getCoord` function. 
@@ -101,13 +106,15 @@ Then get result of geocoding, by `getCoord` function.
 library(amapGeocode)
 # An individual request
 res <-
-  getCoord('四川省中医院')
+  getCoord("四川省中医院")
 knitr::kable(res)
 # Batch requests
 res <-
-  getCoord(c('四川省中医院',
-             '四川省人民医院',
-             '成都中医药大学十二桥校区'))
+  getCoord(c(
+    "四川省中医院",
+    "四川省人民医院",
+    "成都中医药大学十二桥校区"
+  ))
 knitr::kable(res)
 ```
 
@@ -118,14 +125,14 @@ If anyone want to get response as **JSON** or **XML**, just set `to_table = FALS
 ```{r getCoord_to_table_as_FALSE}
 # An individual request
 res <-
-  getCoord('成都中医药大学', output = 'XML',to_table = FALSE)
+  getCoord("成都中医药大学", output = "XML", to_table = FALSE)
 res
 ```
 
 `extractCoord` is created to get a result as a data.table.
 
 ```{r extractCoord}
-tb <- 
+tb <-
   extractCoord(res)
 knitr::kable(tb)
 ```
@@ -134,21 +141,21 @@ knitr::kable(tb)
 get result of reverse geocoding, by `getLocation` function. 
 
 ```{r getLocation_to_table_as_TRUE}
-res <- 
+res <-
   getLocation(104.043284, 30.666864)
 knitr::kable(res)
 ```
 
 ```{r getLocation_to_table_as_FALSE}
 res <-
-   getLocation(104.043284, 30.666864, output = 'XML',to_table = FALSE)
+  getLocation(104.043284, 30.666864, output = "XML", to_table = FALSE)
 res
 ```
 
 `extractLocation` is created to get a result as a data.table.
 
 ```{r extractLocation}
-tb <- 
+tb <-
   extractLocation(res)
 knitr::kable(tb)
 ```
@@ -163,13 +170,13 @@ This is becasue, this function support different administrative region levels, b
 
 ```{r getAdmin_to_table_as_TRUE}
 res <-
-  getAdmin(c('四川省','成都市','济宁市'))
+  getAdmin(c("四川省", "成都市", "济宁市"))
 knitr::kable(res)
 ```
 
 ```{r getAdmin_to_table_as_FALSE}
 res <-
-   getAdmin('四川省', output = 'XML', to_table = FALSE)
+  getAdmin("四川省", output = "XML", to_table = FALSE)
 res
 ```
 
@@ -177,7 +184,7 @@ res
 
 ```{r extractAdmin}
 res
-tb <- 
+tb <-
   extractAdmin(res)
 knitr::kable(tb)
 ```
@@ -189,21 +196,21 @@ get result of reverse geocoding, by `convertCoord` function, here is how to conv
 **Please not, this is still a very experimental function because I have no experience at converting coordinates. The implementation of this input method is not as delicate as I expect. If you have any good idea, please let me know or just fork repo and pull a reques.**
 
 ```{r convertCoord_to_table_as_TRUE}
-res <- 
-  convertCoord('116.481499,39.990475',coordsys = 'gps')
+res <-
+  convertCoord("116.481499,39.990475", coordsys = "gps")
 knitr::kable(res)
 ```
 
 ```{r convertCoord_to_table_as_FALSE}
 res <-
-  convertCoord('116.481499,39.990475',coordsys = 'gps', to_table = FALSE)
+  convertCoord("116.481499,39.990475", coordsys = "gps", to_table = FALSE)
 res
 ```
 
 `extractConvertCoord` is created to get result as data.table.
 
 ```{r extractConvertCoord}
-tb <- 
+tb <-
   extractConvertCoord(res)
 knitr::kable(tb)
 ```
