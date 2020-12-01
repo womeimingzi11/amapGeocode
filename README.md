@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- Place this tag in your head or just before your close body tag. -->
-<script async defer src="https://buttons.github.io/buttons.js"></script>
+<!--<script async defer src="https://buttons.github.io/buttons.js"></script>-->
 
 # [amapGeocode](https://github.com/womeimingzi11/amapGeocode)
 
@@ -96,14 +96,14 @@ start_time <- proc.time()
 old <- lapply(sample_site$address, amapGeocode:::getCoord.individual)
 proc.time() - start_time
 #>    user  system elapsed 
-#>  10.241   0.653 113.071
+#>   9.853   0.599 102.358
 
 # Here is the new implement
 start_time <- proc.time()
 new <- getCoord(sample_site$address)
 proc.time() - start_time
 #>    user  system elapsed 
-#>   0.047   0.016  16.057
+#>   0.051   0.019  15.999
 ```
 
 Around 8-10 TIMES FASTER with 300 records.
