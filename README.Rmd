@@ -31,18 +31,18 @@ knitr::opts_chunk$set(
 
 ## Introduction  <img src="man/figures/hexSticker-logo.png" align="right" width="100"/>
 
-Geocoding and Reverse Geocoding Services are widely used to provide data about coordinate and location information, including longitude, latitude, formatted location name, administrative region with different levels. There are some package can provide geocode service such as [tidygeocoder](https://CRAN.R-project.org/package=tidygeocoder), [baidumap](https://github.com/badbye/baidumap) and [baidugeo](https://github.com/ChrisMuir/baidugeo). However, some of them not always provide precise information in China, and some of them is unavailable with upgrade backend API.
+Geocoding and Reverse Geocoding Services are widely used to provide data about coordinate and location information, including longitude, latitude, formatted location name, administrative region with different levels. There are some packages can provide geocode service such as [tidygeocoder](https://CRAN.R-project.org/package=tidygeocoder), [baidumap](https://github.com/badbye/baidumap) and [baidugeo](https://github.com/ChrisMuir/baidugeo). However, some of them do not always provide precise information in China, and some of them are unavailable with the upgrade backend API.
 
-amapGeocode is built to provide high precise geocoding and reverse geocoding service, and it provides an interface for the AutoNavi(高德) Maps API geocoding services. API docs can be found [here](https://lbs.amap.com/) and [here](https://lbs.amap.com/api/webservice/summary/). Here are two main functions to use are `getCoord()` which takes a character location name as an input and `getLocation()` which takes two numeric longitude and latitude values as inputs.
+amapGeocode is built to provide high precise geocoding and reverse geocoding service, and it provides an interface for the AutoNavi(高德) Maps API geocoding services. API docs can be found [here](https://lbs.amap.com/) and [here](https://lbs.amap.com/api/webservice/summary/). Here are two main functions to use, one is `getCoord()` which needs a character location name as an input, while the other one is `getLocation()` which needs two numeric longitude and latitude values as inputs.
 
-The `getCoord()` function extracts coordinate information from input character location name and output the result as `data.table`, `XML` or `JSON (as list)`. And the `getLocation()` function extracts location information from input numeric longitude and latitude values and output the result as `data.table`, `XML` or `JSON (as list)`. With the `data.table` format as output, it's highly readable and can be used as an alternative of `data.frame`
+The `getCoord()` function extracts coordinate information from input character location name and outputs the results as `data.table`, `XML` or `JSON (as list)`. And the `getLocation()` function extracts location information from input numeric longitude and latitude values and outputs the results as `data.table`, `XML` or `JSON (as list)`. With the `data.table` format as output, it's highly readable and can be used as an alternative of `data.frame`
 
 amapGeocode is inspired by [baidumap](https://github.com/badbye/baidumap) and [baidugeo](https://github.com/ChrisMuir/baidugeo). If you want to choose the Baidu Map API, these packages are good choices.
 
 However, AutoNavi has significant high precise, in my case, the Results from Baidu were unsatisfactory.
 
 ## BIG NEWS: Parallel is Here!
-Since `v0.5`, parallel operation finally come to `amapGeocode` with the `parallel` package as the backend. There is a really huge performance improvement for batch queries. Here is a demo from my PC with below specification.
+Since `v0.5`, parallel operation finally comes to `amapGeocode` with the `parallel` package as the backend. There is a really huge performance improvement for batch queries. Here is a demo from my PC with below specification.
 
 >MacBook Pro (Retina, 15-inch, Mid 2015)
 >
@@ -100,7 +100,7 @@ Before start geocoding and reverse geocoding, please apply a [AutoNavi Map API K
 options(amap_key = "REPLACE THIS BY YOUR KEY")
 ```
 
-Then get result of geocoding, by `getCoord` function. 
+Then get results of geocoding, by `getCoord` function. 
 
 ```{r getCoord_to_table_as_TRUE}
 library(amapGeocode)
@@ -118,9 +118,9 @@ res <-
 knitr::kable(res)
 ```
 
-The response we get from **AutoNavi Map API** is **JSON** or **XML**. For readability, we transform them to [`data.table`](https://CRAN.R-project.org/package=data.table), by setting `to_table` argument as `TRUE` by default.
+The responses we get from **AutoNavi Map API** is **JSON** or **XML**. For readability, we transform them to [`data.table`](https://CRAN.R-project.org/package=data.table), by setting `to_table` argument as `TRUE` by default.
 
-If anyone want to get response as **JSON** or **XML**, just set `to_table = FALSE`. If anyone want to extract information from **JSON** or **XML**. The result can further be parsed by `extractCoord`.
+If you want to get responses as **JSON** or **XML**, just set `to_table = FALSE`. If you want to extract information from **JSON** or **XML**. The results can further be parsed by `extractCoord`.
 
 ```{r getCoord_to_table_as_FALSE}
 # An individual request
@@ -138,7 +138,7 @@ knitr::kable(tb)
 ```
 ### Reverse Geocoding
 
-get result of reverse geocoding, by `getLocation` function. 
+get results of reverse geocoding, by `getLocation` function. 
 
 ```{r getLocation_to_table_as_TRUE}
 res <-
@@ -162,11 +162,11 @@ knitr::kable(tb)
 
 ### Get Subordinate Administrative Region
 
-get result of reverse geocoding, by `getAdmin` function.
+get results of reverse geocoding, by `getAdmin` function.
 
-There is a difference between getAdmin and other function, no matter the `to_table` argument is `TRUE` or `FALSE` the result won't be a jointed table by different parent administrative region. For example, with the `to_table = TRUE`, all the lower level administrative region of Province A and Province B will be binded as one data.table, respectively. But the table of province A and table of province B won't be binded further.
+There is a difference between getAdmin and other function, no matter the `to_table` argument is `TRUE` or `FALSE` the result won't be a jointed table by different parent administrative region. For example, with the `to_table = TRUE`, all the lower level administrative region of Province A and Province B will be bound as one data.table, respectively. But the table of province A and table of province B won't be bound further.
 
-This is becasue, this function support different administrative region levels, bind their result is nonsense.
+Because this function supports different administrative region levels, it is nonsense to bind their results.
 
 ```{r getAdmin_to_table_as_TRUE}
 res <-
@@ -180,7 +180,7 @@ res <-
 res
 ```
 
-`extractAdmin` is created to get result as tibble.
+`extractAdmin` is created to get results as tibble.
 
 ```{r extractAdmin}
 res
@@ -191,7 +191,7 @@ knitr::kable(tb)
 
 ### Convert coordinate point from other coordinate system to AutoNavi
 
-get result of reverse geocoding, by `convertCoord` function, here is how to convert coordinate from gps to AutoNavi.
+get results of reverse geocoding, by `convertCoord` function, here is how to convert coordinate from gps to AutoNavi.
 
 **Please not, this is still a very experimental function because I have no experience at converting coordinates. The implementation of this input method is not as delicate as I expect. If you have any good idea, please let me know or just fork repo and pull a reques.**
 
@@ -216,7 +216,7 @@ knitr::kable(tb)
 ```
 
 ## Bug report
-It's very common for API upgrades to make the downstream application, like amapGeocode, to be unavailable. Feel free to [let me know](mailto://chenhan28@gmail.com) once it's broken or just open an <a class="github-button" href="https://github.com/womeimingzi11/amapGeocode/issues" data-color-scheme="no-preference: light; light: light; dark: dark;" data-size="large" aria-label="Issue womeimingzi11/amapGeocode on GitHub">Issue</a>.
+It's very common for API upgrades to make the downstream application, like amapGeocode,which is unavailable. Feel free to [let me know](mailto://chenhan28@gmail.com) once it's broken or just open an <a class="github-button" href="https://github.com/womeimingzi11/amapGeocode/issues" data-color-scheme="no-preference: light; light: light; dark: dark;" data-size="large" aria-label="Issue womeimingzi11/amapGeocode on GitHub">Issue</a>.
 
 ## Acknowledgements
 Hex Sticker was created by [hexSticker package](https://github.com/GuangchuangYu/hexSticker) with the world data from  [rnaturalearth](https://CRAN.R-project.org/package=rnaturalearth).
