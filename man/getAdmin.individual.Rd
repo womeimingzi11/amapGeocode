@@ -13,9 +13,9 @@ getAdmin.individual(
   extensions = NULL,
   filter = NULL,
   callback = NULL,
-  output = NULL,
-  to_table = TRUE,
-  keep_bad_request = TRUE
+  output = "data.table",
+  keep_bad_request = TRUE,
+  ...
 )
 }
 \arguments{
@@ -60,13 +60,14 @@ If you don't understand, it means you don't need it, just like me.}
 
 \item{output}{Optional.\cr
  Output Data Structure. \cr
-Support JSON and XML. The default value is JSON.}
-
-\item{to_table}{Optional.\cr
-Transform response content to data.table.}
+Support JSON, XML and data.table. The default value is data.table.}
 
 \item{keep_bad_request}{Optional.\cr
 Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request}
+
+\item{to_table}{Deprecated.\cr
+Transform response content to data.table.
+Since 0.5.1, this argument was merged into `output`.}
 }
 \value{
 Returns a JSON or XML of results containing detailed subordinate administrative region information. See \url{https://lbs.amap.com/api/webservice/guide/api/district} for more information.

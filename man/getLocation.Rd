@@ -13,12 +13,12 @@ getLocation(
   extensions = NULL,
   roadlevel = NULL,
   sig = NULL,
-  output = NULL,
+  output = "data.table",
   callback = NULL,
   homeorcorp = 0,
-  to_table = TRUE,
   keep_bad_request = TRUE,
-  max_core = NULL
+  max_core = NULL,
+  ...
 )
 }
 \arguments{
@@ -57,7 +57,7 @@ How to use this argument? Please check here{https://lbs.amap.com/faq/account/key
 
 \item{output}{Optional.\cr
 Output Data Structure. \cr
-Support JSON and XML. The default value is JSON.}
+Support JSON, XML and data.table. The default value is data.table.}
 
 \item{callback}{Optional.\cr
 Callback Function. \cr
@@ -71,9 +71,6 @@ When `extensions = all`, this argument makes sense. \cr
 `homeorcorp=1`, home related POIs are first, by default.\cr
 `homeorcorp=2`, corporation related POIs are first, by default.\cr}
 
-\item{to_table}{Optional.\cr
-Transform response content to a table.}
-
 \item{keep_bad_request}{Optional.\cr
 Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request}
 
@@ -81,6 +78,10 @@ Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch 
 A threshold of max cores for parallel operation. There is no need to set a `max_core` generally.
 But for some extreme high performance case, like `AMD Threadripper` and `Intel Xeon`,
 super multiple-core CPU will meet the limitation of queries per second.}
+
+\item{to_table}{Deprecated.\cr
+Transform response content to data.table.
+Since 0.5.1, this argument was merged into `output`.}
 }
 \value{
 Returns a JSON, XML or data.table of results containing detailed reverse geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.

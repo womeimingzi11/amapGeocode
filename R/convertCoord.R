@@ -17,16 +17,18 @@
 #' Digital Signature.\cr
 #' How to use this argument? Please check here{https://lbs.amap.com/faq/account/key/72}
 #' @param output Optional.\cr
-#'  Output Data Structure. \cr
-#' Support JSON and XML. The default value is JSON.
-#' @param to_table Optional.\cr
-#' Transform response content to data.table.
+#' Output Data Structure. \cr
+#' Support JSON, XML and data.table. The default value is data.table.
 #' @param keep_bad_request Optional.\cr
 #' Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request
 #' @param max_core Optional.\cr
 #' A threshold of max cores for parallel operation. There is no need to set a `max_core` generally.
 #' But for some extreme high performance case, like `AMD Threadripper` and `Intel Xeon`,
 #' super multiple-core CPU will meet the limitation of queries per second.
+#'
+#' @param to_table Deprecated.\cr
+#' Transform response content to data.table.
+#' Since 0.5.1, this argument was merged into `output`.
 #'
 #' @return
 #' Returns a JSON, XML or data.table of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/convert} for more information.
@@ -52,10 +54,10 @@ convertCoord <-
     key = NULL,
     coordsys = NULL,
     sig = NULL,
-    output = NULL,
-    to_table = TRUE,
+    output = "data.table",
     keep_bad_request = TRUE,
-    max_core = NULL
+    max_core = NULL,
+    ...
   ){
     if (length(locations) == 1) {
       # if there is one address, use convertCoord.individual directly
@@ -65,7 +67,6 @@ convertCoord <-
         coordsys = coordsys,
         sig = sig,
         output = output,
-        to_table = to_table,
         keep_bad_request = keep_bad_request
       )
     } else {
@@ -81,13 +82,12 @@ convertCoord <-
           coordsys = coordsys,
           sig = sig,
           output = output,
-          to_table = to_table,
           keep_bad_request = keep_bad_request
         )
       # stop cluster
       parallel::stopCluster(cluster)
       # detect return list of raw requests or `rbindlist` parsed data.table
-      if (isTRUE(to_table)) {
+      if (output == "data.table") {
         return(data.table::rbindlist(ls_queries))
       } else {
         return(ls_queries)
@@ -109,12 +109,14 @@ convertCoord <-
 #' Digital Signature.\cr
 #' How to use this argument? Please check here{https://lbs.amap.com/faq/account/key/72}
 #' @param output Optional.\cr
-#'  Output Data Structure. \cr
-#' Support JSON and XML. The default value is JSON.
-#' @param to_table Optional.\cr
-#' Transform response content to data.table.
+#' Output Data Structure. \cr
+#' Support JSON, XML and data.table. The default value is data.table.
 #' @param keep_bad_request Optional.\cr
 #' Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request
+#'
+#' @param to_table Deprecated.\cr
+#' Transform response content to data.table.
+#' Since 0.5.1, this argument was merged into `output`.
 #'
 #' @return
 #' Returns a JSON, XML or data.table of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/convert} for more information.
@@ -123,9 +125,9 @@ convertCoord.individual <- function(
   key = NULL,
   coordsys = NULL,
   sig = NULL,
-  output = NULL,
-  to_table = TRUE,
-  keep_bad_request = TRUE
+  output = "data.table",
+  keep_bad_request = TRUE,
+  ...
 ) {
   # Arguments check ---------------------------------------------------------
   # Check if key argument is set or not
@@ -139,6 +141,13 @@ convertCoord.individual <- function(
       )
     }
     key = getOption('amap_key')
+  }
+
+  # Check wether output argument is data.table
+  # If it is, override argument, because the API did not support data.table
+  # the convert will be performed locally.
+  if (output == "data.table") {
+    output = NULL
   }
 
   # assemble url and parameter ----------------------------------------------
@@ -169,7 +178,7 @@ convertCoord.individual <- function(
 
   # Transform response to data.table or return directly -------------------------
 
-  if (isTRUE(to_table)) {
+  if (is.null(output)) {
     return(extractConvertCoord(res_content))
   } else {
     return(res_content)

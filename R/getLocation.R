@@ -27,7 +27,7 @@
 #' How to use this argument? Please check here{https://lbs.amap.com/faq/account/key/72}
 #' @param output Optional.\cr
 #' Output Data Structure. \cr
-#' Support JSON and XML. The default value is JSON.
+#' Support JSON, XML and data.table. The default value is data.table.
 #' @param callback Optional.\cr
 #' Callback Function. \cr
 #' The value of callback is the customized function. Only available with JSON output.
@@ -38,14 +38,16 @@
 #' `homeorcorp=0`, do not optimize, by default.\cr
 #' `homeorcorp=1`, home related POIs are first, by default.\cr
 #' `homeorcorp=2`, corporation related POIs are first, by default.\cr
-#' @param to_table Optional.\cr
-#' Transform response content to a table.
 #' @param keep_bad_request Optional.\cr
 #' Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request
 #' @param max_core Optional.\cr
 #' A threshold of max cores for parallel operation. There is no need to set a `max_core` generally.
 #' But for some extreme high performance case, like `AMD Threadripper` and `Intel Xeon`,
 #' super multiple-core CPU will meet the limitation of queries per second.
+#'
+#' @param to_table Deprecated.\cr
+#' Transform response content to data.table.
+#' Since 0.5.1, this argument was merged into `output`.
 #'
 #' @return
 #' Returns a JSON, XML or data.table of results containing detailed reverse geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
@@ -75,12 +77,12 @@ getLocation <-
            extensions = NULL,
            roadlevel = NULL,
            sig = NULL,
-           output = NULL,
+           output = "data.table",
            callback = NULL,
            homeorcorp = 0,
-           to_table = TRUE,
            keep_bad_request = TRUE,
-           max_core = NULL) {
+           max_core = NULL,
+           ...) {
     if (length(lng) != length(lat)) {
       stop('The numbers of Longitude and Latitude are mismatched', call. = FALSE)
     }
@@ -98,7 +100,6 @@ getLocation <-
         output = output,
         callback = callback,
         homeorcorp = homeorcorp,
-        to_table = to_table,
         keep_bad_request = keep_bad_request
       )
     } else {
@@ -121,7 +122,6 @@ getLocation <-
             output = output,
             callback = callback,
             homeorcorp = homeorcorp,
-            to_table = to_table,
             keep_bad_request = keep_bad_request
           ),
           # Set SIMPLIFY to keep result as a list not parsed to matrix by column bind
@@ -131,7 +131,7 @@ getLocation <-
       # stop cluster
       parallel::stopCluster(cluster)
       # detect return list of raw requests or `rbindlist` parsed data.table
-      if (isTRUE(to_table)) {
+      if (output == "data.table") {
         return(data.table::rbindlist(ls_queries))
       } else {
         return(ls_queries)
@@ -168,7 +168,7 @@ getLocation <-
 #' How to use this argument? Please check here{https://lbs.amap.com/faq/account/key/72}
 #' @param output Optional.\cr
 #' Output Data Structure. \cr
-#' Support JSON and XML. The default value is JSON.
+#' Support JSON, XML and data.table. The default value is data.table.
 #' @param callback Optional.\cr
 #' Callback Function. \cr
 #' The value of callback is the customized function. Only available with JSON output.
@@ -179,10 +179,12 @@ getLocation <-
 #' `homeorcorp=0`, do not optimize, by default.\cr
 #' `homeorcorp=1`, home related POIs are first, by default.\cr
 #' `homeorcorp=2`, corporation related POIs are first, by default.\cr
-#' @param to_table Optional.\cr
-#' Transform response content to table
 #' @param keep_bad_request Optional.\cr
 #' Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request
+#'
+#' @param to_table Deprecated.\cr
+#' Transform response content to data.table.
+#' Since 0.5.1, this argument was merged into `output`.
 #'
 #' @return
 #' Returns a JSON, XML or data.table of results containing detailed reverse geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
@@ -195,11 +197,11 @@ getLocation.individual <-
            extensions = NULL,
            roadlevel = NULL,
            sig = NULL,
-           output = NULL,
+           output = "data.table",
            callback = NULL,
            homeorcorp = 0,
-           to_table = TRUE,
-           keep_bad_request = TRUE) {
+           keep_bad_request = TRUE,
+           ...) {
     # Arguments check ---------------------------------------------------------
     # Check if key argument is set or not
     # If there is no key, try to get amap_key from option and set as key
@@ -213,6 +215,14 @@ getLocation.individual <-
       }
       key = getOption('amap_key')
     }
+
+    # Check wether output argument is data.table
+    # If it is, override argument, because the API did not support data.table
+    # the convert will be performed locally.
+    if (output == "data.table") {
+      output = NULL
+    }
+
     # Combine lng and lat as location
     # Internal Function from Helpers, no export
     location = num_coord_to_str_loc(lng, lat)
@@ -249,7 +259,7 @@ getLocation.individual <-
 
     # Transform response to table or return directly -------------------------
 
-    if (isTRUE(to_table)) {
+    if (is.null(output)) {
       return(extractLocation(res_content))
     } else {
       return(res_content)

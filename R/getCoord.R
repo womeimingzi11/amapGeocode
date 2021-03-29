@@ -14,20 +14,22 @@
 #' Digital Signature.\cr
 #' How to use this argument? Please check here{https://lbs.amap.com/faq/account/key/72}
 #' @param output Optional.\cr
-#'  Output Data Structure. \cr
-#' Support JSON and XML. The default value is JSON.
+#' Output Data Structure. \cr
+#' Support JSON, XML and data.table. The default value is data.table.
 #' @param callback Optional.\cr
 #' Callback Function. \cr
 #' The value of callback is the customized function. Only available with JSON output.
 #' If you don't understand, it means you don't need it, just like me.
-#' @param to_table Optional.\cr
-#' Transform response content to data.table.
 #' @param keep_bad_request Optional.\cr
 #' Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request
 #' @param max_core Optional.\cr
 #' A threshold of max cores for parallel operation. There is no need to set a `max_core` generally.
 #' But for some extreme high performance case, like `AMD Threadripper` and `Intel Xeon`,
 #' super multiple-core CPU will meet the limitation of queries per second.
+#'
+#' @param to_table Deprecated.\cr
+#' Transform response content to data.table.
+#' Since 0.5.1, this argument was merged into `output`.
 #'
 #' @return
 #' Returns a JSON, XML or data.table of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
@@ -56,11 +58,11 @@ getCoord <-
            key = NULL,
            city = NULL,
            sig = NULL,
-           output = NULL,
+           output = "data.table",
            callback = NULL,
-           to_table = TRUE,
            keep_bad_request = TRUE,
-           max_core = NULL) {
+           max_core = NULL,
+           ...) {
     if (length(address) == 1) {
       # if there is one address, use getCoord.individual directly
       getCoord.individual(
@@ -87,13 +89,13 @@ getCoord <-
           sig = sig,
           output = output,
           callback = callback,
-          to_table = to_table,
           keep_bad_request = keep_bad_request
         )
       # stop cluster
       parallel::stopCluster(cluster)
       # detect return list of raw requests or `rbindlist` parsed data.table
-      if (isTRUE(to_table)) {
+
+      if (output == "data.table") {
         return(data.table::rbindlist(ls_queries))
       } else {
         return(ls_queries)
@@ -118,15 +120,18 @@ getCoord <-
 #' How to use this argument? Please check here{https://lbs.amap.com/faq/account/key/72}
 #' @param output Optional.\cr
 #'  Output Data Structure. \cr
-#' Support JSON and XML. The default value is JSON.
+#' Support JSON, XML and data.table. The default value is data.table.
 #' @param callback Optional.\cr
 #' Callback Function. \cr
 #' The value of callback is the customized function. Only available with JSON output.
 #' If you don't understand, it means you don't need it, just like me.
-#' @param to_table Optional.\cr
-#' Transform response content to data.table.\cr
 #' @param keep_bad_request Optional.\cr
 #' Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request
+#'
+#' @param to_table Deprecated.\cr
+#' Transform response content to data.table.
+#' Since 0.5.1, this argument was merged into `output`.
+#'
 #' @return
 #' Returns a JSON, XML or data.table of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
 getCoord.individual <-
@@ -134,10 +139,10 @@ getCoord.individual <-
            key = NULL,
            city = NULL,
            sig = NULL,
-           output = NULL,
+           output = 'data.table',
            callback = NULL,
-           to_table = TRUE,
-           keep_bad_request = TRUE) {
+           keep_bad_request = TRUE,
+           ...) {
     # Arguments check ---------------------------------------------------------
     # Check if key argument is set or not
     # If there is no key, try to get amap_key from option and set as key
@@ -151,11 +156,13 @@ getCoord.individual <-
       }
       key = getOption('amap_key')
     }
-    # If to_table has been set, replace output as XML
-    # Will be remove once JSON extract function finished
-    # if (isTRUE(to_table)) {
-    #   output = 'XML'
-    # }
+
+    # Check wether output argument is data.table
+    # If it is, override argument, because the API did not support data.table
+    # the convert will be performed locally.
+    if (output == "data.table") {
+      output = NULL
+    }
 
     # assemble url and parameter ----------------------------------------------
     base_url = 'https://restapi.amap.com/v3/geocode/geo'
@@ -183,7 +190,7 @@ getCoord.individual <-
 
     # Transform response to data.table or return directly -------------------------
 
-    if (isTRUE(to_table)) {
+    if (is.null(output)) {
       return(extractCoord(res_content))
     } else {
       return(res_content)

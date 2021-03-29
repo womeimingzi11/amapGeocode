@@ -9,11 +9,11 @@ getCoord(
   key = NULL,
   city = NULL,
   sig = NULL,
-  output = NULL,
+  output = "data.table",
   callback = NULL,
-  to_table = TRUE,
   keep_bad_request = TRUE,
-  max_core = NULL
+  max_core = NULL,
+  ...
 )
 }
 \arguments{
@@ -35,16 +35,13 @@ Digital Signature.\cr
 How to use this argument? Please check here{https://lbs.amap.com/faq/account/key/72}}
 
 \item{output}{Optional.\cr
- Output Data Structure. \cr
-Support JSON and XML. The default value is JSON.}
+Output Data Structure. \cr
+Support JSON, XML and data.table. The default value is data.table.}
 
 \item{callback}{Optional.\cr
 Callback Function. \cr
 The value of callback is the customized function. Only available with JSON output.
 If you don't understand, it means you don't need it, just like me.}
-
-\item{to_table}{Optional.\cr
-Transform response content to data.table.}
 
 \item{keep_bad_request}{Optional.\cr
 Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request}
@@ -53,6 +50,10 @@ Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch 
 A threshold of max cores for parallel operation. There is no need to set a `max_core` generally.
 But for some extreme high performance case, like `AMD Threadripper` and `Intel Xeon`,
 super multiple-core CPU will meet the limitation of queries per second.}
+
+\item{to_table}{Deprecated.\cr
+Transform response content to data.table.
+Since 0.5.1, this argument was merged into `output`.}
 }
 \value{
 Returns a JSON, XML or data.table of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.

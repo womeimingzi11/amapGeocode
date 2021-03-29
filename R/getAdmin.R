@@ -33,15 +33,17 @@
 #' If you don't understand, it means you don't need it, just like me.
 #' @param output Optional.\cr
 #'  Output Data Structure. \cr
-#' Support JSON and XML. The default value is JSON.
-#' @param to_table Optional.\cr
-#' Transform response content to data.table.
+#' Support JSON, XML and data.table. The default value is data.table.
 #' @param keep_bad_request Optional.\cr
 #' Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request
 #' @param max_core Optional.\cr
 #' A threshold of max cores for parallel operation. There is no need to set a `max_core` generally.
 #' But for some extreme high performance case, like `AMD Threadripper` and `Intel Xeon`,
 #' super multiple-core CPU will meet the limitation of queries per second.
+#'
+#' @param to_table Deprecated.\cr
+#' Transform response content to data.table.
+#' Since 0.5.1, this argument was merged into `output`.
 #'
 #' @return
 #' Returns a JSON or XML of results containing detailed subordinate administrative region information. See \url{https://lbs.amap.com/api/webservice/guide/api/district} for more information.
@@ -72,10 +74,10 @@ getAdmin <-
            extensions = NULL,
            filter = NULL,
            callback = NULL,
-           output = NULL,
-           to_table = TRUE,
+           output = "data.table",
            keep_bad_request = TRUE,
-           max_core = NULL) {
+           max_core = NULL,
+           ...) {
     if (length(keywords) == 1) {
       # if there is one address, use getCoord.individual directly
       getAdmin.individual(
@@ -88,7 +90,6 @@ getAdmin <-
         filter = filter,
         callback = callback,
         output = output,
-        to_table = to_table,
         keep_bad_request = keep_bad_request
       )
     } else {
@@ -108,7 +109,6 @@ getAdmin <-
           filter = filter,
           callback = callback,
           output = output,
-          to_table = to_table,
           keep_bad_request = keep_bad_request
         )
       # stop cluster
@@ -155,11 +155,14 @@ getAdmin <-
 #' If you don't understand, it means you don't need it, just like me.
 #' @param output Optional.\cr
 #'  Output Data Structure. \cr
-#' Support JSON and XML. The default value is JSON.
-#' @param to_table Optional.\cr
-#' Transform response content to data.table.
+#' Support JSON, XML and data.table. The default value is data.table.
 #' @param keep_bad_request Optional.\cr
 #' Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request
+#'
+#' @param to_table Deprecated.\cr
+#' Transform response content to data.table.
+#' Since 0.5.1, this argument was merged into `output`.
+#'
 #' @return
 #' Returns a JSON or XML of results containing detailed subordinate administrative region information. See \url{https://lbs.amap.com/api/webservice/guide/api/district} for more information.
 getAdmin.individual <-
@@ -171,9 +174,9 @@ getAdmin.individual <-
            extensions = NULL,
            filter = NULL,
            callback = NULL,
-           output = NULL,
-           to_table = TRUE,
-           keep_bad_request = TRUE) {
+           output = "data.table",
+           keep_bad_request = TRUE,
+           ...) {
     # Arguments check ---------------------------------------------------------
     # Check if key argument is set or not
     # If there is no key, try to get amap_key from option and set as key
@@ -186,6 +189,13 @@ getAdmin.individual <-
         )
       }
       key = getOption('amap_key')
+    }
+
+    # Check wether output argument is data.table
+    # If it is, override argument, because the API did not support data.table
+    # the convert will be performed locally.
+    if (output == "data.table") {
+      output = NULL
     }
 
     # assemble url and parameter ----------------------------------------------
@@ -218,8 +228,8 @@ getAdmin.individual <-
 
     # Transform response to data.table or return directly -------------------------
 
-    if (isTRUE(to_table)) {
-      return(extractAdmin(res_content))
+    if (is.null(output)) {
+    return(extractAdmin(res_content))
     } else {
       return(res_content)
     }
