@@ -13,7 +13,6 @@ Authors@R:
              email = "243016042@qq.com"))
 Description: Getting and parsing data of location geocode/reverse-geocode and administrative regions from 'AutoNavi Maps'<https://lbs.amap.com/api/webservice/summary> API.
 License: MIT + file LICENSE
-URL: https://github.com/womeimingzi11/amapGeocode
 Imports: 
     httr,
     jsonlite,
@@ -38,3 +37,5 @@ LazyData: true
 RoxygenNote: 7.1.1
 RdMacros: lifecycle
 Language: en-US
+URL: https://github.com/womeimingzi11/amapGeocode
+BugReports: https://github.com/womeimingzi11/amapGeocode/issues

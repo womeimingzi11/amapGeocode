@@ -391,3 +391,10 @@ Hex Sticker was created by [hexSticker
 package](https://github.com/GuangchuangYu/hexSticker) with the world
 data from
 [rnaturalearth](https://CRAN.R-project.org/package=rnaturalearth).
+
+## Code of Conduct
+
+Please note that the amapGeocode project is released with a [Contributor
+Code of
+Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html).
+By contributing to this project, you agree to abide by its terms.
