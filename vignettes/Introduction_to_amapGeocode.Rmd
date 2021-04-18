@@ -10,9 +10,7 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
-  NOT_CRAN <- identical(tolower(Sys.getenv("NOT_CRAN")), "true"),
-  knitr::opts_chunk$set(purl = NOT_CRAN)
+  comment = "#>"
 )
 ```
 
@@ -29,13 +27,13 @@ The `getCoord()` function extracts coordinate information from input character l
 ### Geocoding
 Before start geocoding and reverse geocoding, please apply a [AutoNavi Map API Key](https://lbs.amap.com/dev/). Set `amap_key` globally by following command:
 
-```{r set amap_key, eval=FALSE, include=FALSE}
+```r
 options(amap_key = 'REPLACE THIS BY YOUR KEY')
 ```
 
 Then get result of geocoding, by `getCoord` function. 
 
-```{r getCoord_to_table_as_TRUE, eval = NOT_CRAN}
+```r
 library(amapGeocode)
 res <-
   getCoord('成都中医药大学')
@@ -46,7 +44,7 @@ The response we get from **AutoNavi Map API** is **JSON** or **XML**. For readab
 
 If anyone want to get response as **JSON** or **XML**, just set `to_table = FALSE`. If anyone want to extract information from **JSON** or **XML**. The result can further be parsed by `extractCoord`.
 
-```{r getCoord_to_table_as_FALSE, eval = NOT_CRAN}
+```r
 res <-
   getCoord('成都中医药大学', output = 'XML',to_table = FALSE)
 res
@@ -54,7 +52,7 @@ res
 
 `extractCoord` is created to get result as a data.table.
 
-```{r extractCoord, eval = NOT_CRAN}
+```r
 res
 tb <- 
   extractCoord(res)
@@ -64,13 +62,13 @@ knitr::kable(tb)
 
 get result of reverse geocoding, by `getLocation` function. 
 
-```{r getLocation_to_table_as_TRUE, eval = NOT_CRAN}
+```r
 res <- 
   getLocation(104.043284, 30.666864)
 knitr::kable(res)
 ```
 
-```{r getLocation_to_table_as_FALSE, eval = NOT_CRAN}
+```r
 res <-
    getLocation(104.043284, 30.666864, output = 'XML',to_table = FALSE)
 res
@@ -78,7 +76,7 @@ res
 
 `extractLocation` is created to get result as a data.table.
 
-```{r extractLocation, eval = NOT_CRAN}
+```r
 tb <- 
   extractLocation(res)
 knitr::kable(tb)
@@ -88,13 +86,13 @@ knitr::kable(tb)
 
 get result of reverse geocoding, by `getAdmin` function. 
 
-```{r getAdmin_to_table_as_TRUE, eval = NOT_CRAN}
+```r
 res <- 
   getAdmin('四川省')
 knitr::kable(res)
 ```
 
-```{r getAdmin_to_table_as_FALSE, eval = NOT_CRAN}
+```r
 res <-
    getAdmin('四川省', output = 'XML', to_table = FALSE)
 res
@@ -102,7 +100,7 @@ res
 
 `extractAdmin` is created to get result as a data.table.
 
-```{r extractAdmin, eval = NOT_CRAN}
+```r
 res
 tb <- 
   extractAdmin(res)
@@ -113,13 +111,13 @@ knitr::kable(tb)
 
 get result of reverse geocoding, by `convertCoord` function, here is how to convert coordinate from gps to AutoNavi
 
-```{r convertCoord_to_table_as_TRUE, eval = NOT_CRAN}
+```r
 res <- 
   convertCoord('116.481499,39.990475',coordsys = 'gps')
 knitr::kable(res)
 ```
 
-```{r convertCoord_to_table_as_FALSE, eval = NOT_CRAN}
+```r
 res <-
   convertCoord('116.481499,39.990475',coordsys = 'gps', to_table = FALSE)
 res
@@ -127,7 +125,7 @@ res
 
 `extractConvertCoord` is created to get result as a data.table.
 
-```{r extractConvertCoord, eval = NOT_CRAN}
+```r
 tb <- 
   extractConvertCoord(res)
 knitr::kable(tb)
