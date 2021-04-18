@@ -1,3 +1,6 @@
+# amapGeocode 0.5.1
+* Merge `to_tb` and `output` argument.
+
 # amapGeocode 0.5.0
 * Add parallel operation
 

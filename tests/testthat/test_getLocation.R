@@ -13,7 +13,7 @@ test_that('Reuturn detailed tibble with correct coordinate', {
 # Test whether getCoord can retrun right class withou to_tibble
 test_that('Reuturn raw respone with correct coordinate', {
   skip_if(is.null(getOption('amap_key')))
-  res <- getLocation(104, 30, to_table = F)
+  res <- getLocation(104, 30, output = "JSON")
   res_class <-
     class(res)
 
@@ -26,10 +26,11 @@ test_that('Reuturn na tibble with correct coordinate', {
   res <- getLocation(104, 300)
   res_class <-
     class(res)
-  expect_equal(any(stringr::str_detect(res_class, 'tbl_df')),  TRUE)
+  expect_equal(any(stringr::str_detect(res_class, 'data.frame')),  TRUE)
   expect_equal(all(is.na(res)), TRUE)
 })
 
+# Test parallel request
 test_that('Test parallel request', {
   skip_if(is.null(getOption('amap_key')))
   lng_ls <- rep_len(x = 104, length.out = 100)

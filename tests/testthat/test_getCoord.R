@@ -13,7 +13,7 @@ test_that('Reuturn detailed tibble with correct location', {
 # Test whether getCoord can retrun right class withou to_tibble
 test_that('Reuturn raw respone with correct location', {
   skip_if(is.null(getOption('amap_key')))
-  res <- getCoord('成都中医药大学', to_table = F)
+  res <- getCoord('成都中医药大学', output = "JSON")
   res_class <-
     class(res)
 
@@ -26,7 +26,7 @@ test_that('Reuturn NA tibble with wrong location', {
   res <- getCoord('place unkown')
   res_class <-
     class(res)
-  expect_equal(any(stringr::str_detect(res_class, 'tbl_df')),  TRUE)
+  expect_equal(any(stringr::str_detect(res_class, 'data.frame')),  TRUE)
   expect_equal(all(is.na(res)), TRUE)
 })
 

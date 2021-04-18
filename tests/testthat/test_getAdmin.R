@@ -13,7 +13,7 @@ test_that('Reuturn detailed tibble with correct location', {
 # Test whether getAdmin can retrun right class withou to_tibble
 test_that('Reuturn raw respone with correct location', {
   skip_if(is.null(getOption('amap_key')))
-  res <- getAdmin('四川省', to_table = F)
+  res <- getAdmin('四川省', output = "JSON")
   res_class <-
     class(res)
 
@@ -26,6 +26,6 @@ test_that('Reuturn NA tibble with wrong location', {
   res <-getAdmin('place unkown')
   res_class <-
     class(res)
-  expect_equal(any(stringr::str_detect(res_class, 'tbl_df')),  TRUE)
+  expect_equal(any(stringr::str_detect(res_class, 'data.frame')),  TRUE)
   expect_equal(all(is.na(res)), TRUE)
 })

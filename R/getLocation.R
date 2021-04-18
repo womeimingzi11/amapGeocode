@@ -105,7 +105,7 @@ getLocation <-
     } else {
       # Create local parallel cluster
       cluster <- parallel_cluster_maker(max_core = max_core)
-      # if there is multiple addresses, use getCoord.individual by laapply
+      # if there is multiple addresses, use getCoord.individual by lapply
       ls_queries <-
         parallel::clusterMap(
           cl = cluster,
