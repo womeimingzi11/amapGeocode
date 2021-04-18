@@ -115,12 +115,13 @@ getAdmin <-
 
       # if there is only one keyword, there is no need
       # to return a list which only contain one element.
-      if(length(keywords) ==1) ls_queries <- ls_queries[[1]]
+      if (length(keywords) == 1) ls_queries <- ls_queries[[1]]
 
       # here, getAdmin doesn't support bind rows
       # because what the `getAdmin.individual` get general is a data.table
       # `rbindlist` has the potential probability to
       # confuse the dimension of data.tables
+      ls_queries
   }
 
 #' Get an individual data.table of

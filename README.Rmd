@@ -41,10 +41,15 @@ amapGeocode is inspired by [baidumap](https://github.com/badbye/baidumap) and [b
 
 However, AutoNavi has significant high precise, in my case, the Results from Baidu were unsatisfactory.
 
-## BIG NEWS: Parallel is Here!
+## BIG NEWS: Parallel is Here! But you need a `plan`
+
+Since `v0.5.1`, parallel framework is implemented by [`furrr` package](https://CRAN.R-project.org/package=furrr), of which backend is [`future package`](https://arxiv.org/abs/2008.00553). Refering to [*A Future for R: Best Practices for Package Developers*](https://cran.r-project.org/web/packages/future/vignettes/future-7-for-package-developers.html) and avoiding potential modification to the future strategy, we have removed the automatically parallel operation from every function in `amapGeocode`.
+
+To turn on parallel operation support, just call `future::plan(multisession) # or any other future strategy`.
+
 Since `v0.5`, parallel operation finally comes to `amapGeocode` with the `parallel` package as the backend. There is a really huge performance improvement for batch queries. Here is a demo from my PC with below specification.
 
->MacBook Pro (Retina, 15-inch, Mid 2015)
+>  MacBook Pro (Retina, 15-inch, Mid 2015)
 >
 >  CPU: Intel Core i7 Quad Cores @ 2.2GHz (4 cores with 8 threads)
 >
@@ -58,6 +63,7 @@ Since `v0.5`, parallel operation finally comes to `amapGeocode` with the `parall
 
 ```{r parallel_performance_revealR, message=FALSE}
 library(amapGeocode)
+library(future)
 library(readr)
 sample_site <-
   read_csv("https://gist.githubusercontent.com/womeimingzi11/0fa3f4744f3ebc0f4484a52649f556e5/raw/47a69157f3e26c4d3bc993f3715b9ba88cda9d93/sample_site.csv")
@@ -70,12 +76,12 @@ old <- lapply(sample_site$address, amapGeocode:::getCoord.individual)
 proc.time() - start_time
 
 # Here is the new implement
+plan(multisession)
 start_time <- proc.time()
 new <- getCoord(sample_site$address)
 proc.time() - start_time
-```
 
-Around 8-10 TIMES FASTER with 300 records.
+```
 
 All you need to do is **upgrade** `amapGeocode` to the **latest version** without changing any code!
 
@@ -118,14 +124,14 @@ res <-
 knitr::kable(res)
 ```
 
-The responses we get from **AutoNavi Map API** is **JSON** or **XML**. For readability, we transform them to [`data.table`](https://CRAN.R-project.org/package=data.table), by setting `to_table` argument as `TRUE` by default.
+The responses we get from **AutoNavi Map API** is **JSON** or **XML**. For readability, we transform them to [`data.table`](https://CRAN.R-project.org/package=data.table), by setting `output` argument as `data.table` by default.
 
-If you want to get responses as **JSON** or **XML**, just set `to_table = FALSE`. If you want to extract information from **JSON** or **XML**. The results can further be parsed by `extractCoord`.
+If you want to extract information from **JSON** or **XML**. The results can further be parsed by `extractCoord`.
 
 ```{r getCoord_to_table_as_FALSE}
 # An individual request
 res <-
-  getCoord("成都中医药大学", output = "XML", to_table = FALSE)
+  getCoord("成都中医药大学", output = "JSON")
 res
 ```
 
@@ -146,25 +152,13 @@ res <-
 knitr::kable(res)
 ```
 
-```{r getLocation_to_table_as_FALSE}
-res <-
-  getLocation(104.043284, 30.666864, output = "XML", to_table = FALSE)
-res
-```
-
 `extractLocation` is created to get a result as a data.table.
-
-```{r extractLocation}
-tb <-
-  extractLocation(res)
-knitr::kable(tb)
-```
 
 ### Get Subordinate Administrative Region
 
 get results of reverse geocoding, by `getAdmin` function.
 
-There is a difference between getAdmin and other function, no matter the `to_table` argument is `TRUE` or `FALSE` the result won't be a jointed table by different parent administrative region. For example, with the `to_table = TRUE`, all the lower level administrative region of Province A and Province B will be bound as one data.table, respectively. But the table of province A and table of province B won't be bound further.
+There is a difference between getAdmin and other function, no matter the `output` argument is `data.table` or not, the result won't be a jointed table by different parent administrative region. For example, with the `output = data.table`, all the lower level administrative region of Province A and Province B will be bound as one data.table, respectively. But the table of province A and table of province B won't be bound further.
 
 Because this function supports different administrative region levels, it is nonsense to bind their results.
 
@@ -174,20 +168,7 @@ res <-
 knitr::kable(res)
 ```
 
-```{r getAdmin_to_table_as_FALSE}
-res <-
-  getAdmin("四川省", output = "XML", to_table = FALSE)
-res
-```
-
 `extractAdmin` is created to get results as tibble.
-
-```{r extractAdmin}
-res
-tb <-
-  extractAdmin(res)
-knitr::kable(tb)
-```
 
 ### Convert coordinate point from other coordinate system to AutoNavi
 
@@ -201,19 +182,7 @@ res <-
 knitr::kable(res)
 ```
 
-```{r convertCoord_to_table_as_FALSE}
-res <-
-  convertCoord("116.481499,39.990475", coordsys = "gps", to_table = FALSE)
-res
-```
-
 `extractConvertCoord` is created to get result as data.table.
-
-```{r extractConvertCoord}
-tb <-
-  extractConvertCoord(res)
-knitr::kable(tb)
-```
 
 ## Bug report
 It's very common for API upgrades to make the downstream application, like amapGeocode,which is unavailable. Feel free to [let me know](mailto://chenhan28@gmail.com) once it's broken or just open an <a class="github-button" href="https://github.com/womeimingzi11/amapGeocode/issues" data-color-scheme="no-preference: light; light: light; dark: dark;" data-size="large" aria-label="Issue womeimingzi11/amapGeocode on GitHub">Issue</a>.
