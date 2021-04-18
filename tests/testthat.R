@@ -1,4 +1,4 @@
 library(testthat)
 library(amapGeocode)
 
-test_check('amapGeocode')
+test_check("amapGeocode")

@@ -44,10 +44,9 @@
 #' # or set by key argument in `getCoord()`
 #'
 #' # Get geocode as a data.table
-#' getCoord('IFS Chengdu')
+#' getCoord("IFS Chengdu")
 #' # Get geocode as a XML
-#' getCoord('IFS Chengdu', output = 'XML')
-#'
+#' getCoord("IFS Chengdu", output = "XML")
 #' }
 #'
 #' @seealso \code{\link{extractCoord}}
@@ -139,7 +138,7 @@ getCoord.individual <-
            key = NULL,
            city = NULL,
            sig = NULL,
-           output = 'data.table',
+           output = "data.table",
            callback = NULL,
            keep_bad_request = TRUE,
            ...) {
@@ -147,27 +146,27 @@ getCoord.individual <-
     # Check if key argument is set or not
     # If there is no key, try to get amap_key from option and set as key
     if (is.null(key)) {
-      if (is.null(getOption('amap_key'))) {
+      if (is.null(getOption("amap_key"))) {
         stop(
-          'Please set key argument or set amap_key globally by this command
-             options(amap_key = your key)',
+          "Please set key argument or set amap_key globally by this command
+             options(amap_key = your key)",
           call. = FALSE
         )
       }
-      key = getOption('amap_key')
+      key <- getOption("amap_key")
     }
 
     # Check wether output argument is data.table
     # If it is, override argument, because the API did not support data.table
     # the convert will be performed locally.
     if (output == "data.table") {
-      output = NULL
+      output <- NULL
     }
 
     # assemble url and parameter ----------------------------------------------
-    base_url = 'https://restapi.amap.com/v3/geocode/geo'
+    base_url <- "https://restapi.amap.com/v3/geocode/geo"
 
-    query_parm = list(
+    query_parm <- list(
       key = key,
       address = address,
       city = city,
@@ -182,7 +181,7 @@ getCoord.individual <-
     if (!keep_bad_request) {
       httr::stop_for_status(res)
     } else {
-      httr::warn_for_status(res, paste0(address, 'makes an unsuccessfully request'))
+      httr::warn_for_status(res, paste0(address, "makes an unsuccessfully request"))
     }
 
     res_content <-
@@ -216,9 +215,9 @@ getCoord.individual <-
 #' # or set by key argument in `getCoord()`
 #'
 #' # Get geocode as a XML
-#' getCoord('IFS Chengdu', output = 'XML') %>%
-#'    # extract geocode regions as a data.table
-#'    extractCoord()
+#' getCoord("IFS Chengdu", output = "XML") %>%
+#'   # extract geocode regions as a data.table
+#'   extractCoord()
 #' }
 #'
 #' @seealso \code{\link{getCoord}}
@@ -229,7 +228,7 @@ extractCoord <- function(res) {
     data.table::data.table(
       lng = NA,
       lat = NA,
-      formatted_address = 'Bad Request',
+      formatted_address = "Bad Request",
       country = NA,
       province = NA,
       city = NA,
@@ -243,7 +242,7 @@ extractCoord <- function(res) {
   } else {
     # Detect what kind of response will go to parse ------------------------------
     xml_detect <-
-      any(stringr::str_detect(class(res), 'xml_document'))
+      any(stringr::str_detect(class(res), "xml_document"))
     # Convert xml2 to list
     if (isTRUE(xml_detect)) {
       # get the number of retruned address
@@ -256,7 +255,8 @@ extractCoord <- function(res) {
     # detect whether request succeed or not
     if (res$status != 1) {
       stop(res$info,
-           call. = FALSE)
+        call. = FALSE
+      )
     }
 
     # detect thee number of response
@@ -283,35 +283,39 @@ extractCoord <- function(res) {
       geocode <-
         res$geocodes[[1]]
       # parse lng and lat from location
-      location_in_coord =
+      location_in_coord <-
         # Internal Function from Helpers, no export
         str_loc_to_num_coord(geocode$location)
       # set parameter name
       var_name <-
         c(
-          'formatted_address',
-          'country',
-          'province',
-          'city',
-          'district',
-          'township',
-          'street',
-          'number',
-          'citycode',
-          'adcode'
+          "formatted_address",
+          "country",
+          "province",
+          "city",
+          "district",
+          "township",
+          "street",
+          "number",
+          "citycode",
+          "adcode"
         )
       # extract value of above parameters
-      ls_var <- lapply(var_name,
-                       function(x) {
-                         x = ifelse(sjmisc::is_empty(geocode[[x]]), NA, geocode[[x]])
-                       }) %>%
+      ls_var <- lapply(
+        var_name,
+        function(x) {
+          x <- ifelse(sjmisc::is_empty(geocode[[x]]), NA, geocode[[x]])
+        }
+      ) %>%
         as.data.frame()
 
-      data.table::data.table(lng = location_in_coord[[1]],
-                             lat = location_in_coord[[2]],
-                             ls_var) %>%
+      data.table::data.table(
+        lng = location_in_coord[[1]],
+        lat = location_in_coord[[2]],
+        ls_var
+      ) %>%
         # set name of
-        stats::setNames(c('lng', 'lat', var_name))
+        stats::setNames(c("lng", "lat", var_name))
     }
   }
 }

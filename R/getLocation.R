@@ -63,8 +63,7 @@
 #' # Get reverse-geocode as a table
 #' getLocation(104.043284, 30.666864)
 #' # Get reverse-geocode as a XML
-#' getLocation('104.043284, 30.666864', output = 'XML')
-#'
+#' getLocation("104.043284, 30.666864", output = "XML")
 #' }
 #'
 #' @seealso \code{\link{extractCoord}}
@@ -84,7 +83,7 @@ getLocation <-
            max_core = NULL,
            ...) {
     if (length(lng) != length(lat)) {
-      stop('The numbers of Longitude and Latitude are mismatched', call. = FALSE)
+      stop("The numbers of Longitude and Latitude are mismatched", call. = FALSE)
     }
     if (length(lng) == 1) {
       # if there is one address, use getCoord.individual directly
@@ -206,31 +205,31 @@ getLocation.individual <-
     # Check if key argument is set or not
     # If there is no key, try to get amap_key from option and set as key
     if (is.null(key)) {
-      if (is.null(getOption('amap_key'))) {
+      if (is.null(getOption("amap_key"))) {
         stop(
-          'Please set key argument or set amap_key globally by this command
-             options(amap_key = your key)',
+          "Please set key argument or set amap_key globally by this command
+             options(amap_key = your key)",
           call. = FALSE
         )
       }
-      key = getOption('amap_key')
+      key <- getOption("amap_key")
     }
 
     # Check wether output argument is data.table
     # If it is, override argument, because the API did not support data.table
     # the convert will be performed locally.
     if (output == "data.table") {
-      output = NULL
+      output <- NULL
     }
 
     # Combine lng and lat as location
     # Internal Function from Helpers, no export
-    location = num_coord_to_str_loc(lng, lat)
+    location <- num_coord_to_str_loc(lng, lat)
     # assemble url and parameter ----------------------------------------------
 
-    base_url = 'https://restapi.amap.com/v3/geocode/regeo'
+    base_url <- "https://restapi.amap.com/v3/geocode/regeo"
 
-    query_parm = list(
+    query_parm <- list(
       key = key,
       location = location,
       poitype = poitype,
@@ -246,12 +245,12 @@ getLocation.individual <-
     # GET a response with full url --------------------------------------------
 
     res <-
-      httr::RETRY('GET', url = base_url, query = query_parm)
+      httr::RETRY("GET", url = base_url, query = query_parm)
 
     if (!keep_bad_request) {
       httr::stop_for_status(res)
     } else {
-      httr::warn_for_status(res, paste0(location, 'makes an unsuccessfully request'))
+      httr::warn_for_status(res, paste0(location, "makes an unsuccessfully request"))
     }
 
     res_content <-
@@ -282,11 +281,10 @@ getLocation.individual <-
 #' # Before the `getLocation()` is executed,
 #' # the token should be set by `option(amap_key = 'key')`
 #' # or set by key argument in `getLocation()`
-#
 #' # Get reverse-geocode as a XML
-#' getLocation(104.043284, 30.666864, output = 'XML') %>%
-#'    # extract reverse-geocode regions as a table
-#'    extractLocation()
+#' getLocation(104.043284, 30.666864, output = "XML") %>%
+#'   # extract reverse-geocode regions as a table
+#'   extractLocation()
 #' }
 #'
 #' @seealso \code{\link{getLocation}}
@@ -296,17 +294,17 @@ extractLocation <- function(res) {
   # If there is a bad request, return a table directly.
   if (length(res) == 0) {
     data.table::data.table(
-      country = 'Bad Request',
+      country = "Bad Request",
       province = NA,
       city = NA,
       district = NA,
       township = NA,
-      citycode  = NA,
+      citycode = NA,
       towncode = NA
     )
   } else {
     xml_detect <-
-      any(stringr::str_detect(class(res), 'xml_document'))
+      any(stringr::str_detect(class(res), "xml_document"))
     # Convert xml2 to list
     if (isTRUE(xml_detect)) {
       # get the number of retruned address
@@ -322,7 +320,7 @@ extractLocation <- function(res) {
 
     # If request_stat is failure
     # Return the failure information
-    if (request_stat == '0') {
+    if (request_stat == "0") {
       stop(res$info, call. = FALSE)
     }
 
@@ -344,33 +342,40 @@ extractLocation <- function(res) {
         city = NA,
         district = NA,
         township = NA,
-        citycode  = NA,
+        citycode = NA,
         towncode = NA
       )
     } else {
       addressComponent <-
         regeocode$addressComponent
       # assemble information tible
-      var_name = c('country',
-                   'province',
-                   'city',
-                   'district',
-                   'township',
-                   'citycode',
-                   'towncode')
+      var_name <- c(
+        "country",
+        "province",
+        "city",
+        "district",
+        "township",
+        "citycode",
+        "towncode"
+      )
       # extract value of above parameters
       ls_var <-
-        lapply(var_name,
-               function(x) {
-                 x = ifelse(sjmisc::is_empty(addressComponent[[x]]),
-                            NA,
-                            addressComponent[[x]])
-               }) %>%
+        lapply(
+          var_name,
+          function(x) {
+            x <- ifelse(sjmisc::is_empty(addressComponent[[x]]),
+              NA,
+              addressComponent[[x]]
+            )
+          }
+        ) %>%
         as.data.frame()
-      data.table::data.table(formatted_address = regeocode$formatted_address[[1]],
-                             ls_var) %>%
+      data.table::data.table(
+        formatted_address = regeocode$formatted_address[[1]],
+        ls_var
+      ) %>%
         # set name of table
-        stats::setNames(c('formatted_address', var_name))
+        stats::setNames(c("formatted_address", var_name))
     }
   }
 }

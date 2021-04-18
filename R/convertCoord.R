@@ -42,23 +42,21 @@
 #' # or set by key argument in `convertCoord()`
 #'
 #' # get result of converted coordinate system as a data.table
-#' convertCoord('116.481499,39.990475',coordsys = 'gps')
+#' convertCoord("116.481499,39.990475", coordsys = "gps")
 #' # get result of converted coordinate system as a XML
-#' convertCoord('116.481499,39.990475',coordsys = 'gps', to_table = FALSE)
+#' convertCoord("116.481499,39.990475", coordsys = "gps", to_table = FALSE)
 #' }
 #'
 #' @seealso \code{\link{convertCoord}}
 convertCoord <-
-  function(
-    locations,
-    key = NULL,
-    coordsys = NULL,
-    sig = NULL,
-    output = "data.table",
-    keep_bad_request = TRUE,
-    max_core = NULL,
-    ...
-  ){
+  function(locations,
+           key = NULL,
+           coordsys = NULL,
+           sig = NULL,
+           output = "data.table",
+           keep_bad_request = TRUE,
+           max_core = NULL,
+           ...) {
     if (length(locations) == 1) {
       # if there is one address, use convertCoord.individual directly
       convertCoord.individual(
@@ -120,41 +118,39 @@ convertCoord <-
 #'
 #' @return
 #' Returns a JSON, XML or data.table of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/convert} for more information.
-convertCoord.individual <- function(
-  locations,
-  key = NULL,
-  coordsys = NULL,
-  sig = NULL,
-  output = "data.table",
-  keep_bad_request = TRUE,
-  ...
-) {
+convertCoord.individual <- function(locations,
+                                    key = NULL,
+                                    coordsys = NULL,
+                                    sig = NULL,
+                                    output = "data.table",
+                                    keep_bad_request = TRUE,
+                                    ...) {
   # Arguments check ---------------------------------------------------------
   # Check if key argument is set or not
   # If there is no key, try to get amap_key from option and set as key
   if (is.null(key)) {
-    if (is.null(getOption('amap_key'))) {
+    if (is.null(getOption("amap_key"))) {
       stop(
-        'Please set key argument or set amap_key globally by this command
-                 options(amap_key = your key)',
+        "Please set key argument or set amap_key globally by this command
+                 options(amap_key = your key)",
         call. = FALSE
       )
     }
-    key = getOption('amap_key')
+    key <- getOption("amap_key")
   }
 
   # Check wether output argument is data.table
   # If it is, override argument, because the API did not support data.table
   # the convert will be performed locally.
   if (output == "data.table") {
-    output = NULL
+    output <- NULL
   }
 
   # assemble url and parameter ----------------------------------------------
 
-  base_url = 'https://restapi.amap.com/v3/assistant/coordinate/convert'
+  base_url <- "https://restapi.amap.com/v3/assistant/coordinate/convert"
 
-  query_parm = list(
+  query_parm <- list(
     key = key,
     locations = locations,
     coordsys = coordsys,
@@ -165,12 +161,12 @@ convertCoord.individual <- function(
   # GET a response with full url --------------------------------------------
 
   res <-
-    httr::RETRY('GET', url = base_url, query = query_parm)
+    httr::RETRY("GET", url = base_url, query = query_parm)
 
   if (!keep_bad_request) {
     httr::stop_for_status(res)
   } else {
-    httr::warn_for_status(res, paste0(locations, 'makes an unsuccessfully request'))
+    httr::warn_for_status(res, paste0(locations, "makes an unsuccessfully request"))
   }
 
   res_content <-
@@ -204,9 +200,9 @@ convertCoord.individual <- function(
 #' # or set by key argument in `convertCoord()`
 #'
 #' # get result of converted coordinate system as a XML
-#' convertCoord('116.481499,39.990475',coordsys = 'gps', to_table = FALSE) %>%
-#'    # extract result of converted coordinate system as a data.table
-#'    extractConvertCoord()
+#' convertCoord("116.481499,39.990475", coordsys = "gps", to_table = FALSE) %>%
+#'   # extract result of converted coordinate system as a data.table
+#'   extractConvertCoord()
 #' }
 #'
 #' @seealso \code{\link{convertCoord}}
@@ -215,37 +211,40 @@ extractConvertCoord <- function(res) {
   # If there is a bad request, return a data.table directly.
   if (length(res) == 0) {
     data.table::data.table(
-      lng = 'Bad Request',
-      lat = 'Bad Request'
+      lng = "Bad Request",
+      lat = "Bad Request"
     )
-  } else {  xml_detect <-
-    any(stringr::str_detect(class(res), 'xml_document'))
-  # Convert xml2 to list
-  if (isTRUE(xml_detect)) {
-    # get the number of retruned address
-    res <-
-      xml2::as_list(res)
-    res <-
-      res$response
+  } else {
+    xml_detect <-
+      any(stringr::str_detect(class(res), "xml_document"))
+    # Convert xml2 to list
+    if (isTRUE(xml_detect)) {
+      # get the number of retruned address
+      res <-
+        xml2::as_list(res)
+      res <-
+        res$response
+    }
+
+    # check the status of request
+    request_stat <-
+      res$status
+
+    # If request_stat is failure
+    # Return the failure information
+    if (request_stat == "0") {
+      stop(res$info,
+        call. = FALSE
+      )
+    }
+
+    # parse lng and lat from location
+    location_in_coord <-
+      # Internal Function from Helpers, no export
+      str_loc_to_num_coord(res$locations)
+    data.table::data.table(
+      lng = location_in_coord[[1]],
+      lat = location_in_coord[[2]]
+    )
   }
-
-  # check the status of request
-  request_stat <-
-    res$status
-
-  # If request_stat is failure
-  # Return the failure information
-  if(request_stat == '0'){
-    stop(res$info,
-         call. = FALSE)
-  }
-
-  # parse lng and lat from location
-  location_in_coord =
-    # Internal Function from Helpers, no export
-    str_loc_to_num_coord(res$locations)
-  data.table::data.table(
-    lng = location_in_coord[[1]],
-    lat = location_in_coord[[2]]
-  )}
 }

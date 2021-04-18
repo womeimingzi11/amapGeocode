@@ -58,10 +58,9 @@
 #' # or set by key argument in `getAdmin()`
 #'
 #' # Get subordinate administrative regions as a data.table
-#' getAdmin('Sichuan Province')
+#' getAdmin("Sichuan Province")
 #' # Get subordinate administrative regions as a XML
-#' getCoord('Sichuan Province', output = 'XML')
-#'
+#' getCoord("Sichuan Province", output = "XML")
 #' }
 #'
 #' @seealso \code{\link{extractAdmin}}
@@ -181,27 +180,27 @@ getAdmin.individual <-
     # Check if key argument is set or not
     # If there is no key, try to get amap_key from option and set as key
     if (is.null(key)) {
-      if (is.null(getOption('amap_key'))) {
+      if (is.null(getOption("amap_key"))) {
         stop(
-          'Please set key argument or set amap_key globally by this command
-               options(amap_key = your key)',
+          "Please set key argument or set amap_key globally by this command
+               options(amap_key = your key)",
           call. = FALSE
         )
       }
-      key = getOption('amap_key')
+      key <- getOption("amap_key")
     }
 
     # Check wether output argument is data.table
     # If it is, override argument, because the API did not support data.table
     # the convert will be performed locally.
     if (output == "data.table") {
-      output = NULL
+      output <- NULL
     }
 
     # assemble url and parameter ----------------------------------------------
-    base_url = 'https://restapi.amap.com/v3/config/district'
+    base_url <- "https://restapi.amap.com/v3/config/district"
 
-    query_parm = list(
+    query_parm <- list(
       key = key,
       keywords = keywords,
       subdistrict = subdistrict,
@@ -215,12 +214,12 @@ getAdmin.individual <-
 
     # GET a response with full url --------------------------------------------
     res <-
-      httr::RETRY('GET', url = base_url, query = query_parm)
+      httr::RETRY("GET", url = base_url, query = query_parm)
 
     if (!keep_bad_request) {
       httr::stop_for_status(res)
     } else {
-      httr::warn_for_status(res, paste0(keywords, 'makes an unsuccessfully request'))
+      httr::warn_for_status(res, paste0(keywords, "makes an unsuccessfully request"))
     }
 
     res_content <-
@@ -229,7 +228,7 @@ getAdmin.individual <-
     # Transform response to data.table or return directly -------------------------
 
     if (is.null(output)) {
-    return(extractAdmin(res_content))
+      return(extractAdmin(res_content))
     } else {
       return(res_content)
     }
@@ -254,10 +253,10 @@ getAdmin.individual <-
 #' # the token should be set by `option(amap_key = 'key')`
 #' # or set by key argument in `getAdmin()`
 #'
-#' #Get subordinate administrative regions as a XML
-#' getAdmin('Sichuan Province', output = 'XML') %>%
-#'    # extract subordinate administrative regions as a data.table
-#'    extractAdmin()
+#' # Get subordinate administrative regions as a XML
+#' getAdmin("Sichuan Province", output = "XML") %>%
+#'   # extract subordinate administrative regions as a data.table
+#'   extractAdmin()
 #' }
 #'
 #' @seealso \code{\link{getAdmin}}
@@ -270,14 +269,14 @@ extractAdmin <- function(res) {
     data.table::data.table(
       lng = NA,
       lat = NA,
-      name = 'Bad Request',
+      name = "Bad Request",
       level = NA,
       citycode = NA,
       adcode = NA
     )
   } else {
     xml_detect <-
-      any(stringr::str_detect(class(res), 'xml_document'))
+      any(stringr::str_detect(class(res), "xml_document"))
     # Convert xml2 to list
     if (isTRUE(xml_detect)) {
       # get the number of retruned address
@@ -311,14 +310,16 @@ extractAdmin <- function(res) {
         res$districts[[1]]
       # Select what variable do we need, except coordinate point
       var_name <-
-        c('name',
-          'level',
-          'citycode',
-          'adcode')
+        c(
+          "name",
+          "level",
+          "citycode",
+          "adcode"
+        )
 
       lapply(sub_res$districts, function(district) {
         # parse lng and lat from location (district$center)
-        location_in_coord =
+        location_in_coord <-
           # Internal Function from Helpers, no export
           str_loc_to_num_coord(district$center)
         # parse other information
@@ -329,13 +330,15 @@ extractAdmin <- function(res) {
           as.data.frame() %>%
           stats::setNames(var_name)
         # assemble information and coordinate
-        data.table::data.table(lng = location_in_coord[[1]],
-                               lat = location_in_coord[[2]],
-                               ls_var)
+        data.table::data.table(
+          lng = location_in_coord[[1]],
+          lat = location_in_coord[[2]],
+          ls_var
+        )
       }) %>%
         data.table::rbindlist()
     } else {
-      'Not support current extraction task.'
+      "Not support current extraction task."
     }
   }
 }
