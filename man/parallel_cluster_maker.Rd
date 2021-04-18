@@ -2,19 +2,26 @@
 % Please edit documentation in R/helpers.R
 \name{parallel_cluster_maker}
 \alias{parallel_cluster_maker}
-\title{Create a local parallel cluster}
+\title{Create a local parallel cluster
+(NOT WORK)}
 \usage{
 parallel_cluster_maker(max_core = NULL)
 }
 \arguments{
 \item{max_core}{Optional \cr
-A threshold of max cores for parallel operation. There is no need to set a `max_core` generally.
-But for some extreme high performance case, like `AMD Threadripper` and `Intel Xeon`,
+A threshold of max cores for parallel operation.
+There is no need to set a `max_core` generally.
+But for some extreme high performance case,
+like `AMD Threadripper` and `Intel Xeon`,
 super multiple-core CPU will meet the limitation of queries per second.}
 }
 \value{
 A local parallel cluster
 }
 \description{
-Create a local parallel cluster
+\Sexpr[results=rd]{lifecycle::badge("deprecated")}\cr
+}
+\details{
+The parallel framework has been transported to `furrr`,
+`parallel_cluster_maker` function does not work anymore since v0.5.1
 }

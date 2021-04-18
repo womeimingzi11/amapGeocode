@@ -15,22 +15,24 @@ getAdmin(
   callback = NULL,
   output = "data.table",
   keep_bad_request = TRUE,
-  max_core = NULL,
   ...
 )
 }
 \arguments{
 \item{keywords}{Required.\cr
 Search keywords. \cr
-Rules: Country/Region, Province/State, City, County/District, Town, Country, Road, Number, Room, Building.}
+Rules: Country/Region, Province/State,
+City, County/District, Town, Country, Road, Number, Room, Building.}
 
 \item{key}{Optional.\cr
 Amap Key. \cr
-Applied from 'AutoNavi' Map API official website\url{https://lbs.amap.com/dev/}}
+Applied from 'AutoNavi' Map API
+official website\url{https://lbs.amap.com/dev/}}
 
 \item{subdistrict}{Optional.\cr
 Subordinate Administrative Level.\cr
-Display level of subordinate administrative regions. Available value: 0,1,2,3.\cr
+Display level of subordinate administrative regions.
+Available value: 0,1,2,3.\cr
 `0` do not return subordinate administrative regions.\cr
 `1` return first one subordinate administrative regions.\cr
 `2` return first two subordinate administrative regions.\cr
@@ -38,7 +40,9 @@ Display level of subordinate administrative regions. Available value: 0,1,2,3.\c
 
 \item{page}{Optional.\cr
 Which page to return.\cr
-Each time the outmost layer will return a maximum of 20 records. If the limit is exceeded, please request the next page of records with the page argument.}
+Each time the outmost layer will return a maximum of 20 records.
+If the limit is exceeded,
+please request the next page of records with the page argument.}
 
 \item{offset}{Optional.\cr
 Maximum records per page.\cr
@@ -46,17 +50,22 @@ Maximum value is 20.}
 
 \item{extensions}{Optional.\cr
 Return results controller.\cr
-`base`: does not return the coordinates of the administrative district boundary.\cr
-`all`: returns only the boundary value of the current query district, not the boundary value of the child node.}
+`base`: does not return the coordinates of
+the administrative district boundary.\cr
+`all`: returns only the boundary value of the current query district,
+not the boundary value of the child node.}
 
 \item{filter}{Optional.\cr
 Filter administrative regions.\cr
-Filtering by designated administrative divisions, which returns information only for the province/municipality.\cr
-It is strongly recommended to fill in this parameter in order to ensure the correct records.}
+Filtering by designated administrative divisions,
+which returns information only for the province/municipality.\cr
+It is strongly recommended to fill in this parameter
+in order to ensure the correct records.}
 
 \item{callback}{Optional.\cr
 Callback Function. \cr
-The value of callback is the customized function. Only available with JSON output.
+The value of callback is the customized function.
+Only available with JSON output.
 If you don't understand, it means you don't need it, just like me.}
 
 \item{output}{Optional.\cr
@@ -64,11 +73,16 @@ If you don't understand, it means you don't need it, just like me.}
 Support JSON, XML and data.table. The default value is data.table.}
 
 \item{keep_bad_request}{Optional.\cr
-Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request}
+Keep Bad Request to avoid breaking a workflow,
+especially meaningful in a batch request}
 
-\item{max_core}{Optional.\cr
-A threshold of max cores for parallel operation. There is no need to set a `max_core` generally.
-But for some extreme high performance case, like `AMD Threadripper` and `Intel Xeon`,
+\item{max_core}{Deprecated.\cr
+Since 0.5.1, parallel operation has been replaced by
+`furrr::future_map`, and this argument does not work anymore\cr
+A threshold of max cores for parallel operation.
+There is no need to set a `max_core` generally.
+But for some extreme high performance case,
+like `AMD Threadripper` and `Intel Xeon`,
 super multiple-core CPU will meet the limitation of queries per second.}
 
 \item{to_table}{Deprecated.\cr
@@ -76,7 +90,10 @@ Transform response content to data.table.
 Since 0.5.1, this argument was merged into `output`.}
 }
 \value{
-Returns a JSON or XML of results containing detailed subordinate administrative region information. See \url{https://lbs.amap.com/api/webservice/guide/api/district} for more information.
+Returns a JSON or XML of results
+containing detailed subordinate administrative region information.
+See \url{https://lbs.amap.com/api/webservice/guide/api/district}
+for more information.
 }
 \description{
 Get Subordinate Administrative Regions from location
@@ -90,10 +107,9 @@ library(amapGeocode)
 # or set by key argument in `getAdmin()`
 
 # Get subordinate administrative regions as a data.table
-getAdmin('Sichuan Province')
+getAdmin("Sichuan Province")
 # Get subordinate administrative regions as a XML
-getCoord('Sichuan Province', output = 'XML')
-
+getCoord("Sichuan Province", output = "XML")
 }
 
 }

@@ -11,7 +11,10 @@ extractCoord(res)
 Response from getCoord.}
 }
 \value{
-Returns a data.table which extracts detailed coordinate information from results of getCoord. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
+Returns a data.table which extracts
+detailed coordinate information from results of getCoord.
+See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo}
+for more information.
 }
 \description{
 Extract coordinate from location request
@@ -26,9 +29,9 @@ library(amapGeocode)
 # or set by key argument in `getCoord()`
 
 # Get geocode as a XML
-getCoord('IFS Chengdu', output = 'XML') \%>\%
-   # extract geocode regions as a data.table
-   extractCoord()
+getCoord("IFS Chengdu", output = "XML") \%>\%
+  # extract geocode regions as a data.table
+  extractCoord()
 }
 
 }

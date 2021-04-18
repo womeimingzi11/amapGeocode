@@ -2,7 +2,8 @@
 % Please edit documentation in R/convertCoord.R
 \name{convertCoord.individual}
 \alias{convertCoord.individual}
-\title{Convert an individual coordinate from different coordinate systems to AutoNavi system}
+\title{Convert an individual coordinate from
+different coordinate systems to AutoNavi system}
 \usage{
 convertCoord.individual(
   locations,
@@ -28,22 +29,28 @@ Support: `gps`,`mapbar`,`baidu` and `autonavi`-not convert}
 
 \item{sig}{Optional.\cr
 Digital Signature.\cr
-How to use this argument? Please check here{https://lbs.amap.com/faq/account/key/72}}
+How to use this argument?
+Please check here{https://lbs.amap.com/faq/account/key/72}}
 
 \item{output}{Optional.\cr
 Output Data Structure. \cr
 Support JSON, XML and data.table. The default value is data.table.}
 
 \item{keep_bad_request}{Optional.\cr
-Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request}
+Keep Bad Request to avoid breaking a workflow,
+especially meaningful in a batch request}
 
 \item{to_table}{Deprecated.\cr
 Transform response content to data.table.
 Since 0.5.1, this argument was merged into `output`.}
 }
 \value{
-Returns a JSON, XML or data.table of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/convert} for more information.
+Returns a JSON, XML or data.table of results
+containing detailed geocode information.
+See \url{https://lbs.amap.com/api/webservice/guide/api/convert}
+for more information.
 }
 \description{
-Convert an individual coordinate from different coordinate systems to AutoNavi system
+Convert an individual coordinate from
+different coordinate systems to AutoNavi system
 }

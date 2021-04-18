@@ -33,8 +33,8 @@ test_that("Reuturn na tibble with correct coordinate", {
 # Test parallel request
 test_that("Test parallel request", {
   skip_if(is.null(getOption("amap_key")))
-  lng_ls <- rep_len(x = 104, length.out = 100)
-  lat_ls <- rep_len(x = 30, length.out = 100)
+  lng_ls <- rep_len(x = 104, length.out = 10)
+  lat_ls <- rep_len(x = 30, length.out = 10)
   res <- getLocation(lng = lng_ls, lat = lat_ls, max_core = 12)
   unique_res <-
     unique(res)

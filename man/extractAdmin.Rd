@@ -3,7 +3,8 @@
 \name{extractAdmin}
 \alias{extractAdmin}
 \title{Get Subordinate Administrative Region from getAdmin request
-Now, it only support extract the first layer of subordinate administrative region information.}
+Now, it only support extract the first layer of
+subordinate administrative region information.}
 \usage{
 extractAdmin(res)
 }
@@ -11,11 +12,16 @@ extractAdmin(res)
 \item{res}{Response from getAdmin.}
 }
 \value{
-Returns a data.table which extracts detailed subordinate administrative region information from results of getCoord. See \url{https://lbs.amap.com/api/webservice/guide/api/district} for more information.
+Returns a data.table which extracts
+detailed subordinate administrative region information
+from results of getCoord.
+See \url{https://lbs.amap.com/api/webservice/guide/api/district}
+for more information.
 }
 \description{
 Get Subordinate Administrative Region from getAdmin request
-Now, it only support extract the first layer of subordinate administrative region information.
+Now, it only support extract the first layer of
+subordinate administrative region information.
 }
 \examples{
 \dontrun{
@@ -26,10 +32,10 @@ library(amapGeocode)
 # the token should be set by `option(amap_key = 'key')`
 # or set by key argument in `getAdmin()`
 
-#Get subordinate administrative regions as a XML
-getAdmin('Sichuan Province', output = 'XML') \%>\%
-   # extract subordinate administrative regions as a data.table
-   extractAdmin()
+# Get subordinate administrative regions as a XML
+getAdmin("Sichuan Province", output = "XML") \%>\%
+  # extract subordinate administrative regions as a data.table
+  extractAdmin()
 }
 
 }

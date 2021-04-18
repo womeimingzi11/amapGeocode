@@ -11,7 +11,6 @@ convertCoord(
   sig = NULL,
   output = "data.table",
   keep_bad_request = TRUE,
-  max_core = NULL,
   ...
 )
 }
@@ -29,18 +28,24 @@ Support: `gps`,`mapbar`,`baidu` and `autonavi`-not convert}
 
 \item{sig}{Optional.\cr
 Digital Signature.\cr
-How to use this argument? Please check here{https://lbs.amap.com/faq/account/key/72}}
+How to use this argument?
+Please check here{https://lbs.amap.com/faq/account/key/72}}
 
 \item{output}{Optional.\cr
 Output Data Structure. \cr
 Support JSON, XML and data.table. The default value is data.table.}
 
 \item{keep_bad_request}{Optional.\cr
-Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request}
+Keep Bad Request to avoid breaking a workflow,
+especially meaningful in a batch request}
 
-\item{max_core}{Optional.\cr
-A threshold of max cores for parallel operation. There is no need to set a `max_core` generally.
-But for some extreme high performance case, like `AMD Threadripper` and `Intel Xeon`,
+\item{max_core}{Deprecated.\cr
+Since 0.5.1, parallel operation has been replaced by
+`furrr::future_map`, and this argument does not work anymore\cr
+A threshold of max cores for parallel operation.
+There is no need to set a `max_core` generally.
+But for some extreme high performance case,
+like `AMD Threadripper` and `Intel Xeon`,
 super multiple-core CPU will meet the limitation of queries per second.}
 
 \item{to_table}{Deprecated.\cr
@@ -48,12 +53,18 @@ Transform response content to data.table.
 Since 0.5.1, this argument was merged into `output`.}
 }
 \value{
-Returns a JSON, XML or data.table of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/convert} for more information.
+Returns a JSON, XML or data.table of results
+containing detailed geocode information.
+See \url{https://lbs.amap.com/api/webservice/guide/api/convert}
+for more information.
 }
 \description{
-\Sexpr[results=rd]{lifecycle::badge("experimental")}
+\Sexpr[results=rd]{lifecycle::badge("experimental")}\cr
+}
+\details{
 This function is a wrap of coordinate convert API of AutoNavi Map Service.\cr
-While how to input the origin coordinate is sill unstable and 95\% sure that it will have a breaking change in the future.
+While how to input the origin coordinate is sill unstable and
+ 95\% sure that it will have a breaking change in the future.
 Please consider carefully if introduced this function in product environment.
 }
 \examples{
@@ -65,9 +76,9 @@ library(amapGeocode)
 # or set by key argument in `convertCoord()`
 
 # get result of converted coordinate system as a data.table
-convertCoord('116.481499,39.990475',coordsys = 'gps')
+convertCoord("116.481499,39.990475", coordsys = "gps")
 # get result of converted coordinate system as a XML
-convertCoord('116.481499,39.990475',coordsys = 'gps', to_table = FALSE)
+convertCoord("116.481499,39.990475", coordsys = "gps", to_table = FALSE)
 }
 
 }

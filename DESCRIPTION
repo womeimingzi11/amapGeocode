@@ -20,12 +20,12 @@ Imports:
     magrittr,
     sjmisc,
     stats,
-    stringr,
     xml2,
-    lifecycle,
     data.table,
-    parallel
+    lifecycle,
+    furrr
 Suggests: 
+    stringr,
     knitr,
     rmarkdown,
     testthat,

@@ -22,22 +22,33 @@ str_loc_to_num_coord <- function(str_location) {
 #' @return
 #' Comma binded coordinate string
 num_coord_to_str_loc <- function(lng, lat) {
-  # From the document of AutoNavi Map API, the significant figures of Longitude and Latitude should be lower than 6
+  # From the document of AutoNavi Map API,
+  # the significant figures of Longitude and Latitude
+  # should be lower than 6
   paste(round(lng, 6), round(lat, 6), sep = ",")
 }
 
 #' Create a local parallel cluster
+#' (NOT WORK)
+#'
+#' \Sexpr[results=rd]{lifecycle::badge("deprecated")}\cr
+#'
+#' The parallel framework has been transported to `furrr`,
+#' `parallel_cluster_maker` function does not work anymore since v0.5.1
 #'
 #' @param max_core Optional \cr
-#' A threshold of max cores for parallel operation. There is no need to set a `max_core` generally.
-#' But for some extreme high performance case, like `AMD Threadripper` and `Intel Xeon`,
+#' A threshold of max cores for parallel operation.
+#' There is no need to set a `max_core` generally.
+#' But for some extreme high performance case,
+#' like `AMD Threadripper` and `Intel Xeon`,
 #' super multiple-core CPU will meet the limitation of queries per second.
 #' @return
 #' A local parallel cluster
 parallel_cluster_maker <- function(max_core = NULL) {
   # detect the number of logical cores
   # generally, to avoid the OS stuck, we often drop at least 1 core.
-  # however, http request is really a light weight task for modern device, even a arm v7 device,
+  # however, http request is really
+  # a light weight task for modern device,
   # we use all the cores to speed up the request.
   if (is.null(max_core)) {
     core_num <-
@@ -48,5 +59,5 @@ parallel_cluster_maker <- function(max_core = NULL) {
     core_num <-
       ifelse(core_num > max_core, max_core, core_num)
   }
-  cluster <- parallel::makeCluster(core_num)
+  parallel::makeCluster(core_num)
 }

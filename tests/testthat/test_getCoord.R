@@ -33,7 +33,7 @@ test_that("Reuturn NA tibble with wrong location", {
 # Test parallel request
 test_that("Test parallel request", {
   skip_if(is.null(getOption("amap_key")))
-  add_ls <- rep_len(x = "成都中医药大学", length.out = 200)
+  add_ls <- rep_len(x = "成都中医药大学", length.out = 10)
   res <- getCoord(add_ls, max_core = 4)
   unique_res <-
     unique(res)

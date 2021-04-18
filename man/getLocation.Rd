@@ -30,11 +30,14 @@ Latitude in decimal}
 
 \item{key}{Optional.\cr
 Amap Key. \cr
-Applied from 'AutoNavi' Map API official website\url{https://lbs.amap.com/dev/}}
+Applied from 'AutoNavi' Map API official
+website\url{https://lbs.amap.com/dev/}}
 
 \item{poitype}{Optional.\cr
 Return nearby POI types.\cr
-When `extensions = all`, this argument makes sense. For detailed poitype type, please refer\url{https://lbs.amap.com/api/webservice/download}}
+When `extensions = all`, this argument makes sense.
+For detailed poitype type,
+please refer\url{https://lbs.amap.com/api/webservice/download}}
 
 \item{radius}{Optional.\cr
 Searching radius.\cr
@@ -42,7 +45,8 @@ radius ranges from 0 to 3000, the default value is 1000, unit: meter.}
 
 \item{extensions}{Optional.\cr
 Return results controller.\cr
-`base`: the default value, it only return base information about coordinate.\cr
+`base`: the default value,
+it only return base information about coordinate.\cr
 `all`: it will return nearby POI, road information and cross information.}
 
 \item{roadlevel}{Optional.\cr
@@ -53,7 +57,8 @@ When `extensions = all`, this argument makes sense. \cr
 
 \item{sig}{Optional.\cr
 Digital Signature.\cr
-How to use this argument? Please check here{https://lbs.amap.com/faq/account/key/72}}
+How to use this argument? Please check here
+{https://lbs.amap.com/faq/account/key/72}}
 
 \item{output}{Optional.\cr
 Output Data Structure. \cr
@@ -61,7 +66,8 @@ Support JSON, XML and data.table. The default value is data.table.}
 
 \item{callback}{Optional.\cr
 Callback Function. \cr
-The value of callback is the customized function. Only available with JSON output.
+The value of callback is the customized function.
+Only available with JSON output.
 If you don't understand, it means you don't need it, just like me.}
 
 \item{homeorcorp}{Optional.\cr
@@ -72,11 +78,16 @@ When `extensions = all`, this argument makes sense. \cr
 `homeorcorp=2`, corporation related POIs are first, by default.\cr}
 
 \item{keep_bad_request}{Optional.\cr
-Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request}
+Keep Bad Request to avoid breaking a workflow,
+especially meaningful in a batch request}
 
-\item{max_core}{Optional.\cr
-A threshold of max cores for parallel operation. There is no need to set a `max_core` generally.
-But for some extreme high performance case, like `AMD Threadripper` and `Intel Xeon`,
+\item{max_core}{Deprecated.\cr
+Since 0.5.1, parallel operation has been replaced by
+`furrr::future_map`, and this argument does not work anymore\cr
+A threshold of max cores for parallel operation.
+There is no need to set a `max_core` generally.
+But for some extreme high performance case,
+like `AMD Threadripper` and `Intel Xeon`,
 super multiple-core CPU will meet the limitation of queries per second.}
 
 \item{to_table}{Deprecated.\cr
@@ -84,7 +95,10 @@ Transform response content to data.table.
 Since 0.5.1, this argument was merged into `output`.}
 }
 \value{
-Returns a JSON, XML or data.table of results containing detailed reverse geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
+Returns a JSON, XML or data.table of results
+containing detailed reverse geocode information.
+See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo}
+for more information.
 }
 \description{
 Get location from coordinate
@@ -100,8 +114,7 @@ library(amapGeocode)
 # Get reverse-geocode as a table
 getLocation(104.043284, 30.666864)
 # Get reverse-geocode as a XML
-getLocation('104.043284, 30.666864', output = 'XML')
-
+getLocation("104.043284, 30.666864", output = "XML")
 }
 
 }

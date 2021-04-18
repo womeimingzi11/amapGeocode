@@ -2,29 +2,41 @@
 #'
 #' @param address Required.\cr
 #' Structured address information. \cr
-#' Rules: Country/Region, Province/State, City, County/District, Town, Country, Road, Number, Room, Building.
+#' Rules: Country/Region, Province/State,
+#' City, County/District, Town, Country, Road, Number, Room, Building.
 #' @param key Optional.\cr
 #' Amap Key. \cr
-#' Applied from 'AutoNavi' Map API official website\url{https://lbs.amap.com/dev/}
+#' Applied from 'AutoNavi' Map API official
+#' website\url{https://lbs.amap.com/dev/}
 #' @param city Optional.\cr
 #' Specify the City. \cr
-#' Support: city in Chinese, full pinyin, citycode, adcode\url{https://lbs.amap.com/api/webservice/download}.\cr
-#' The default value is NULL which will search country-wide. The default value is NULL
+#' Support: city in Chinese, full pinyin, citycode,
+#' adcode\url{https://lbs.amap.com/api/webservice/download}.\cr
+#' The default value is NULL which will search country-wide.
+#' The default value is NULL
 #' @param sig Optional.\cr
 #' Digital Signature.\cr
-#' How to use this argument? Please check here{https://lbs.amap.com/faq/account/key/72}
+#' How to use this argument?
+#' Please check here{https://lbs.amap.com/faq/account/key/72}
 #' @param output Optional.\cr
 #' Output Data Structure. \cr
 #' Support JSON, XML and data.table. The default value is data.table.
 #' @param callback Optional.\cr
 #' Callback Function. \cr
-#' The value of callback is the customized function. Only available with JSON output.
+#' The value of callback is the customized function.
+#' Only available with JSON output.
 #' If you don't understand, it means you don't need it, just like me.
 #' @param keep_bad_request Optional.\cr
-#' Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request
-#' @param max_core Optional.\cr
-#' A threshold of max cores for parallel operation. There is no need to set a `max_core` generally.
-#' But for some extreme high performance case, like `AMD Threadripper` and `Intel Xeon`,
+#' Keep Bad Request to avoid breaking a workflow,
+#' especially meaningful in a batch request
+#'
+#' @param max_core Deprecated.\cr
+#' Since 0.5.1, parallel operation has been replaced by
+#' `furrr::future_map`, and this argument does not work anymore\cr
+#' A threshold of max cores for parallel operation.
+#' There is no need to set a `max_core` generally.
+#' But for some extreme high performance case,
+#' like `AMD Threadripper` and `Intel Xeon`,
 #' super multiple-core CPU will meet the limitation of queries per second.
 #'
 #' @param to_table Deprecated.\cr
@@ -32,7 +44,10 @@
 #' Since 0.5.1, this argument was merged into `output`.
 #'
 #' @return
-#' Returns a JSON, XML or data.table of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
+#' Returns a JSON, XML or data.table of results
+#' containing detailed geocode information.
+#' See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo}
+#' for more information.
 #' @export
 #'
 #' @examples
@@ -60,45 +75,32 @@ getCoord <-
            output = "data.table",
            callback = NULL,
            keep_bad_request = TRUE,
-           max_core = NULL,
            ...) {
-    if (length(address) == 1) {
-      # if there is one address, use getCoord.individual directly
-      getCoord.individual(
+    # handle multiple or solo address,
+    # parallel operation will be applied
+    # if a strategy has been chosen by `future::plan()`
+    ls_queries <-
+      furrr::future_map(
+        address,
+        getCoord.individual,
         key = key,
-        address = address,
         city = city,
         sig = sig,
         output = output,
         callback = callback,
-        to_table = to_table,
         keep_bad_request = keep_bad_request
       )
-    } else {
-      # Create local parallel cluster
-      cluster <- parallel_cluster_maker(max_core = max_core)
-      # if there is multiple addresses, use getCoord.individual by parLapply
-      ls_queries <-
-        parallel::parLapply(
-          cl = cluster,
-          address,
-          getCoord.individual,
-          key = key,
-          city = city,
-          sig = sig,
-          output = output,
-          callback = callback,
-          keep_bad_request = keep_bad_request
-        )
-      # stop cluster
-      parallel::stopCluster(cluster)
-      # detect return list of raw requests or `rbindlist` parsed data.table
 
-      if (output == "data.table") {
-        return(data.table::rbindlist(ls_queries))
-      } else {
-        return(ls_queries)
-      }
+    # if there is only one keyword, there is no need
+    # to return a list which only contain one element.
+    if (length(address) == 1)
+      ls_queries <- ls_queries[[1]]
+
+    # detect return list of raw requests or `rbindlist` parsed data.table
+    if (output == "data.table" && length(address) != 1) {
+      data.table::rbindlist(ls_queries)
+    } else {
+      ls_queries
     }
   }
 
@@ -106,33 +108,43 @@ getCoord <-
 #'
 #' @param address Required.\cr
 #' Structured address information. \cr
-#' Rules: Country/Region, Province/State, City, County/District, Town, Country, Road, Number, Room, Building.
+#' Rules: Country/Region, Province/State, City, County/District,
+#' Town, Country, Road, Number, Room, Building.
 #' @param key Optional.\cr
 #' Amap Key. \cr
-#' Applied from 'AutoNavi' Map API official website\url{https://lbs.amap.com/dev/}
+#' Applied from 'AutoNavi' Map API official
+#' website\url{https://lbs.amap.com/dev/}
 #' @param city Optional.\cr
 #' Specify the City. \cr
-#' Support: city in Chinese, full pinyin, citycode, adcode\url{https://lbs.amap.com/api/webservice/download}.\cr
-#' The default value is NULL which will search country-wide. The default value is NULL
+#' Support: city in Chinese, full pinyin, citycode,
+#' adcode\url{https://lbs.amap.com/api/webservice/download}.\cr
+#' The default value is NULL which will search country-wide.
+#' The default value is NULL
 #' @param sig Optional.\cr
 #' Digital Signature.\cr
-#' How to use this argument? Please check here{https://lbs.amap.com/faq/account/key/72}
+#' How to use this argument? Please check
+#' here{https://lbs.amap.com/faq/account/key/72}
 #' @param output Optional.\cr
 #'  Output Data Structure. \cr
 #' Support JSON, XML and data.table. The default value is data.table.
 #' @param callback Optional.\cr
 #' Callback Function. \cr
-#' The value of callback is the customized function. Only available with JSON output.
+#' The value of callback is the customized function.
+#' Only available with JSON output.
 #' If you don't understand, it means you don't need it, just like me.
 #' @param keep_bad_request Optional.\cr
-#' Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request
+#' Keep Bad Request to avoid breaking a workflow,
+#' especially meaningful in a batch request
 #'
 #' @param to_table Deprecated.\cr
 #' Transform response content to data.table.
 #' Since 0.5.1, this argument was merged into `output`.
 #'
 #' @return
-#' Returns a JSON, XML or data.table of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
+#' Returns a JSON, XML or data.table of results
+#' containing detailed geocode information.
+#' See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo}
+#' for more information.
 getCoord.individual <-
   function(address,
            key = NULL,
@@ -181,13 +193,15 @@ getCoord.individual <-
     if (!keep_bad_request) {
       httr::stop_for_status(res)
     } else {
-      httr::warn_for_status(res, paste0(address, "makes an unsuccessfully request"))
+      httr::warn_for_status(res,
+                            paste0(address,
+                                   "makes an unsuccessfully request"))
     }
 
     res_content <-
       httr::content(res)
 
-    # Transform response to data.table or return directly -------------------------
+    # Transform response to data.table or return directly ---------
 
     if (is.null(output)) {
       return(extractCoord(res_content))
@@ -202,7 +216,10 @@ getCoord.individual <-
 #' Response from getCoord.
 #'
 #' @return
-#' Returns a data.table which extracts detailed coordinate information from results of getCoord. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
+#' Returns a data.table which extracts
+#' detailed coordinate information from results of getCoord.
+#' See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo}
+#' for more information.
 #' @export
 #'
 #' @examples
@@ -240,7 +257,7 @@ extractCoord <- function(res) {
       adcode = NA
     )
   } else {
-    # Detect what kind of response will go to parse ------------------------------
+    # Detect what kind of response will go to parse --------
     xml_detect <-
       any(stringr::str_detect(class(res), "xml_document"))
     # Convert xml2 to list

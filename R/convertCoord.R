@@ -1,8 +1,10 @@
 #' Convert coordinate from different coordinate systems to AutoNavi system
 #'
-#' \Sexpr[results=rd]{lifecycle::badge("experimental")}
+#' \Sexpr[results=rd]{lifecycle::badge("experimental")}\cr
+#'
 #' This function is a wrap of coordinate convert API of AutoNavi Map Service.\cr
-#' While how to input the origin coordinate is sill unstable and 95\% sure that it will have a breaking change in the future.
+#' While how to input the origin coordinate is sill unstable and
+#'  95\% sure that it will have a breaking change in the future.
 #' Please consider carefully if introduced this function in product environment.
 #'
 #' @param locations Required. \cr
@@ -15,15 +17,22 @@
 #' Support: `gps`,`mapbar`,`baidu` and `autonavi`-not convert
 #' @param sig Optional.\cr
 #' Digital Signature.\cr
-#' How to use this argument? Please check here{https://lbs.amap.com/faq/account/key/72}
+#' How to use this argument?
+#' Please check here{https://lbs.amap.com/faq/account/key/72}
 #' @param output Optional.\cr
 #' Output Data Structure. \cr
 #' Support JSON, XML and data.table. The default value is data.table.
 #' @param keep_bad_request Optional.\cr
-#' Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request
-#' @param max_core Optional.\cr
-#' A threshold of max cores for parallel operation. There is no need to set a `max_core` generally.
-#' But for some extreme high performance case, like `AMD Threadripper` and `Intel Xeon`,
+#' Keep Bad Request to avoid breaking a workflow,
+#' especially meaningful in a batch request
+#'
+#' @param max_core Deprecated.\cr
+#' Since 0.5.1, parallel operation has been replaced by
+#' `furrr::future_map`, and this argument does not work anymore\cr
+#' A threshold of max cores for parallel operation.
+#' There is no need to set a `max_core` generally.
+#' But for some extreme high performance case,
+#' like `AMD Threadripper` and `Intel Xeon`,
 #' super multiple-core CPU will meet the limitation of queries per second.
 #'
 #' @param to_table Deprecated.\cr
@@ -31,7 +40,10 @@
 #' Since 0.5.1, this argument was merged into `output`.
 #'
 #' @return
-#' Returns a JSON, XML or data.table of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/convert} for more information.
+#' Returns a JSON, XML or data.table of results
+#' containing detailed geocode information.
+#' See \url{https://lbs.amap.com/api/webservice/guide/api/convert}
+#' for more information.
 #' @export
 #' @examples
 #' \dontrun{
@@ -55,25 +67,12 @@ convertCoord <-
            sig = NULL,
            output = "data.table",
            keep_bad_request = TRUE,
-           max_core = NULL,
            ...) {
-    if (length(locations) == 1) {
-      # if there is one address, use convertCoord.individual directly
-      convertCoord.individual(
-        locations = locations,
-        key = key,
-        coordsys = coordsys,
-        sig = sig,
-        output = output,
-        keep_bad_request = keep_bad_request
-      )
-    } else {
-      # Create local parallel cluster
-      cluster <- parallel_cluster_maker(max_core = max_core)
-      # if there is multiple addresses, use convertCoord.individual by parLapply
+      # handle multiple or solo locations,
+      # parallel operation will be applied
+      # if a strategy has been chosen by `future::plan()`
       ls_queries <-
-        parallel::parLapply(
-          cl = cluster,
+        furrr::future_map(
           locations,
           convertCoord.individual,
           key = key,
@@ -82,18 +81,22 @@ convertCoord <-
           output = output,
           keep_bad_request = keep_bad_request
         )
-      # stop cluster
-      parallel::stopCluster(cluster)
+
+      # if there is only one keyword, there is no need
+      # to return a list which only contain one element.
+      if (length(locations) == 1)
+        ls_queries <- ls_queries[[1]]
+
       # detect return list of raw requests or `rbindlist` parsed data.table
-      if (output == "data.table") {
+      if (output == "data.table" && length(locations) != 1) {
         return(data.table::rbindlist(ls_queries))
       } else {
         return(ls_queries)
       }
-    }
   }
 
-#' Convert an individual coordinate from different coordinate systems to AutoNavi system
+#' Convert an individual coordinate from
+#' different coordinate systems to AutoNavi system
 #'
 #' @param locations Required. \cr
 #' String coordinate point from other coordinate system
@@ -105,19 +108,24 @@ convertCoord <-
 #' Support: `gps`,`mapbar`,`baidu` and `autonavi`-not convert
 #' @param sig Optional.\cr
 #' Digital Signature.\cr
-#' How to use this argument? Please check here{https://lbs.amap.com/faq/account/key/72}
+#' How to use this argument?
+#' Please check here{https://lbs.amap.com/faq/account/key/72}
 #' @param output Optional.\cr
 #' Output Data Structure. \cr
 #' Support JSON, XML and data.table. The default value is data.table.
 #' @param keep_bad_request Optional.\cr
-#' Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request
+#' Keep Bad Request to avoid breaking a workflow,
+#' especially meaningful in a batch request
 #'
 #' @param to_table Deprecated.\cr
 #' Transform response content to data.table.
 #' Since 0.5.1, this argument was merged into `output`.
 #'
 #' @return
-#' Returns a JSON, XML or data.table of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/convert} for more information.
+#' Returns a JSON, XML or data.table of results
+#' containing detailed geocode information.
+#' See \url{https://lbs.amap.com/api/webservice/guide/api/convert}
+#' for more information.
 convertCoord.individual <- function(locations,
                                     key = NULL,
                                     coordsys = NULL,
@@ -166,13 +174,15 @@ convertCoord.individual <- function(locations,
   if (!keep_bad_request) {
     httr::stop_for_status(res)
   } else {
-    httr::warn_for_status(res, paste0(locations, "makes an unsuccessfully request"))
+    httr::warn_for_status(res,
+                          paste0(locations,
+                                 "makes an unsuccessfully request"))
   }
 
   res_content <-
     httr::content(res)
 
-  # Transform response to data.table or return directly -------------------------
+  # Transform response to data.table or return directly ------------
 
   if (is.null(output)) {
     return(extractConvertCoord(res_content))
@@ -186,7 +196,10 @@ convertCoord.individual <- function(locations,
 #' Response from convertCoord.
 #'
 #' @return
-#' Returns a data.table which extracts converted coordinate points from request of convertCoord. See \url{https://lbs.amap.com/api/webservice/guide/api/convert} for more information.
+#' Returns a data.table
+#' which extracts converted coordinate points from request of convertCoord.
+#' See \url{https://lbs.amap.com/api/webservice/guide/api/convert}
+#' for more information.
 #'
 #' @export
 #'

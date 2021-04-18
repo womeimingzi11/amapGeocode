@@ -12,27 +12,31 @@ getCoord(
   output = "data.table",
   callback = NULL,
   keep_bad_request = TRUE,
-  max_core = NULL,
   ...
 )
 }
 \arguments{
 \item{address}{Required.\cr
 Structured address information. \cr
-Rules: Country/Region, Province/State, City, County/District, Town, Country, Road, Number, Room, Building.}
+Rules: Country/Region, Province/State,
+City, County/District, Town, Country, Road, Number, Room, Building.}
 
 \item{key}{Optional.\cr
 Amap Key. \cr
-Applied from 'AutoNavi' Map API official website\url{https://lbs.amap.com/dev/}}
+Applied from 'AutoNavi' Map API official
+website\url{https://lbs.amap.com/dev/}}
 
 \item{city}{Optional.\cr
 Specify the City. \cr
-Support: city in Chinese, full pinyin, citycode, adcode\url{https://lbs.amap.com/api/webservice/download}.\cr
-The default value is NULL which will search country-wide. The default value is NULL}
+Support: city in Chinese, full pinyin, citycode,
+adcode\url{https://lbs.amap.com/api/webservice/download}.\cr
+The default value is NULL which will search country-wide.
+The default value is NULL}
 
 \item{sig}{Optional.\cr
 Digital Signature.\cr
-How to use this argument? Please check here{https://lbs.amap.com/faq/account/key/72}}
+How to use this argument?
+Please check here{https://lbs.amap.com/faq/account/key/72}}
 
 \item{output}{Optional.\cr
 Output Data Structure. \cr
@@ -40,15 +44,21 @@ Support JSON, XML and data.table. The default value is data.table.}
 
 \item{callback}{Optional.\cr
 Callback Function. \cr
-The value of callback is the customized function. Only available with JSON output.
+The value of callback is the customized function.
+Only available with JSON output.
 If you don't understand, it means you don't need it, just like me.}
 
 \item{keep_bad_request}{Optional.\cr
-Keep Bad Request to avoid breaking a workflow, especially meaningful in a batch request}
+Keep Bad Request to avoid breaking a workflow,
+especially meaningful in a batch request}
 
-\item{max_core}{Optional.\cr
-A threshold of max cores for parallel operation. There is no need to set a `max_core` generally.
-But for some extreme high performance case, like `AMD Threadripper` and `Intel Xeon`,
+\item{max_core}{Deprecated.\cr
+Since 0.5.1, parallel operation has been replaced by
+`furrr::future_map`, and this argument does not work anymore\cr
+A threshold of max cores for parallel operation.
+There is no need to set a `max_core` generally.
+But for some extreme high performance case,
+like `AMD Threadripper` and `Intel Xeon`,
 super multiple-core CPU will meet the limitation of queries per second.}
 
 \item{to_table}{Deprecated.\cr
@@ -56,7 +66,10 @@ Transform response content to data.table.
 Since 0.5.1, this argument was merged into `output`.}
 }
 \value{
-Returns a JSON, XML or data.table of results containing detailed geocode information. See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo} for more information.
+Returns a JSON, XML or data.table of results
+containing detailed geocode information.
+See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo}
+for more information.
 }
 \description{
 Get coordinate from location
@@ -70,10 +83,9 @@ library(amapGeocode)
 # or set by key argument in `getCoord()`
 
 # Get geocode as a data.table
-getCoord('IFS Chengdu')
+getCoord("IFS Chengdu")
 # Get geocode as a XML
-getCoord('IFS Chengdu', output = 'XML')
-
+getCoord("IFS Chengdu", output = "XML")
 }
 
 }
