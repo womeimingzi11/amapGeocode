@@ -16,6 +16,9 @@ maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www
 [![License:
 MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![DOI](https://zenodo.org/badge/297431889.svg)](https://zenodo.org/badge/latestdoi/297431889)
+[![Codecov test
+coverage](https://codecov.io/gh/womeimingzi11/amapGeocode/branch/master/graph/badge.svg)](https://codecov.io/gh/womeimingzi11/amapGeocode?branch=master)
+[![R-CMD-check](https://github.com/womeimingzi11/amapGeocode/workflows/R-CMD-check/badge.svg)](https://github.com/womeimingzi11/amapGeocode/actions)
 <!-- badges: end -->
 
 中文版介绍:
@@ -75,53 +78,29 @@ To turn on parallel operation support, just call
 
 Since `v0.5`, parallel operation finally comes to `amapGeocode` with the
 `parallel` package as the backend. There is a really huge performance
-improvement for batch queries. Here is a demo from my PC with below
-specification.
-
-> MacBook Pro (Retina, 15-inch, Mid 2015)
->
-> CPU: Intel Core i7 Quad Cores @ 2.2GHz (4 cores with 8 threads)
->
-> RAM: 16GB RAM
->
-> System Disk: Intel 760P with 512GB
->
-> OS: macOS 11.0.1 Big Sur (20B29)
->
-> Internet: CMCC @ 200Mbps from Chengdu, Sichuan, China
+improvement for batch queries. And you are welcomed to make a benchmark
+by following command.
 
 ``` r
 library(amapGeocode)
 library(future)
 library(readr)
-sample_site <- read_csv("https://gist.githubusercontent.com/womeimingzi11/0fa3f4744f3ebc0f4484a52649f556e5/raw/47a69157f3e26c4d3bc993f3715b9ba88cda9d93/sample_site.csv")
+sample_site <-
+  read_csv("https://gist.githubusercontent.com/womeimingzi11/0fa3f4744f3ebc0f4484a52649f556e5/raw/47a69157f3e26c4d3bc993f3715b9ba88cda9d93/sample_site.csv")
 
 str(sample_site)
-#> spec_tbl_df[,1] [300 × 1] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
-#>  $ address: chr [1:300] "四川省 绵阳市 游仙区 四川省绵阳市游仙区" "四川省 自贡市 自流井区 自流井区五星街珍珠寺新森3组" "四川省 绵阳市 游仙区 游仙区" "四川省 眉山市 仁寿县 向家乡平安村１组" ...
-#>  - attr(*, "spec")=
-#>   .. cols(
-#>   ..   address = col_character()
-#>   .. )
 
 # Here is the old implement
 start_time <- proc.time()
 old <- lapply(sample_site$address, amapGeocode:::getCoord.individual)
 proc.time() - start_time
-#>    user  system elapsed 
-#>   4.904   0.262  75.721
 
 # Here is the new implement
 plan(multisession)
 start_time <- proc.time()
 new <- getCoord(sample_site$address)
 proc.time() - start_time
-#>    user  system elapsed 
-#>   0.172   0.014   8.434
 ```
-
-All you need to do is **upgrade** `amapGeocode` to the **latest
-version** without changing any code!
 
 *While parallel support is a totally threads depending operation, so you
 will get completely different speed on different devices.*

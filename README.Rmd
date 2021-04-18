@@ -25,6 +25,8 @@ knitr::opts_chunk$set(
 [![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![DOI](https://zenodo.org/badge/297431889.svg)](https://zenodo.org/badge/latestdoi/297431889)
+[![Codecov test coverage](https://codecov.io/gh/womeimingzi11/amapGeocode/branch/master/graph/badge.svg)](https://codecov.io/gh/womeimingzi11/amapGeocode?branch=master)
+[![R-CMD-check](https://github.com/womeimingzi11/amapGeocode/workflows/R-CMD-check/badge.svg)](https://github.com/womeimingzi11/amapGeocode/actions)
 <!-- badges: end -->
 
 中文版介绍: [博客](https://blog.washman.top/post/amapgeocode-%E4%BD%BF%E7%94%A8r%E8%BF%9B%E8%A1%8C%E9%AB%98%E5%BE%B7%E5%9C%B0%E5%9B%BE%E5%9C%B0%E7%90%86%E7%BC%96%E7%A0%81-%E9%80%86%E7%BC%96%E7%A0%81.zh-hans/) or [知乎](https://zhuanlan.zhihu.com/p/264281505)
@@ -47,21 +49,9 @@ Since `v0.5.1`, parallel framework is implemented by [`furrr` package](https://C
 
 To turn on parallel operation support, just call `future::plan(multisession) # or any other future strategy`.
 
-Since `v0.5`, parallel operation finally comes to `amapGeocode` with the `parallel` package as the backend. There is a really huge performance improvement for batch queries. Here is a demo from my PC with below specification.
+Since `v0.5`, parallel operation finally comes to `amapGeocode` with the `parallel` package as the backend. There is a really huge performance improvement for batch queries. And you are welcomed to make a benchmark by following command.
 
->  MacBook Pro (Retina, 15-inch, Mid 2015)
->
->  CPU: Intel Core i7 Quad Cores @ 2.2GHz (4 cores with 8 threads)
->
->  RAM: 16GB RAM
->
->  System Disk: Intel 760P with 512GB
->
->  OS: macOS 11.0.1 Big Sur (20B29)
->
->  Internet: CMCC @ 200Mbps from Chengdu, Sichuan, China
-
-```{r parallel_performance_revealR, message=FALSE}
+```r
 library(amapGeocode)
 library(future)
 library(readr)
@@ -82,8 +72,6 @@ new <- getCoord(sample_site$address)
 proc.time() - start_time
 
 ```
-
-All you need to do is **upgrade** `amapGeocode` to the **latest version** without changing any code!
 
 *While parallel support is a totally threads depending operation, so you will get completely different speed on different devices.*
 
