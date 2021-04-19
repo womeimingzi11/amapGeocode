@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">amapGeocode</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
       </span>
     </div>
 
@@ -145,7 +145,6 @@
   callback <span class='op'>=</span> <span class='cn'>NULL</span>,
   homeorcorp <span class='op'>=</span> <span class='fl'>0</span>,
   keep_bad_request <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  max_core <span class='op'>=</span> <span class='cn'>NULL</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -236,21 +235,9 @@ Keep Bad Request to avoid breaking a workflow,
 especially meaningful in a batch request</p></td>
     </tr>
     <tr>
-      <th>max_core</th>
-      <td><p>Deprecated.<br />
-Since 0.5.1, parallel operation has been replaced by
-`furrr::future_map`, and this argument does not work anymore<br />
-A threshold of max cores for parallel operation.
-There is no need to set a `max_core` generally.
-But for some extreme high performance case,
-like `AMD Threadripper` and `Intel Xeon`,
-super multiple-core CPU will meet the limitation of queries per second.</p></td>
-    </tr>
-    <tr>
-      <th>to_table</th>
-      <td><p>Deprecated.<br />
-Transform response content to data.table.
-Since 0.5.1, this argument was merged into `output`.</p></td>
+      <th>...</th>
+      <td><p>Optional.<br />
+For compatibility only</p></td>
     </tr>
     </table>
 
