@@ -1,3 +1,7 @@
+# amapGeocode 0.6.0
+* Improve the implement of parallel requests 
+* Replace `parallel` with `future`
+
 # amapGeocode 0.5.1
 * Merge `to_tb` and `output` argument.
 

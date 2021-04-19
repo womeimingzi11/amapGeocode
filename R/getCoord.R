@@ -30,18 +30,8 @@
 #' Keep Bad Request to avoid breaking a workflow,
 #' especially meaningful in a batch request
 #'
-#' @param max_core Deprecated.\cr
-#' Since 0.5.1, parallel operation has been replaced by
-#' `furrr::future_map`, and this argument does not work anymore\cr
-#' A threshold of max cores for parallel operation.
-#' There is no need to set a `max_core` generally.
-#' But for some extreme high performance case,
-#' like `AMD Threadripper` and `Intel Xeon`,
-#' super multiple-core CPU will meet the limitation of queries per second.
-#'
-#' @param to_table Deprecated.\cr
-#' Transform response content to data.table.
-#' Since 0.5.1, this argument was merged into `output`.
+#' @param ... Optional.\cr
+#' For compatibility only
 #'
 #' @return
 #' Returns a JSON, XML or data.table of results
@@ -136,9 +126,8 @@ getCoord <-
 #' Keep Bad Request to avoid breaking a workflow,
 #' especially meaningful in a batch request
 #'
-#' @param to_table Deprecated.\cr
-#' Transform response content to data.table.
-#' Since 0.5.1, this argument was merged into `output`.
+#' @param ... Optional.\cr
+#' For compatibility only
 #'
 #' @return
 #' Returns a JSON, XML or data.table of results

@@ -77,9 +77,8 @@ Support JSON, XML and data.table. The default value is data.table.}
 Keep Bad Request to avoid breaking a workflow,
 especially meaningful in a batch request}
 
-\item{to_table}{Deprecated.\cr
-Transform response content to data.table.
-Since 0.5.1, this argument was merged into `output`.}
+\item{...}{Optional.\cr
+For compatibility only}
 }
 \value{
 Returns a JSON or XML of results
