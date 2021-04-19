@@ -13,6 +13,7 @@ Authors@R:
              email = "243016042@qq.com"))
 Description: Getting and parsing data of location geocode/reverse-geocode and administrative regions from 'AutoNavi Maps'<https://lbs.amap.com/api/webservice/summary> API.
 License: MIT + file LICENSE
+Depends: R (>= 3.5)
 Imports: 
     httr,
     jsonlite,
