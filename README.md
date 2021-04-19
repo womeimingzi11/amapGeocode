@@ -12,7 +12,7 @@ badge](https://cranlogs.r-pkg.org/badges/grand-total/amapGeocode?color=blue)](ht
 [![CRAN
 status](https://www.r-pkg.org/badges/version/amapGeocode)](https://CRAN.R-project.org/package=amapGeocode)
 [![Lifecycle:
-maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html#maturing)
 [![License:
 MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![DOI](https://zenodo.org/badge/297431889.svg)](https://zenodo.org/badge/latestdoi/297431889)
@@ -68,7 +68,7 @@ Since `v0.5.1`, parallel framework is implemented by [`furrr`
 package](https://CRAN.R-project.org/package=furrr), of which backend is
 [`future package`](https://arxiv.org/abs/2008.00553). Refering to [*A
 Future for R: Best Practices for Package
-Developers*](https://cran.r-project.org/web/packages/future/vignettes/future-7-for-package-developers.html)
+Developers*](https://CRAN.R-project.org/package=future/vignettes/future-7-for-package-developers.html)
 and avoiding potential modification to the future strategy, we have
 removed the automatically parallel operation from every function in
 `amapGeocode`.

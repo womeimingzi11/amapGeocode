@@ -49,9 +49,6 @@ See \url{https://lbs.amap.com/api/webservice/guide/api/convert}
 for more information.
 }
 \description{
-\Sexpr[results=rd]{lifecycle::badge("experimental")}\cr
-}
-\details{
 This function is a wrap of coordinate convert API of AutoNavi Map Service.\cr
 While how to input the origin coordinate is sill unstable and
  95\% sure that it will have a breaking change in the future.
