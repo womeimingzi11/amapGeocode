@@ -102,7 +102,7 @@
 <h2 class="hasAnchor">
 <a href="#big-news-parallel-is-here-but-you-need-a-plan" class="anchor"></a>BIG NEWS: Parallel is Here! But you need a <code>plan</code>
 </h2>
-<p>Since <code>v0.5.1</code>, parallel framework is implemented by <a href="https://CRAN.R-project.org/package=furrr"><code>furrr</code> package</a>, of which backend is <a href="https://arxiv.org/abs/2008.00553"><code>future package</code></a>. Refering to <a href="https://cran.r-project.org/web/packages/future/vignettes/future-7-for-package-developers.html"><em>A Future for R: Best Practices for Package Developers</em></a> and avoiding potential modification to the future strategy, we have removed the automatically parallel operation from every function in <code>amapGeocode</code>.</p>
+<p>Since <code>v0.5.1</code>, parallel framework is implemented by <a href="https://CRAN.R-project.org/package=furrr"><code>furrr</code> package</a>, of which backend is <a href="https://arxiv.org/abs/2008.00553"><code>future package</code></a>. Refering to <a href="https://CRAN.R-project.org/package=future/vignettes/future-7-for-package-developers.html"><em>A Future for R: Best Practices for Package Developers</em></a> and avoiding potential modification to the future strategy, we have removed the automatically parallel operation from every function in <code>amapGeocode</code>.</p>
 <p>To turn on parallel operation support, just call <code><a href="https://rdrr.io/pkg/future/man/plan.html">future::plan(multisession) # or any other future strategy</a></code>.</p>
 <p>Since <code>v0.5</code>, parallel operation finally comes to <code>amapGeocode</code> with the <code>parallel</code> package as the backend. There is a really huge performance improvement for batch queries. And you are welcomed to make a benchmark by following command.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
@@ -970,7 +970,7 @@
 <ul class="list-unstyled">
 <li><a href="https://CRAN.R-project.org/package=amapGeocode"><img src="https://cranlogs.r-pkg.org/badges/grand-total/amapGeocode?color=blue" alt="Total downloads badge"></a></li>
 <li><a href="https://CRAN.R-project.org/package=amapGeocode"><img src="https://www.r-pkg.org/badges/version/amapGeocode" alt="CRAN status"></a></li>
-<li><a href="https://www.tidyverse.org/lifecycle/#maturing"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="Lifecycle: maturing"></a></li>
+<li><a href="https://lifecycle.r-lib.org/articles/stages.html#maturing"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="Lifecycle: maturing"></a></li>
 <li><a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a></li>
 <li><a href="https://zenodo.org/badge/latestdoi/297431889"><img src="https://zenodo.org/badge/297431889.svg" alt="DOI"></a></li>
 <li><a href="https://codecov.io/gh/womeimingzi11/amapGeocode?branch=master"><img src="https://codecov.io/gh/womeimingzi11/amapGeocode/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
