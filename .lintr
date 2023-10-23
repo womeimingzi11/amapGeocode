@@ -1,3 +1,0 @@
-linters: with_defaults(
-  object_name_linter(styles = "snake_case")
-  )
