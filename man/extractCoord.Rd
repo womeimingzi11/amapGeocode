@@ -29,7 +29,7 @@ library(amapGeocode)
 # or set by key argument in `getCoord()`
 
 # Get geocode as a XML
-getCoord("IFS Chengdu", output = "XML") \%>\%
+getCoord("IFS Chengdu", output = "XML")  |>
   # extract geocode regions as a data.table
   extractCoord()
 }

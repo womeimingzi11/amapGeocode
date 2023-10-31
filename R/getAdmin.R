@@ -270,7 +270,7 @@ getAdmin.individual <-
 #' # or set by key argument in `getAdmin()`
 #'
 #' # Get subordinate administrative regions as a XML
-#' getAdmin("Sichuan Province", output = "XML") %>%
+#' getAdmin("Sichuan Province", output = "XML")  |>
 #'   # extract subordinate administrative regions as a data.table
 #'   extractAdmin()
 #' }
@@ -342,8 +342,8 @@ extractAdmin <- function(res) {
         ls_var <-
           lapply(var_name, function(var_n) {
             ifelse(sjmisc::is_empty(district[[var_n]]), NA, district[[var_n]])
-          }) %>%
-          as.data.frame() %>%
+          })  |>
+          as.data.frame()  |>
           stats::setNames(var_name)
         # assemble information and coordinate
         data.table::data.table(
@@ -351,7 +351,7 @@ extractAdmin <- function(res) {
           lat = location_in_coord[[2]],
           ls_var
         )
-      }) %>%
+      })  |>
         data.table::rbindlist()
     } else {
       "Not support current extraction task."

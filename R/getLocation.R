@@ -280,7 +280,7 @@ getLocation.individual <-
 #' # the token should be set by `option(amap_key = 'key')`
 #' # or set by key argument in `getLocation()`
 #' # Get reverse-geocode as a XML
-#' getLocation(104.043284, 30.666864, output = "XML") %>%
+#' getLocation(104.043284, 30.666864, output = "XML") |>
 #'   # extract reverse-geocode regions as a table
 #'   extractLocation()
 #' }
@@ -366,12 +366,13 @@ extractLocation <- function(res) {
               addressComponent[[x]]
             )
           }
-        ) %>%
+        )  |>
         as.data.frame()
+
       data.table::data.table(
         formatted_address = regeocode$formatted_address[[1]],
         ls_var
-      ) %>%
+      )  |>
         # set name of table
         stats::setNames(c("formatted_address", var_name))
     }

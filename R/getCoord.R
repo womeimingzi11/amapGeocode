@@ -221,7 +221,7 @@ getCoord.individual <-
 #' # or set by key argument in `getCoord()`
 #'
 #' # Get geocode as a XML
-#' getCoord("IFS Chengdu", output = "XML") %>%
+#' getCoord("IFS Chengdu", output = "XML")  |>
 #'   # extract geocode regions as a data.table
 #'   extractCoord()
 #' }
@@ -312,14 +312,14 @@ extractCoord <- function(res) {
         function(x) {
           x <- ifelse(sjmisc::is_empty(geocode[[x]]), NA, geocode[[x]])
         }
-      ) %>%
+      )  |>
         as.data.frame()
 
       data.table::data.table(
         lng = location_in_coord[[1]],
         lat = location_in_coord[[2]],
         ls_var
-      ) %>%
+      )  |>
         # set name of
         stats::setNames(c("lng", "lat", var_name))
     }

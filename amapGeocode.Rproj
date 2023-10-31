@@ -20,4 +20,6 @@ BuildType: Package
 PackageUseDevtools: Yes
 PackageInstallArgs: --no-multiarch --with-keep.source
 
+UseNativePipeOperator: Yes
+
 QuitChildProcessesOnExit: Yes

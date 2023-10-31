@@ -36,7 +36,7 @@ Then get result of geocoding, by `getCoord` function.
 ```r
 library(amapGeocode)
 res <-
-  getCoord('成都中医药大学')
+  getCoord('四川省博物馆')
 knitr::kable(res)
 ```
 
@@ -46,7 +46,7 @@ If anyone want to get response as **JSON** or **XML**, just set `to_table = FALS
 
 ```r
 res <-
-  getCoord('成都中医药大学', output = 'XML',to_table = FALSE)
+  getCoord('四川省博物馆', output = 'XML',to_table = FALSE)
 res
 ```
 
@@ -70,7 +70,7 @@ knitr::kable(res)
 
 ```r
 res <-
-   getLocation(104.043284, 30.666864, output = 'XML',to_table = FALSE)
+   getLocation(104.0339, 30.66069, output = 'XML',to_table = FALSE)
 res
 ```
 
@@ -113,7 +113,7 @@ get result of reverse geocoding, by `convertCoord` function, here is how to conv
 
 ```r
 res <- 
-  convertCoord('116.481499,39.990475',coordsys = 'gps')
+  convertCoord("103.9960,30.6475", coordsys = "gps")
 knitr::kable(res)
 ```
 

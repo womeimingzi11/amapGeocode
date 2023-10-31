@@ -1,7 +1,7 @@
 Type: Package
 Package: amapGeocode
 Title: An Interface to the 'AutoNavi Maps' API Geocoding Services
-Version: 0.6.0
+Version: 0.7.0
 Authors@R: 
     c(person(given = "Han",
              family = "Chen",
@@ -13,11 +13,9 @@ Authors@R:
              email = "243016042@qq.com"))
 Description: Getting and parsing data of location geocode/reverse-geocode and administrative regions from 'AutoNavi Maps'<https://lbs.amap.com/api/webservice/summary> API.
 License: MIT + file LICENSE
-Depends: R (>= 3.5)
+Depends: R (>= 4.1.0)
 Imports: 
     httr,
-    jsonlite,
-    magrittr,
     sjmisc,
     stats,
     xml2,
@@ -33,7 +31,7 @@ Suggests:
 VignetteBuilder:
     knitr
 Encoding: UTF-8
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3
 Language: en-US
 URL: https://github.com/womeimingzi11/amapGeocode
 BugReports: https://github.com/womeimingzi11/amapGeocode/issues

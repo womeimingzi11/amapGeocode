@@ -1,3 +1,6 @@
+# amapGeocode 0.7.0
+* Since 0.7.0, the Version of R under 4.1.0 will not support anymore.
+
 # amapGeocode 0.6.0
 * Improve the implement of parallel requests 
 * Replace `parallel` with `future`

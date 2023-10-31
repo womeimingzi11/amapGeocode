@@ -28,7 +28,7 @@ library(amapGeocode)
 # the token should be set by `option(amap_key = 'key')`
 # or set by key argument in `getLocation()`
 # Get reverse-geocode as a XML
-getLocation(104.043284, 30.666864, output = "XML") \%>\%
+getLocation(104.043284, 30.666864, output = "XML") |>
   # extract reverse-geocode regions as a table
   extractLocation()
 }

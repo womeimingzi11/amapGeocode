@@ -33,7 +33,7 @@ library(amapGeocode)
 # or set by key argument in `getAdmin()`
 
 # Get subordinate administrative regions as a XML
-getAdmin("Sichuan Province", output = "XML") \%>\%
+getAdmin("Sichuan Province", output = "XML")  |>
   # extract subordinate administrative regions as a data.table
   extractAdmin()
 }
