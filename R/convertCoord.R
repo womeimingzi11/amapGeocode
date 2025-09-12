@@ -16,7 +16,7 @@
 #' @param sig Optional.\cr
 #' Digital Signature.\cr
 #' How to use this argument?
-#' Please check here{https://lbs.amap.com/faq/account/key/72}
+#' Please check here\{https://lbs.amap.com/faq/account/key/72\}
 #' @param output Optional.\cr
 #' Output Data Structure. \cr
 #' Support JSON, XML and data.table. The default value is data.table.
@@ -96,7 +96,7 @@ convertCoord <-
 #' @param sig Optional.\cr
 #' Digital Signature.\cr
 #' How to use this argument?
-#' Please check here{https://lbs.amap.com/faq/account/key/72}
+#' Please check here \url{https://lbs.amap.com/faq/account/key/72}
 #' @param output Optional.\cr
 #' Output Data Structure. \cr
 #' Support JSON, XML and data.table. The default value is data.table.

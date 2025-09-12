@@ -29,7 +29,7 @@ Support: `gps`,`mapbar`,`baidu` and `autonavi`-not convert}
 \item{sig}{Optional.\cr
 Digital Signature.\cr
 How to use this argument?
-Please check here{https://lbs.amap.com/faq/account/key/72}}
+Please check here\{https://lbs.amap.com/faq/account/key/72\}}
 
 \item{output}{Optional.\cr
 Output Data Structure. \cr
