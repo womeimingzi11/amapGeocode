@@ -1,0 +1,26 @@
+convertCoord            Convert coordinate from different coordinate
+                        systems to AutoNavi system
+convertCoord.individual
+                        Convert an individual coordinate from different
+                        coordinate systems to AutoNavi system
+extractAdmin            Get Subordinate Administrative Region from
+                        getAdmin request Now, it only support extract
+                        the first layer of subordinate administrative
+                        region information.
+extractConvertCoord     Extract converted coordinate points from
+                        convertCoord request
+extractCoord            Extract coordinate from location request
+extractLocation         Extract location from coordinate request
+getAdmin                Get Subordinate Administrative Regions from
+                        location
+getAdmin.individual     Get an individual data.table of Subordinate
+                        Administrative Regions from location
+getCoord                Get coordinate from location
+getCoord.individual     Get an individual coordinate from location
+getLocation             Get location from coordinate
+getLocation.individual
+                        Get an individual location from coordinate
+num_coord_to_str_loc    Take longitude and latitude from location
+                        string out.
+str_loc_to_num_coord    Take longitude and latitude from location
+                        string out.

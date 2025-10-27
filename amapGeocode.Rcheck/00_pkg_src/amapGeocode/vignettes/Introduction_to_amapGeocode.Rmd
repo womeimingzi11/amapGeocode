@@ -1,0 +1,137 @@
+---
+title: "Introduction to amapGeocode"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to amapGeocode}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+<!-- Place this tag in your head or just before your close body tag. -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
+Geocoding and Reverse Geocoding Services are widely used to provide data about coordinate and location information, including longitude, latitude, formatted location name, administrative region with different levels. There are some package can provide geocode service such as [tidygeocoder](https://CRAN.R-project.org/package=tidygeocoder), [baidumap](https://github.com/badbye/baidumap) and [baidugeo](https://github.com/ChrisMuir/baidugeo). However, some of them not always provide precise information in China, and some of them is unavailable with upgrade backend API.
+
+amapGeocode is built to provide high precise geocoding and reverse geocoding service which powered by AutoNavi Map API service. Here are two main functions to use are `getCoord()` which takes a character location name as an input and `getLocation()` which takes two numeric longitude and latitude values as inputs.
+
+The `getCoord()` function extracts coordinate information from input character location name and output the result as `data.table`, `XML` or `JSON (as list)`. And the `getLocation()` function extracts location information from input numeric longitude and latitude values and output the result as `tibble`, `XML` or `JSON (as list)`. With the `tibble` format as output, it's highly readable and easy to be used to `tidy` workflow.
+
+## Usage
+### Geocoding
+Before start geocoding and reverse geocoding, please apply a [AutoNavi Map API Key](https://lbs.amap.com/dev/). Set `amap_key` globally by following command:
+
+```r
+options(amap_key = 'REPLACE THIS BY YOUR KEY')
+```
+
+Then get result of geocoding, by `getCoord` function. 
+
+```r
+library(amapGeocode)
+res <-
+  getCoord('四川省博物馆')
+knitr::kable(res)
+```
+
+The response we get from **AutoNavi Map API** is **JSON** or **XML**. For readability, we transform them to [`data.table`](https://CRAN.R-project.org/package=data.table), by setting `to_table` argument as `TRUE` by default.
+
+If anyone want to get response as **JSON** or **XML**, just set `to_table = FALSE`. If anyone want to extract information from **JSON** or **XML**. The result can further be parsed by `extractCoord`.
+
+```r
+res <-
+  getCoord('四川省博物馆', output = 'XML',to_table = FALSE)
+res
+```
+
+`extractCoord` is created to get result as a data.table.
+
+```r
+res
+tb <- 
+  extractCoord(res)
+knitr::kable(tb)
+```
+### Reverse Geocoding
+
+get result of reverse geocoding, by `getLocation` function. 
+
+```r
+res <- 
+  getLocation(104.043284, 30.666864)
+knitr::kable(res)
+```
+
+```r
+res <-
+   getLocation(104.0339, 30.66069, output = 'XML',to_table = FALSE)
+res
+```
+
+`extractLocation` is created to get result as a data.table.
+
+```r
+tb <- 
+  extractLocation(res)
+knitr::kable(tb)
+```
+
+### Get Subordinate Administrative Region
+
+get result of reverse geocoding, by `getAdmin` function. 
+
+```r
+res <- 
+  getAdmin('四川省')
+knitr::kable(res)
+```
+
+```r
+res <-
+   getAdmin('四川省', output = 'XML', to_table = FALSE)
+res
+```
+
+`extractAdmin` is created to get result as a data.table.
+
+```r
+res
+tb <- 
+  extractAdmin(res)
+knitr::kable(tb)
+```
+
+### Convert coordinate point from other coordinate system to AutoNavi
+
+get result of reverse geocoding, by `convertCoord` function, here is how to convert coordinate from gps to AutoNavi
+
+```r
+res <- 
+  convertCoord("103.9960,30.6475", coordsys = "gps")
+knitr::kable(res)
+```
+
+```r
+res <-
+  convertCoord('116.481499,39.990475',coordsys = 'gps', to_table = FALSE)
+res
+```
+
+`extractConvertCoord` is created to get result as a data.table.
+
+```r
+tb <- 
+  extractConvertCoord(res)
+knitr::kable(tb)
+```
+
+For more functions and improvements, Coming Soon!
+
+## Bug report
+It's very common for API upgrades to make the downstream application, like amapGeocode, to be unavailable. Feel free to [let me know](mailto://chenhan28@gmail.com) once it's broken or just open an <a class="github-button" href="https://github.com/womeimingzi11/amapGeocode/issues" data-color-scheme="no-preference: light; light: light; dark: dark;" data-size="large" aria-label="Issue womeimingzi11/amapGeocode on GitHub">Issue</a>.

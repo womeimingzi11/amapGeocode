@@ -1,0 +1,14 @@
+convertCoord	convertCoord
+convertCoord.individual	convertCoord.individual
+extractAdmin	extractAdmin
+extractConvertCoord	extractConvertCoord
+extractCoord	extractCoord
+extractLocation	extractLocation
+getAdmin	getAdmin
+getAdmin.individual	getAdmin.individual
+getCoord	getCoord
+getCoord.individual	getCoord.individual
+getLocation	getLocation
+getLocation.individual	getLocation.individual
+num_coord_to_str_loc	num_coord_to_str_loc
+str_loc_to_num_coord	str_loc_to_num_coord

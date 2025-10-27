@@ -1,0 +1,30 @@
+Type: Package
+Package: amapGeocode
+Title: An Interface to the 'AutoNavi Maps' API Geocoding Services
+Version: 0.7.0
+Authors@R: 
+    c(person(given = "Han",
+             family = "Chen",
+             role = c("aut", "cre"),
+             email = "chenhan28@gmail.com"),
+      person(given = "Wanyanhan",
+             family = "Jiang",
+             role = "ctb",
+             email = "243016042@qq.com"))
+Description: Getting and parsing data of location geocode/reverse-geocode and administrative regions from 'AutoNavi Maps'<https://lbs.amap.com/api/webservice/summary> API.
+License: MIT + file LICENSE
+Depends: R (>= 4.1.0)
+Imports: httr, sjmisc, stats, xml2, data.table, furrr
+Suggests: stringr, knitr, rmarkdown, testthat, spelling, covr
+VignetteBuilder: knitr
+Encoding: UTF-8
+RoxygenNote: 7.2.3
+Language: en-US
+URL: https://github.com/womeimingzi11/amapGeocode
+BugReports: https://github.com/womeimingzi11/amapGeocode/issues
+NeedsCompilation: no
+Packaged: 2025-10-27 02:45:31 UTC; engine
+Author: Han Chen [aut, cre],
+  Wanyanhan Jiang [ctb]
+Maintainer: Han Chen <chenhan28@gmail.com>
+Built: R 4.3.3; ; 2025-10-27 02:45:34 UTC; unix

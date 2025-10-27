@@ -1,0 +1,36 @@
+
+R version 4.3.3 (2024-02-29) -- "Angel Food Cake"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library(testthat)
+> library(amapGeocode)
+> 
+> test_check("amapGeocode")
+[ FAIL 0 | WARN 0 | SKIP 13 | PASS 0 ]
+
+══ Skipped tests (13) ══════════════════════════════════════════════════════════
+• is.null(getOption("amap_key")) is TRUE (13): 'test_convertCoord.R:3:3',
+  'test_convertCoord.R:15:3', 'test_getAdmin.R:3:3', 'test_getAdmin.R:15:3',
+  'test_getAdmin.R:25:3', 'test_getCoord.R:3:3', 'test_getCoord.R:15:3',
+  'test_getCoord.R:25:3', 'test_getCoord.R:35:3', 'test_getLocation.R:3:3',
+  'test_getLocation.R:15:3', 'test_getLocation.R:25:3',
+  'test_getLocation.R:35:3'
+
+[ FAIL 0 | WARN 0 | SKIP 13 | PASS 0 ]
+> 
+> proc.time()
+   user  system elapsed 
+  0.639   0.207   0.748 
