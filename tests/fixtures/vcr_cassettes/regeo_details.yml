@@ -1,0 +1,20 @@
+http_interactions:
+- request:
+    method: get
+    uri: https://restapi.amap.com/v3/geocode/regeo?extensions=all&homeorcorp=0&key=FAKE_KEY&location=104.050000%2C30.670000
+    body:
+      encoding: ''
+      string: ''
+    headers: {}
+  response:
+    status:
+      status_code: 200
+      message: OK
+    headers:
+      Content-Type: application/json
+    body:
+      encoding: UTF-8
+      string: '{"status":"1","info":"OK","infocode":"10000","regeocode":{"formatted_address":"Detailed Address","addressComponent":{"country":"China","province":"Sichuan","city":"Chengdu","district":"Jinjiang","township":"","citycode":"028","towncode":"","adcode":"510104","streetNumber":{"street":"Zhonghua Road","number":"66"},"neighborhood":{"name":"Garden","type":"Residential"},"building":{"name":"Block A","type":"Business"}},"pois":[{"id":"B0POI1","name":"Mall","type":"Shopping","typecode":"060100","distance":"45","direction":"north","address":"Zhonghua Road","location":"104.050500,30.670500","businessarea":"CBD"}],"roads":[{"id":"R001","name":"Zhonghua Road","direction":"east","distance":"20","location":"104.050200,30.670100"}],"roadinters":[{"direction":"southwest","distance":"60","location":"104.049800,30.669800","first_id":"R001","first_name":"Zhonghua Road","second_id":"R002","second_name":"People Avenue"}],"aois":[{"id":"AOI001","name":"Central Plaza","adcode":"510104","location":"104.050800,30.670800","area":"3000","distance":"80","type":"Commercial"}]}}
+    http_version: '1.1'
+  recorded_at: '2024-01-01 00:00:00 GMT'
+  recorded_with: vcr/1.2.0, webmockr/0.8.0

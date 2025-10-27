@@ -2,7 +2,7 @@
 % Please edit documentation in R/convertCoord.R
 \name{convertCoord}
 \alias{convertCoord}
-\title{Convert coordinate from different coordinate systems to AutoNavi system}
+\title{Convert coordinates to the AutoNavi system}
 \usage{
 convertCoord(
   locations,
@@ -15,60 +15,38 @@ convertCoord(
 )
 }
 \arguments{
-\item{locations}{Required. \cr
-String coordinate point from other coordinate system}
+\item{locations}{Required coordinate string(s). Accepts a character vector.}
 
-\item{key}{Optional.\cr
-Amap Key. \cr
-Applied from AutoNavi Map API official website\url{https://lbs.amap.com/dev/}}
+\item{key}{Optional AutoNavi API key. You can also set it globally via
+\code{options(amap_key = "your-key")}.}
 
-\item{coordsys}{Optional.\cr
-Coordinate System. \cr
-Support: `gps`,`mapbar`,`baidu` and `autonavi`-not convert}
+\item{coordsys}{Optional source coordinate system (\code{"gps"},
+\code{"mapbar"}, \code{"baidu"}, \code{"autonavi"}).}
 
-\item{sig}{Optional.\cr
-Digital Signature.\cr
-How to use this argument?
-Please check here{https://lbs.amap.com/faq/account/key/72}}
+\item{sig}{Optional digital signature supplied manually.}
 
-\item{output}{Optional.\cr
-Output Data Structure. \cr
-Support JSON, XML and data.table. The default value is data.table.}
+\item{output}{Optional output data structure. Supports \code{"data.table"},
+\code{"JSON"}, and \code{"XML"}. The default value is
+\code{"data.table"}.}
 
-\item{keep_bad_request}{Optional.\cr
-Keep Bad Request to avoid breaking a workflow,
-especially meaningful in a batch request}
+\item{keep_bad_request}{Optional. When \code{TRUE}, API errors are converted
+into placeholder rows so that batched workflows continue.}
 
-\item{...}{Optional.\cr
-For compatibility only}
+\item{...}{Optional arguments retained for forward compatibility.}
 }
 \value{
-Returns a JSON, XML or data.table of results
-containing detailed geocode information.
-See \url{https://lbs.amap.com/api/webservice/guide/api/convert}
-for more information.
+A JSON, XML, or \code{data.table} representation of the converted coordinates.
+When \code{output = "data.table"}, the return value preserves the input order
+and exposes any rate-limit headers via a \code{rate_limit} attribute.
 }
 \description{
-This function is a wrap of coordinate convert API of AutoNavi Map Service.\cr
-While how to input the origin coordinate is sill unstable and
- 95\% sure that it will have a breaking change in the future.
-Please consider carefully if introduced this function in product environment.
+Convert coordinates to the AutoNavi system
 }
 \examples{
 \dontrun{
-library(amapGeocode)
-
-# Before the `convertCoord()` is executed,
-# the token should be set by `option(amap_key = 'key')`
-# or set by key argument in `convertCoord()`
-
-# get result of converted coordinate system as a data.table
 convertCoord("116.481499,39.990475", coordsys = "gps")
-# get result of converted coordinate system as a XML
-convertCoord("116.481499,39.990475", coordsys = "gps", to_table = FALSE)
 }
-
 }
 \seealso{
-\code{\link{convertCoord}}
+\code{\link{extractConvertCoord}}
 }

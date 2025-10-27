@@ -1,0 +1,20 @@
+http_interactions:
+- request:
+    method: get
+    uri: https://restapi.amap.com/v3/assistant/coordinate/convert?coordsys=gps&key=FAKE_KEY&locations=116.481499%2C39.990475
+    body:
+      encoding: ''
+      string: ''
+    headers: {}
+  response:
+    status:
+      status_code: 200
+      message: OK
+    headers:
+      Content-Type: application/json
+    body:
+      encoding: UTF-8
+      string: '{"status":"1","info":"ok","infocode":"10000","locations":"116.487585,39.991754"}'
+    http_version: '1.1'
+  recorded_at: '2024-01-01 00:00:00 GMT'
+  recorded_with: vcr/1.2.0, webmockr/0.8.0

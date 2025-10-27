@@ -62,48 +62,13 @@ the Baidu Map API, these packages are good choices.
 However, AutoNavi has significant high precise, in my case, the Results
 from Baidu were unsatisfactory.
 
-## BIG NEWS: Parallel is Here! But you need a `plan`
+## Highlights
 
-Since `v0.5.1`, parallel framework is implemented by [`furrr`
-package](https://CRAN.R-project.org/package=furrr), of which backend is
-[`future package`](https://arxiv.org/abs/2008.00553). Refering to [*A
-Future for R: Best Practices for Package
-Developers*](https://CRAN.R-project.org/package=future/vignettes/future-7-for-package-developers.html)
-and avoiding potential modification to the future strategy, we have
-removed the automatically parallel operation from every function in
-`amapGeocode`.
-
-To turn on parallel operation support, just call
-`future::plan(multisession) # or any other future strategy`.
-
-Since `v0.5`, parallel operation finally comes to `amapGeocode` with the
-`parallel` package as the backend. There is a really huge performance
-improvement for batch queries. And you are welcomed to make a benchmark
-by following command.
-
-``` r
-library(amapGeocode)
-library(future)
-library(readr)
-sample_site <-
-  read_csv("https://gist.githubusercontent.com/womeimingzi11/0fa3f4744f3ebc0f4484a52649f556e5/raw/47a69157f3e26c4d3bc993f3715b9ba88cda9d93/sample_site.csv")
-
-str(sample_site)
-
-# Here is the old implement
-start_time <- proc.time()
-old <- lapply(sample_site$address, amapGeocode:::getCoord.individual)
-proc.time() - start_time
-
-# Here is the new implement
-plan(multisession)
-start_time <- proc.time()
-new <- getCoord(sample_site$address)
-proc.time() - start_time
-```
-
-*While parallel support is a totally threads depending operation, so you
-will get completely different speed on different devices.*
+- Unified HTTP handling via [{httr2}](https://httr2.r-lib.org) with structured diagnostics (`amap_api_error`) and automatic propagation of rate-limit headers.
+- Opt-in request signing through `amap_sign()`, `with_amap_signature()`, and `amap_config()` keeps sensitive secrets out of function calls.
+- `getCoord()` now supports `mode = "all"` for multi-match lookups as well as `batch = TRUE` to resolve up to ten addresses per request while preserving input order.
+- `getLocation()` gains batching plus rich POI, road, intersection, and AOI list-columns via the `details` argument when `extensions = "all"`.
+- `extractAdmin()` traverses every matching parent region, returning tidy parent metadata and optional boundary polylines when `extensions = "all"`.
 
 ## Installation
 
@@ -143,7 +108,8 @@ knitr::kable(res)
 
 ``` r
 # Batch requests
-res <- getCoord(c("四川省博物馆", "成都市博物馆", "四川省成都市武侯区金楠天街"))
+res <- getCoord(c("四川省博物馆", "成都市博物馆", "四川省成都市武侯区金楠天街"),
+                batch = TRUE)
 knitr::kable(res)
 ```
 
@@ -152,6 +118,12 @@ knitr::kable(res)
 | 104.0339 | 30.66069 | 四川省成都市青羊区四川省博物馆 | 中国    | 四川省   | 成都市 | 青羊区   | NA       | NA     | NA     | 028      | 510105 |
 | 104.0637 | 30.65733 | 四川省成都市青羊区成都市博物馆 | 中国    | 四川省   | 成都市 | 青羊区   | NA       | NA     | NA     | 028      | 510105 |
 | 103.9962 | 30.64848 | 四川省成都市武侯区金楠天街     | 中国    | 四川省   | 成都市 | 武侯区   | NA       | NA     | NA     | 028      | 510107 |
+
+Retrieve every candidate for a single query:
+
+``` r
+getCoord("四川省博物馆", mode = "all")
+```
 
 The responses we get from **AutoNavi Map API** is **JSON** or **XML**.
 For readability, we transform them to
@@ -252,6 +224,14 @@ res <- getLocation(103.996, 30.6475)
 knitr::kable(res)
 ```
 
+Request extended POI, road, and AOI details (requires `extensions = "all"`):
+
+``` r
+getLocation(103.996, 30.6475,
+           extensions = "all",
+           details = c("pois", "roads", "roadinters", "aois"))
+```
+
 | formatted_address                                                  | country | province | city   | district | township | citycode | towncode     |
 |:-------------------------------------------------------------------|:--------|:---------|:-------|:---------|:---------|:---------|:-------------|
 | 四川省成都市武侯区晋阳街道晋吉西一街66号龙湖金楠天街·C馆(天街里店) | 中国    | 四川省   | 成都市 | 武侯区   | 晋阳街道 | 028      | 510107011000 |
@@ -276,6 +256,13 @@ it is nonsense to bind their results.
 ``` r
 res <- getAdmin(c("四川省", "成都市", "济宁市"))
 knitr::kable(res)
+```
+
+Include boundary polylines (requires `extensions = "all"`):
+
+``` r
+getAdmin("四川省", subdistrict = 0,
+         extensions = "all", include_polyline = TRUE)
 ```
 
 <table class="kable_wrapper">
@@ -377,6 +364,24 @@ knitr::kable(res)
 | 103.9983 | 30.6449 |
 
 `extractConvertCoord` is created to get result as data.table.
+
+### Request signing
+
+AutoNavi's enterprise endpoints can be secured with a digital signature. Instead of
+threading the signature through every call, enable signing globally:
+
+``` r
+amap_config(secret = "YOUR-SECRET")
+getCoord("四川省博物馆")
+```
+
+For temporary scopes, wrap the workflow with `with_amap_signature()`:
+
+``` r
+with_amap_signature("YOUR-SECRET", {
+  getCoord("四川省博物馆", batch = TRUE)
+})
+```
 
 ## Bug report
 

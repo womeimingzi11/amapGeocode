@@ -1,0 +1,20 @@
+http_interactions:
+- request:
+    method: get
+    uri: https://restapi.amap.com/v3/geocode/geo?address=NeedPermission&key=FAKE_KEY
+    body:
+      encoding: ''
+      string: ''
+    headers: {}
+  response:
+    status:
+      status_code: 200
+      message: OK
+    headers:
+      Content-Type: application/json
+    body:
+      encoding: UTF-8
+      string: '{"status":"0","info":"INSUFFICIENT_PERMISSIONS","infocode":"10034"}'
+    http_version: '1.1'
+  recorded_at: '2024-01-01 00:00:00 GMT'
+  recorded_with: vcr/1.2.0, webmockr/0.8.0

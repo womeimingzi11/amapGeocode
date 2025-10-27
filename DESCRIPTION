@@ -15,17 +15,21 @@ Description: Getting and parsing data of location geocode/reverse-geocode and ad
 License: MIT + file LICENSE
 Depends: R (>= 4.1.0)
 Imports: 
-    httr,
+    httr2,
+    jsonlite,
+    rlang,
+    digest,
     sjmisc,
     stats,
     xml2,
-    data.table,
-    furrr
+    data.table
 Suggests: 
     stringr,
     knitr,
     rmarkdown,
     testthat,
+    httptest2,
+    vcr,
     spelling,
     covr
 VignetteBuilder:

@@ -12,72 +12,71 @@ getCoord(
   output = "data.table",
   callback = NULL,
   keep_bad_request = TRUE,
+  mode = c("best", "all"),
+  batch = FALSE,
   ...
 )
 }
 \arguments{
-\item{address}{Required.\cr
-Structured address information. \cr
-Rules: Country/Region, Province/State,
-City, County/District, Town, Country, Road, Number, Room, Building.}
+\item{address}{Required. Structured address information. Rules: Country/Region,
+Province/State, City, County/District, Town, Country, Road, Number, Room,
+Building.}
 
-\item{key}{Optional.\cr
-Amap Key. \cr
-Applied from 'AutoNavi' Map API official
-website\url{https://lbs.amap.com/dev/}}
+\item{key}{Optional. AutoNavi API key. You can also set it globally via
+\code{options(amap_key = "your-key")}.}
 
-\item{city}{Optional.\cr
-Specify the City. \cr
-Support: city in Chinese, full pinyin, citycode,
-adcode\url{https://lbs.amap.com/api/webservice/download}.\cr
-The default value is NULL which will search country-wide.
-The default value is NULL}
+\item{city}{Optional city hint to narrow the search scope. Supports Chinese
+names, full pinyin, citycode, or adcode
+(\url{https://lbs.amap.com/api/webservice/download}).}
 
-\item{sig}{Optional.\cr
-Digital Signature.\cr
-How to use this argument?
-Please check here{https://lbs.amap.com/faq/account/key/72}}
+\item{sig}{Optional digital signature supplied manually. Most workflows can
+enable automatic signing via \code{with_amap_signature()} or
+\code{amap_config()}.}
 
-\item{output}{Optional.\cr
-Output Data Structure. \cr
-Support JSON, XML and data.table. The default value is data.table.}
+\item{output}{Optional output data structure. Supports \code{"data.table"},
+\code{"JSON"}, and \code{"XML"}. The default value is \code{"data.table"}.}
 
-\item{callback}{Optional.\cr
-Callback Function. \cr
-The value of callback is the customized function.
-Only available with JSON output.
-If you don't understand, it means you don't need it, just like me.}
+\item{callback}{Optional JSONP callback function. Only applies when
+\code{output = "JSON"}.}
 
-\item{keep_bad_request}{Optional.\cr
-Keep Bad Request to avoid breaking a workflow,
-especially meaningful in a batch request}
+\item{keep_bad_request}{Optional. When \code{TRUE}, API errors are converted
+into placeholder rows so that batched workflows continue.}
 
-\item{...}{Optional.\cr
-For compatibility only}
+\item{mode}{Optional. Controls how candidates are returned. Use \code{"best"}
+(the default) to keep the highest ranked candidate for each query or
+\code{"all"} to return every match alongside ranking metadata.}
+
+\item{batch}{Optional. When \code{TRUE}, requests are chunked into groups of
+ten addresses using the API's batch mode while preserving input order.}
+
+\item{...}{Optional arguments retained for forward compatibility.}
 }
 \value{
-Returns a JSON, XML or data.table of results
-containing detailed geocode information.
-See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo}
-for more information.
+A JSON, XML, or \code{data.table} representation of the geocode results. When
+\code{output = "data.table"}, the return value preserves the input order,
+provides optional multi-match metadata, and carries any rate-limit headers
+via a \code{rate_limit} attribute.
 }
 \description{
 Get coordinate from location
 }
 \examples{
 \dontrun{
-library(amapGeocode)
-
-# Before the `getCoord()` is executed,
-# the token should be set by `option(amap_key = 'key')`
-# or set by key argument in `getCoord()`
+# Before calling getCoord(), set the key via options(amap_key = 'KEY')
 
 # Get geocode as a data.table
 getCoord("IFS Chengdu")
-# Get geocode as a XML
+
+# Return all candidates
+getCoord("IFS Chengdu", mode = "all")
+
+# Batch up to ten requests
+a <- rep("IFS Chengdu", 10)
+getCoord(a, batch = TRUE)
+
+# Get geocode as XML
 getCoord("IFS Chengdu", output = "XML")
 }
-
 }
 \seealso{
 \code{\link{extractCoord}}

@@ -1,42 +1,53 @@
-# Test whether getCoord can retrun right class
-test_that("Reuturn detailed tibble with correct coordinate", {
-  skip_if(is.null(getOption("amap_key")))
-  res <- getLocation(104, 30)
-  f_a_class <-
-    class(res$formatted_address)
-  f_a_is_na <-
-    any(is.na(res$formatted_address))
-  expect_equal(f_a_class, "character")
-  expect_equal(f_a_is_na, FALSE)
+test_that("getLocation returns basic reverse geocode data", {
+  vcr::use_cassette("regeo_basic", {
+    res <- getLocation(104.043284, 30.666864)
+  }, match_requests_on = c("method", "uri"))
+
+  expect_s3_class(res, "data.table")
+  expect_equal(nrow(res), 1L)
+  expect_equal(res$city, "Chengdu")
+  expect_equal(res$district, "Jinjiang")
 })
 
-# Test whether getCoord can retrun right class withou to_tibble
-test_that("Reuturn raw respone with correct coordinate", {
-  skip_if(is.null(getOption("amap_key")))
-  res <- getLocation(104, 30, output = "JSON")
-  res_class <-
-    class(res)
+test_that("getLocation returns detail list-columns when requested", {
+  vcr::use_cassette("regeo_details", {
+    res <- getLocation(104.05, 30.67,
+                       extensions = "all",
+                       details = c("pois", "roads", "roadinters", "aois"))
+  }, match_requests_on = c("method", "uri"))
 
-  expect_equal(any(stringr::str_detect(res_class, "list")), TRUE)
+  expect_true(all(c("pois", "roads", "roadinters", "aois") %in% names(res)))
+  expect_s3_class(res$pois[[1]], "data.table")
+  expect_equal(res$pois[[1]]$name, "Mall")
+  expect_equal(res$roads[[1]]$name, "Zhonghua Road")
 })
 
-# Test whether getCoord can retrun right class with wrong location
-test_that("Reuturn na tibble with correct coordinate", {
-  skip_if(is.null(getOption("amap_key")))
-  res <- getLocation(104, 300)
-  res_class <-
-    class(res)
-  expect_equal(any(stringr::str_detect(res_class, "data.frame")), TRUE)
-  expect_equal(all(is.na(res)), TRUE)
+test_that("getLocation batch preserves order", {
+  vcr::use_cassette("regeo_batch", {
+    res <- getLocation(c(104.043284, 104.05), c(30.666864, 30.67), batch = TRUE)
+  }, match_requests_on = c("method", "uri"))
+
+  expect_equal(nrow(res), 2L)
+  expect_equal(res$formatted_address, c("Addr A", "Addr B"))
 })
 
-# Test parallel request
-test_that("Test parallel request", {
-  skip_if(is.null(getOption("amap_key")))
-  lng_ls <- rep_len(x = 104, length.out = 10)
-  lat_ls <- rep_len(x = 30, length.out = 10)
-  res <- getLocation(lng = lng_ls, lat = lat_ls, max_core = 12)
-  unique_res <-
-    unique(res)
-  expect_equal(unique_res$province, "四川省")
+test_that("extractLocation parses detail payload", {
+  raw <- vcr::use_cassette("regeo_details", {
+    getLocation(104.05, 30.67,
+                extensions = "all",
+                details = NULL,
+                output = "JSON")
+  }, match_requests_on = c("method", "uri"))
+
+  parsed <- extractLocation(raw, details = "pois")
+  expect_equal(names(parsed), c(
+    "formatted_address", "country", "province", "city", "district",
+    "township", "citycode", "towncode", "adcode", "street", "number",
+    "neighborhood", "building", "pois"
+  ))
+  expect_equal(parsed$pois[[1]]$name, "Mall")
+})
+
+test_that("invalid detail types error", {
+  expect_error(extractLocation(list(), details = "invalid"), "Unknown detail type")
 })

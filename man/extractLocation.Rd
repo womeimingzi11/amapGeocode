@@ -4,35 +4,30 @@
 \alias{extractLocation}
 \title{Extract location from coordinate request}
 \usage{
-extractLocation(res)
+extractLocation(res, details = NULL)
 }
 \arguments{
-\item{res}{Required.\cr
-Response from getLocation.}
+\item{res}{Required response object returned by \code{getLocation()} with
+\code{output = "JSON"} or by the AutoNavi reverse-geocoding API.}
+
+\item{details}{Optional character vector describing which extended detail
+payloads to parse into list-columns (\code{"pois"}, \code{"roads"},
+\code{"roadinters"}, \code{"aois"}). Use \code{"all"} to include every
+detail payload.}
 }
 \value{
-Returns a data.table which extracts detailed location information
- from results of getLocation.
-See \url{https://lbs.amap.com/api/webservice/guide/api/georegeo}
-for more information.
+A \code{data.table} describing the parsed reverse-geocode results. Each row
+corresponds to an element in the API response. When no data is present a
+single placeholder row filled with \code{NA} values is returned.
 }
 \description{
 Extract location from coordinate request
 }
 \examples{
 \dontrun{
-library(dplyr)
-library(amapGeocode)
-
-# Before the `getLocation()` is executed,
-# the token should be set by `option(amap_key = 'key')`
-# or set by key argument in `getLocation()`
-# Get reverse-geocode as a XML
-getLocation(104.043284, 30.666864, output = "XML") |>
-  # extract reverse-geocode regions as a table
-  extractLocation()
+raw <- getLocation(104.043284, 30.666864, output = "JSON")
+extractLocation(raw, details = c("pois", "roads"))
 }
-
 }
 \seealso{
 \code{\link{getLocation}}

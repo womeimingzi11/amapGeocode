@@ -2,42 +2,32 @@
 % Please edit documentation in R/getAdmin.R
 \name{extractAdmin}
 \alias{extractAdmin}
-\title{Get Subordinate Administrative Region from getAdmin request
-Now, it only support extract the first layer of
-subordinate administrative region information.}
+\title{Extract subordinate administrative regions}
 \usage{
-extractAdmin(res)
+extractAdmin(res, include_polyline = FALSE)
 }
 \arguments{
-\item{res}{Response from getAdmin.}
+\item{res}{Required response object returned by \code{getAdmin()} with
+\code{output = "JSON"} or by the AutoNavi district API.}
+
+\item{include_polyline}{Logical indicating whether to include the polyline
+column (requires \code{extensions = "all"}).}
 }
 \value{
-Returns a data.table which extracts
-detailed subordinate administrative region information
-from results of getCoord.
-See \url{https://lbs.amap.com/api/webservice/guide/api/district}
-for more information.
+A \code{data.table} describing each administrative region in the response.
+The table includes parent metadata (\code{parent_name}, \code{parent_adcode},
+\code{parent_level}), centre coordinates (\code{lng}, \code{lat}), and a
+\code{depth} column describing the nesting level. When no results are present a
+single placeholder row filled with \code{NA} values is returned.
 }
 \description{
-Get Subordinate Administrative Region from getAdmin request
-Now, it only support extract the first layer of
-subordinate administrative region information.
+Extract subordinate administrative regions from getAdmin request
 }
 \examples{
 \dontrun{
-library(dplyr)
-library(amapGeocode)
-
-# Before the `getAdmin()` is executed,
-# the token should be set by `option(amap_key = 'key')`
-# or set by key argument in `getAdmin()`
-
-# Get subordinate administrative regions as a XML
-getAdmin("Sichuan Province", output = "XML")  |>
-  # extract subordinate administrative regions as a data.table
-  extractAdmin()
+raw <- getAdmin("四川省", subdistrict = 1, output = "JSON")
+extractAdmin(raw)
 }
-
 }
 \seealso{
 \code{\link{getAdmin}}

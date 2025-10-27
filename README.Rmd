@@ -43,37 +43,13 @@ amapGeocode is inspired by [baidumap](https://github.com/badbye/baidumap) and [b
 
 However, AutoNavi has significant high precise, in my case, the Results from Baidu were unsatisfactory.
 
-## BIG NEWS: Parallel is Here! But you need a `plan`
+## Highlights
 
-Since `v0.5.1`, parallel framework is implemented by [`furrr` package](https://CRAN.R-project.org/package=furrr), of which backend is [`future package`](https://arxiv.org/abs/2008.00553). Refering to [*A Future for R: Best Practices for Package Developers*](https://CRAN.R-project.org/package=future/vignettes/future-7-for-package-developers.html) and avoiding potential modification to the future strategy, we have removed the automatically parallel operation from every function in `amapGeocode`.
-
-To turn on parallel operation support, just call `future::plan(multisession) # or any other future strategy`.
-
-Since `v0.5`, parallel operation finally comes to `amapGeocode` with the `parallel` package as the backend. There is a really huge performance improvement for batch queries. And you are welcomed to make a benchmark by following command.
-
-```r
-library(amapGeocode)
-library(future)
-library(readr)
-sample_site <-
-  read_csv("https://gist.githubusercontent.com/womeimingzi11/0fa3f4744f3ebc0f4484a52649f556e5/raw/47a69157f3e26c4d3bc993f3715b9ba88cda9d93/sample_site.csv")
-
-str(sample_site)
-
-# Here is the old implement
-start_time <- proc.time()
-old <- lapply(sample_site$address, amapGeocode:::getCoord.individual)
-proc.time() - start_time
-
-# Here is the new implement
-plan(multisession)
-start_time <- proc.time()
-new <- getCoord(sample_site$address)
-proc.time() - start_time
-
-```
-
-*While parallel support is a totally threads depending operation, so you will get completely different speed on different devices.*
+- Unified HTTP handling via [{httr2}](https://httr2.r-lib.org) with structured diagnostics (`amap_api_error`) and automatic propagation of rate-limit headers.
+- Opt-in request signing through `amap_sign()`, `with_amap_signature()`, and `amap_config()` keeps sensitive secrets out of function calls.
+- `getCoord()` now supports `mode = "all"` for multi-match lookups as well as `batch = TRUE` to resolve up to ten addresses per request while preserving input order.
+- `getLocation()` gains batching plus rich POI, road, intersection, and AOI list-columns via the `details` argument when `extensions = "all"`.
+- `extractAdmin()` traverses every matching parent region, returning tidy parent metadata and optional boundary polylines when `extensions = "all"`.
 
 ## Installation
 
@@ -108,8 +84,14 @@ res <-
     "四川省博物馆",
     "成都市博物馆",
     "四川省成都市武侯区金楠天街"
-  ))
+  ), batch = TRUE)
 knitr::kable(res)
+```
+
+Retrieve every candidate for a single query:
+
+```r
+getCoord("四川省博物馆", mode = "all")
 ```
 
 The responses we get from **AutoNavi Map API** is **JSON** or **XML**. For readability, we transform them to [`data.table`](https://CRAN.R-project.org/package=data.table), by setting `output` argument as `data.table` by default.
@@ -140,6 +122,14 @@ res <-
 knitr::kable(res)
 ```
 
+Request extended POI, road, and AOI details (requires `extensions = "all"`):
+
+```r
+getLocation(103.9960, 30.6475,
+           extensions = "all",
+           details = c("pois", "roads", "roadinters", "aois"))
+```
+
 `extractLocation` is created to get a result as a data.table.
 
 ### Get Subordinate Administrative Region
@@ -154,6 +144,13 @@ Because this function supports different administrative region levels, it is non
 res <-
   getAdmin(c("四川省", "成都市", "济宁市"))
 knitr::kable(res)
+```
+
+Include boundary polylines (requires `extensions = "all"`):
+
+```r
+getAdmin("四川省", subdistrict = 0,
+         extensions = "all", include_polyline = TRUE)
 ```
 
 `extractAdmin` is created to get results as tibble.
@@ -171,6 +168,24 @@ knitr::kable(res)
 ```
 
 `extractConvertCoord` is created to get result as data.table.
+
+### Request signing
+
+AutoNavi's enterprise endpoints can be secured with a digital signature. Instead of
+threading the signature through every call, enable signing globally:
+
+```r
+amap_config(secret = "YOUR-SECRET")
+getCoord("四川省博物馆")
+```
+
+For temporary scopes, wrap the workflow with `with_amap_signature()`:
+
+```r
+with_amap_signature("YOUR-SECRET", {
+  getCoord("四川省博物馆", batch = TRUE)
+})
+```
 
 ## Bug report
 It's very common for API upgrades to make the downstream application, like amapGeocode,which is unavailable. Feel free to [let me know](mailto://chenhan28@gmail.com) once it's broken or just open an <a class="github-button" href="https://github.com/womeimingzi11/amapGeocode/issues" data-color-scheme="no-preference: light; light: light; dark: dark;" data-size="large" aria-label="Issue womeimingzi11/amapGeocode on GitHub">Issue</a>.

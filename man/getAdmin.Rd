@@ -2,7 +2,7 @@
 % Please edit documentation in R/getAdmin.R
 \name{getAdmin}
 \alias{getAdmin}
-\title{Get Subordinate Administrative Regions from location}
+\title{Get subordinate administrative regions}
 \usage{
 getAdmin(
   keywords,
@@ -15,93 +15,63 @@ getAdmin(
   callback = NULL,
   output = "data.table",
   keep_bad_request = TRUE,
+  include_polyline = FALSE,
   ...
 )
 }
 \arguments{
-\item{keywords}{Required.\cr
-Search keywords. \cr
-Rules: Country/Region, Province/State,
-City, County/District, Town, Country, Road, Number, Room, Building.}
+\item{keywords}{Required search keywords. Accepts a character vector; each
+entry is queried in turn.}
 
-\item{key}{Optional.\cr
-Amap Key. \cr
-Applied from 'AutoNavi' Map API
-official website\url{https://lbs.amap.com/dev/}}
+\item{key}{Optional AutoNavi API key. You can also set it globally via
+\code{options(amap_key = "your-key")}.}
 
-\item{subdistrict}{Optional.\cr
-Subordinate Administrative Level.\cr
-Display level of subordinate administrative regions.
-Available value: 0,1,2,3.\cr
-`0` do not return subordinate administrative regions.\cr
-`1` return first one subordinate administrative regions.\cr
-`2` return first two subordinate administrative regions.\cr
-`3` return first three subordinate administrative regions.}
+\item{subdistrict}{Optional subordinate administrative depth (0--3).}
 
-\item{page}{Optional.\cr
-Which page to return.\cr
-Each time the outmost layer will return a maximum of 20 records.
-If the limit is exceeded,
-please request the next page of records with the page argument.}
+\item{page}{Optional page number for paged results.}
 
-\item{offset}{Optional.\cr
-Maximum records per page.\cr
-Maximum value is 20.}
+\item{offset}{Optional maximum records per page (maximum 20).}
 
-\item{extensions}{Optional.\cr
-Return results controller.\cr
-`base`: does not return the coordinates of
-the administrative district boundary.\cr
-`all`: returns only the boundary value of the current query district,
-not the boundary value of the child node.}
+\item{extensions}{Optional result controller. Use \code{"base"} or
+\code{"all"}. Required for polyline data.}
 
-\item{filter}{Optional.\cr
-Filter administrative regions.\cr
-Filtering by designated administrative divisions,
-which returns information only for the province/municipality.\cr
-It is strongly recommended to fill in this parameter
-in order to ensure the correct records.}
+\item{filter}{Optional adcode used to filter administrative divisions.}
 
-\item{callback}{Optional.\cr
-Callback Function. \cr
-The value of callback is the customized function.
-Only available with JSON output.
-If you don't understand, it means you don't need it, just like me.}
+\item{callback}{Optional JSONP callback function. Only applies when
+\code{output = "JSON"}.}
 
-\item{output}{Optional.\cr
- Output Data Structure. \cr
-Support JSON, XML and data.table. The default value is data.table.}
+\item{output}{Optional output data structure. Supports \code{"data.table"},
+\code{"JSON"}, and \code{"XML"}. The default value is
+\code{"data.table"}.}
 
-\item{keep_bad_request}{Optional.\cr
-Keep Bad Request to avoid breaking a workflow,
-especially meaningful in a batch request}
+\item{keep_bad_request}{Optional. When \code{TRUE}, API errors are converted
+into placeholder rows so that batched workflows continue.}
 
-\item{...}{Optional.\cr
-For compatibility only}
+\item{include_polyline}{Optional. When \code{TRUE} and when
+\code{extensions = "all"}, boundary polylines are included in the parsed
+output.}
+
+\item{...}{Optional arguments retained for forward compatibility.}
 }
 \value{
-Returns a JSON or XML of results
-containing detailed subordinate administrative region information.
-See \url{https://lbs.amap.com/api/webservice/guide/api/district}
-for more information.
+A JSON, XML, or \code{data.table} representation of the administrative region
+results. When \code{output = "data.table"}, the return value includes parent
+metadata (\code{parent_name}, \code{parent_adcode}, \code{parent_level}) and a
+\code{depth} column describing the nesting level. Any rate-limit headers are
+available via the \code{rate_limit} attribute.
 }
 \description{
-Get Subordinate Administrative Regions from location
+Get subordinate administrative regions
 }
 \examples{
 \dontrun{
-library(amapGeocode)
+# Query child regions for Sichuan province
+getAdmin("四川省", subdistrict = 1)
 
-# Before the `getAdmin()` is executed,
-# the token should be set by `option(amap_key = 'key')`
-# or set by key argument in `getAdmin()`
-
-# Get subordinate administrative regions as a data.table
-getAdmin("Sichuan Province")
-# Get subordinate administrative regions as a XML
-getCoord("Sichuan Province", output = "XML")
+# Include boundary polylines (requires extensions = "all")
+getAdmin("四川省", subdistrict = 0,
+         extensions = "all", include_polyline = TRUE)
 }
-
 }
 \seealso{
 \code{\link{extractAdmin}}

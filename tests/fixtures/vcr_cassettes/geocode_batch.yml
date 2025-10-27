@@ -1,0 +1,20 @@
+http_interactions:
+- request:
+    method: get
+    uri: https://restapi.amap.com/v3/geocode/geo?address=Addr1%7CAddr2&batch=true&key=FAKE_KEY
+    body:
+      encoding: ''
+      string: ''
+    headers: {}
+  response:
+    status:
+      status_code: 200
+      message: OK
+    headers:
+      Content-Type: application/json
+    body:
+      encoding: UTF-8
+      string: '{"status":"1","info":"OK","infocode":"10000","count":"2","geocodes":[{"formatted_address":"Addr1","country":"China","province":"Guangdong","city":"Shenzhen","district":"Nanshan","township":"","neighborhood":{"name":"","type":""},"building":{"name":"","type":""},"citycode":"0755","adcode":"440305","street":"Science Park","number":"1","location":"113.943000,22.540000","level":"street"},{"formatted_address":"Addr2","country":"China","province":"Guangdong","city":"Shenzhen","district":"Futian","township":"","neighborhood":{"name":"","type":""},"building":{"name":"","type":""},"citycode":"0755","adcode":"440304","street":"Shennan Avenue","number":"8000","location":"114.050000,22.540000","level":"street"}]}'
+    http_version: '1.1'
+  recorded_at: '2024-01-01 00:00:00 GMT'
+  recorded_with: vcr/1.2.0, webmockr/0.8.0

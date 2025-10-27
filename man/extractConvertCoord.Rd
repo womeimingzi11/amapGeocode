@@ -2,38 +2,26 @@
 % Please edit documentation in R/convertCoord.R
 \name{extractConvertCoord}
 \alias{extractConvertCoord}
-\title{Extract converted coordinate points from convertCoord request}
+\title{Extract converted coordinates from a conversion response}
 \usage{
 extractConvertCoord(res)
 }
 \arguments{
-\item{res}{Required.\cr
-Response from convertCoord.}
+\item{res}{Required response object returned by \code{convertCoord()} with
+\code{output = "JSON"} or by the AutoNavi coordinate conversion API.}
 }
 \value{
-Returns a data.table
-which extracts converted coordinate points from request of convertCoord.
-See \url{https://lbs.amap.com/api/webservice/guide/api/convert}
-for more information.
+A \code{data.table} with columns \code{lng} and \code{lat}. When no data is
+present a single placeholder row filled with \code{NA} values is returned.
 }
 \description{
-Extract converted coordinate points from convertCoord request
+Extract converted coordinates from a conversion response
 }
 \examples{
 \dontrun{
-library(dplyr)
-library(amapGeocode)
-
-# Before the `convertCoord()` is executed,
-# the token should be set by `option(amap_key = 'key')`
-# or set by key argument in `convertCoord()`
-
-# get result of converted coordinate system as a XML
-convertCoord("116.481499,39.990475", coordsys = "gps", to_table = FALSE) \%>\%
-  # extract result of converted coordinate system as a data.table
-  extractConvertCoord()
+raw <- convertCoord("116.481499,39.990475", coordsys = "gps", output = "JSON")
+extractConvertCoord(raw)
 }
-
 }
 \seealso{
 \code{\link{convertCoord}}

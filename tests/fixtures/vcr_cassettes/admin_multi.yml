@@ -1,0 +1,20 @@
+http_interactions:
+- request:
+    method: get
+    uri: https://restapi.amap.com/v3/config/district?keywords=Sichuan&subdistrict=1&key=FAKE_KEY
+    body:
+      encoding: ''
+      string: ''
+    headers: {}
+  response:
+    status:
+      status_code: 200
+      message: OK
+    headers:
+      Content-Type: application/json
+    body:
+      encoding: UTF-8
+      string: '{"status":"1","info":"OK","infocode":"10000","count":"2","districts":[{"name":"Sichuan Province","adcode":"510000","citycode":"","level":"province","center":"104.065735,30.659462","districts":[{"name":"Chengdu City","adcode":"510100","citycode":"028","level":"city","center":"104.065735,30.659462","districts":[]},{"name":"Mianyang City","adcode":"510700","citycode":"0816","level":"city","center":"104.741722,31.464020","districts":[]}]},{"name":"Sichuan Alt","adcode":"519000","citycode":"","level":"province","center":"104.500000,30.200000","districts":[{"name":"Alt City","adcode":"519100","citycode":"0817","level":"city","center":"104.800000,30.300000","districts":[]}]}]}'
+    http_version: '1.1'
+  recorded_at: '2024-01-01 00:00:00 GMT'
+  recorded_with: vcr/1.2.0, webmockr/0.8.0

@@ -1,0 +1,20 @@
+http_interactions:
+- request:
+    method: get
+    uri: https://restapi.amap.com/v3/geocode/regeo?key=FAKE_KEY&location=104.043284%2C30.666864
+    body:
+      encoding: ''
+      string: ''
+    headers: {}
+  response:
+    status:
+      status_code: 200
+      message: OK
+    headers:
+      Content-Type: application/json
+    body:
+      encoding: UTF-8
+      string: '{"status":"1","info":"OK","infocode":"10000","regeocode":{"formatted_address":"Chengdu IFS","addressComponent":{"country":"China","province":"Sichuan","city":"Chengdu","district":"Jinjiang","township":"","citycode":"028","towncode":"","adcode":"510104","streetNumber":{"street":"Hongxing Road","number":"3"},"neighborhood":{"name":"","type":""},"building":{"name":"","type":""}}}}'
+    http_version: '1.1'
+  recorded_at: '2024-01-01 00:00:00 GMT'
+  recorded_with: vcr/1.2.0, webmockr/0.8.0

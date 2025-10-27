@@ -1,41 +1,68 @@
-# Test whether getCoord can retrun right class
-test_that("Reuturn detailed tibble with correct location", {
-  skip_if(is.null(getOption("amap_key")))
-  res <- getCoord("成都中医药大学")
-  lng_class <-
-    class(res$lng)
-  lng_is_na <-
-    any(is.na(res$lng))
-  expect_equal(lng_class, "numeric")
-  expect_equal(lng_is_na, FALSE)
+test_that("getCoord returns best match with rate limit metadata", {
+  vcr::use_cassette("geocode_best", {
+    res <- getCoord("Chengdu IFS")
+  }, match_requests_on = c("method", "uri"))
+
+  expect_s3_class(res, "data.table")
+  expect_equal(nrow(res), 1L)
+  expect_equal(res$city, "Chengdu")
+  expect_equal(names(res), c(
+    "lng", "lat", "formatted_address", "country", "province",
+    "city", "district", "township", "street", "number",
+    "citycode", "adcode"
+  ))
+  rl <- attr(res, "rate_limit")
+  expect_true(!is.null(rl))
+  expect_equal(unname(rl[["X-RateLimit-Remaining"]]), "9999")
 })
 
-# Test whether getCoord can retrun right class withou to_tibble
-test_that("Reuturn raw respone with correct location", {
-  skip_if(is.null(getOption("amap_key")))
-  res <- getCoord("成都中医药大学", output = "JSON")
-  res_class <-
-    class(res)
+test_that("getCoord mode = 'all' returns multi-match table", {
+  vcr::use_cassette("geocode_multi", {
+    res <- getCoord("Multi Address", mode = "all")
+  }, match_requests_on = c("method", "uri"))
 
-  expect_equal(any(stringr::str_detect(res_class, "list")), TRUE)
+  expect_s3_class(res, "data.table")
+  expect_equal(nrow(res), 2L)
+  expect_equal(res$match_rank, c(1L, 2L))
+  expect_equal(res$query, rep("Multi Address", 2L))
 })
 
-# Test whether getCoord can retrun right class with wrong location
-test_that("Reuturn NA tibble with wrong location", {
-  skip_if(is.null(getOption("amap_key")))
-  res <- getCoord("place unkown")
-  res_class <-
-    class(res)
-  expect_equal(any(stringr::str_detect(res_class, "data.frame")), TRUE)
-  expect_equal(all(is.na(res)), TRUE)
+test_that("getCoord batch aligns outputs with inputs", {
+  vcr::use_cassette("geocode_batch", {
+    res <- getCoord(c("Addr1", "Addr2"), batch = TRUE)
+  }, match_requests_on = c("method", "uri"))
+
+  expect_equal(nrow(res), 2L)
+  expect_equal(res$formatted_address, c("Addr1", "Addr2"))
 })
 
-# Test parallel request
-test_that("Test parallel request", {
-  skip_if(is.null(getOption("amap_key")))
-  add_ls <- rep_len(x = "成都中医药大学", length.out = 10)
-  res <- getCoord(add_ls, max_core = 4)
-  unique_res <-
-    unique(res)
-  expect_equal(unique_res$province, "四川省")
+test_that("extractCoord parses multi-match payload", {
+  raw <- vcr::use_cassette("geocode_multi", {
+    getCoord("Multi Address", output = "JSON")
+  }, match_requests_on = c("method", "uri"))
+
+  parsed <- extractCoord(raw)
+  expect_equal(nrow(parsed), 2L)
+  expect_equal(parsed$match_rank, c(1L, 2L))
+})
+
+test_that("rate limit errors raise structured amap_api_error", {
+  expect_error(
+    vcr::use_cassette("geocode_rate_limit", {
+      getCoord("RateLimited", keep_bad_request = FALSE)
+    }, match_requests_on = c("method", "uri")),
+    class = "amap_api_error"
+  )
+})
+
+test_that("permission errors propagate infocode", {
+  err <- tryCatch({
+    vcr::use_cassette("geocode_permission", {
+      getCoord("NeedPermission", keep_bad_request = FALSE)
+    }, match_requests_on = c("method", "uri"))
+    NULL
+  }, amap_api_error = function(e) e)
+
+  expect_s3_class(err, "amap_api_error")
+  expect_equal(err$infocode, "10034")
 })

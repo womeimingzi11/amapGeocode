@@ -1,0 +1,21 @@
+http_interactions:
+- request:
+    method: get
+    uri: https://restapi.amap.com/v3/geocode/geo?address=Chengdu%20IFS&key=FAKE_KEY
+    body:
+      encoding: ''
+      string: ''
+    headers: {}
+  response:
+    status:
+      status_code: 200
+      message: OK
+    headers:
+      Content-Type: application/json
+      X-RateLimit-Remaining: '9999'
+    body:
+      encoding: UTF-8
+      string: '{"status":"1","info":"OK","infocode":"10000","count":"1","geocodes":[{"formatted_address":"Chengdu IFS","country":"China","province":"Sichuan","city":"Chengdu","district":"Jinjiang","township":"","neighborhood":{"name":"","type":""},"building":{"name":"","type":""},"citycode":"028","adcode":"510104","street":"Hongxing Road","number":"3","location":"104.043284,30.666864","level":"street"}]}'
+    http_version: '1.1'
+  recorded_at: '2024-01-01 00:00:00 GMT'
+  recorded_with: vcr/1.2.0, webmockr/0.8.0
