@@ -12,3 +12,7 @@ Readme_bkup.R
 docs
 /doc/
 /Meta/
+
+# CRAN submission artifacts (local)
+CRAN-SUBMISSION
+amapGeocode_*.tar.gz
