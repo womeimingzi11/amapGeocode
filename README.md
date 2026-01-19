@@ -1,6 +1,8 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
 <!-- Place this tag in your head or just before your close body tag. -->
+
 <!--<script async defer src="https://buttons.github.io/buttons.js"></script>-->
 
 # [amapGeocode](https://github.com/womeimingzi11/amapGeocode)
@@ -64,11 +66,19 @@ from Baidu were unsatisfactory.
 
 ## Highlights
 
-- Unified HTTP handling via [{httr2}](https://httr2.r-lib.org) with structured diagnostics (`amap_api_error`) and automatic propagation of rate-limit headers.
-- Opt-in request signing through `amap_sign()`, `with_amap_signature()`, and `amap_config()` keeps sensitive secrets out of function calls.
-- `getCoord()` now supports `mode = "all"` for multi-match lookups as well as `batch = TRUE` to resolve up to ten addresses per request while preserving input order.
-- `getLocation()` gains batching plus rich POI, road, intersection, and AOI list-columns via the `details` argument when `extensions = "all"`.
-- `extractAdmin()` traverses every matching parent region, returning tidy parent metadata and optional boundary polylines when `extensions = "all"`.
+- Unified HTTP handling via [{httr2}](https://httr2.r-lib.org) with
+  structured diagnostics (`amap_api_error`) and automatic propagation of
+  rate-limit headers.
+- Opt-in request signing through `amap_sign()`, `with_amap_signature()`,
+  and `amap_config()` keeps sensitive secrets out of function calls.
+- `getCoord()` now supports `mode = "all"` for multi-match lookups as
+  well as `batch = TRUE` to resolve up to ten addresses per request
+  while preserving input order.
+- `getLocation()` gains batching plus rich POI, road, intersection, and
+  AOI list-columns via the `details` argument when `extensions = "all"`.
+- `extractAdmin()` traverses every matching parent region, returning
+  tidy parent metadata and optional boundary polylines when
+  `extensions = "all"`.
 
 ## Installation
 
@@ -102,22 +112,22 @@ res <- getCoord("四川省博物馆")
 knitr::kable(res)
 ```
 
-|      lng |      lat | formatted_address              | country | province | city   | district | township | street | number | citycode | adcode |
-|---------:|---------:|:-------------------------------|:--------|:---------|:-------|:---------|:---------|:-------|:-------|:---------|:-------|
-| 104.0339 | 30.66069 | 四川省成都市青羊区四川省博物馆 | 中国    | 四川省   | 成都市 | 青羊区   | NA       | NA     | NA     | 028      | 510105 |
+| lng | lat | formatted_address | country | province | city | district | township | street | number | citycode | adcode |
+|---:|---:|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|
+| 104.0765 | 30.6517 | 四川省 | 中国 | 四川省 | NA | NA | NA | NA | NA | NA | 510000 |
 
 ``` r
 # Batch requests
 res <- getCoord(c("四川省博物馆", "成都市博物馆", "四川省成都市武侯区金楠天街"),
-                batch = TRUE)
+    batch = TRUE)
 knitr::kable(res)
 ```
 
-|      lng |      lat | formatted_address              | country | province | city   | district | township | street | number | citycode | adcode |
-|---------:|---------:|:-------------------------------|:--------|:---------|:-------|:---------|:---------|:-------|:-------|:---------|:-------|
-| 104.0339 | 30.66069 | 四川省成都市青羊区四川省博物馆 | 中国    | 四川省   | 成都市 | 青羊区   | NA       | NA     | NA     | 028      | 510105 |
-| 104.0637 | 30.65733 | 四川省成都市青羊区成都市博物馆 | 中国    | 四川省   | 成都市 | 青羊区   | NA       | NA     | NA     | 028      | 510105 |
-| 103.9962 | 30.64848 | 四川省成都市武侯区金楠天街     | 中国    | 四川省   | 成都市 | 武侯区   | NA       | NA     | NA     | 028      | 510107 |
+| lng | lat | formatted_address | country | province | city | district | township | street | number | citycode | adcode |
+|---:|---:|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|
+| 104.0765 | 30.65170 | 四川省 | 中国 | 四川省 | NA | NA | NA | NA | NA | NA | 510000 |
+| 104.0663 | 30.57296 | 四川省成都市 | 中国 | 四川省 | 成都市 | NA | NA | NA | NA | 028 | 510100 |
+| 103.9961 | 30.64860 | 四川省成都市武侯区金楠天街 | 中国 | 四川省 | 成都市 | 武侯区 | NA | 金楠天街 | NA | 028 | 510107 |
 
 Retrieve every candidate for a single query:
 
@@ -152,7 +162,7 @@ res
 #> $geocodes
 #> $geocodes[[1]]
 #> $geocodes[[1]]$formatted_address
-#> [1] "四川省成都市青羊区四川省博物馆"
+#> [1] "四川省"
 #> 
 #> $geocodes[[1]]$country
 #> [1] "中国"
@@ -160,14 +170,11 @@ res
 #> $geocodes[[1]]$province
 #> [1] "四川省"
 #> 
-#> $geocodes[[1]]$citycode
-#> [1] "028"
-#> 
 #> $geocodes[[1]]$city
-#> [1] "成都市"
+#> list()
 #> 
 #> $geocodes[[1]]$district
-#> [1] "青羊区"
+#> list()
 #> 
 #> $geocodes[[1]]$township
 #> list()
@@ -189,7 +196,7 @@ res
 #> 
 #> 
 #> $geocodes[[1]]$adcode
-#> [1] "510105"
+#> [1] "510000"
 #> 
 #> $geocodes[[1]]$street
 #> list()
@@ -198,10 +205,10 @@ res
 #> list()
 #> 
 #> $geocodes[[1]]$location
-#> [1] "104.033944,30.660691"
+#> [1] "104.076452,30.651696"
 #> 
 #> $geocodes[[1]]$level
-#> [1] "兴趣点"
+#> [1] "省"
 ```
 
 `extractCoord` is created to get a result as a data.table.
@@ -211,9 +218,9 @@ tb <- extractCoord(res)
 knitr::kable(tb)
 ```
 
-|      lng |      lat | formatted_address              | country | province | city   | district | township | street | number | citycode | adcode |
-|---------:|---------:|:-------------------------------|:--------|:---------|:-------|:---------|:---------|:-------|:-------|:---------|:-------|
-| 104.0339 | 30.66069 | 四川省成都市青羊区四川省博物馆 | 中国    | 四川省   | 成都市 | 青羊区   | NA       | NA     | NA     | 028      | 510105 |
+| match_rank | lng | lat | formatted_address | country | province | city | district | township | street | number | citycode | adcode | level | matchlevel | neighborhood | neighborhood_type | building | building_type | location | query | query_index |
+|---:|---:|---:|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|---:|
+| NA | 104.0765 | 30.6517 | 四川省 | 中国 | 四川省 | NA | NA | NA | NA | NA | NA | 510000 | 省 | NA | NA | NA | NA | NA | NA | NA | NA |
 
 ### Reverse Geocoding
 
@@ -224,17 +231,18 @@ res <- getLocation(103.996, 30.6475)
 knitr::kable(res)
 ```
 
-Request extended POI, road, and AOI details (requires `extensions = "all"`):
+| formatted_address | country | province | city | district | township | citycode | towncode | adcode | street | number | neighborhood | building |
+|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|
+| 四川省成都市武侯区晋阳街道晋吉西一街66号龙湖金楠天街C馆 | 中国 | 四川省 | 成都市 | 武侯区 | 晋阳街道 | 028 | 510107011000 | 510107 | 晋吉西一街 | 66号 | NA | NA |
+
+Request extended POI, road, and AOI details (requires
+`extensions = "all"`):
 
 ``` r
-getLocation(103.996, 30.6475,
+getLocation(103.9960, 30.6475,
            extensions = "all",
            details = c("pois", "roads", "roadinters", "aois"))
 ```
-
-| formatted_address                                                  | country | province | city   | district | township | citycode | towncode     |
-|:-------------------------------------------------------------------|:--------|:---------|:-------|:---------|:---------|:---------|:-------------|
-| 四川省成都市武侯区晋阳街道晋吉西一街66号龙湖金楠天街·C馆(天街里店) | 中国    | 四川省   | 成都市 | 武侯区   | 晋阳街道 | 028      | 510107011000 |
 
 `extractLocation` is created to get a result as a data.table.
 
@@ -258,89 +266,67 @@ res <- getAdmin(c("四川省", "成都市", "济宁市"))
 knitr::kable(res)
 ```
 
+| parent_name | parent_adcode | parent_level | name | level | citycode | adcode | lng | lat | depth | query |
+|:---|:---|:---|:---|:---|:---|:---|---:|---:|---:|:---|
+| 四川省 | 510000 | province | 乐山市 | city | 0833 | 511100 | 103.7661 | 29.55228 | 1 | 四川省 |
+| 四川省 | 510000 | province | 内江市 | city | 1832 | 511000 | 105.0580 | 29.58021 | 1 | 四川省 |
+| 四川省 | 510000 | province | 凉山彝族自治州 | city | 0834 | 513400 | 102.2677 | 27.88140 | 1 | 四川省 |
+| 四川省 | 510000 | province | 南充市 | city | 0817 | 511300 | 106.1106 | 30.83723 | 1 | 四川省 |
+| 四川省 | 510000 | province | 宜宾市 | city | 0831 | 511500 | 104.6428 | 28.75235 | 1 | 四川省 |
+| 四川省 | 510000 | province | 巴中市 | city | 0827 | 511900 | 106.7475 | 31.86785 | 1 | 四川省 |
+| 四川省 | 510000 | province | 广元市 | city | 0839 | 510800 | 105.8440 | 32.43577 | 1 | 四川省 |
+| 四川省 | 510000 | province | 广安市 | city | 0826 | 511600 | 106.6326 | 30.45635 | 1 | 四川省 |
+| 四川省 | 510000 | province | 德阳市 | city | 0838 | 510600 | 104.3978 | 31.12745 | 1 | 四川省 |
+| 四川省 | 510000 | province | 成都市 | city | 028 | 510100 | 104.0663 | 30.57296 | 1 | 四川省 |
+| 四川省 | 510000 | province | 攀枝花市 | city | 0812 | 510400 | 101.7291 | 26.55864 | 1 | 四川省 |
+| 四川省 | 510000 | province | 泸州市 | city | 0830 | 510500 | 105.4419 | 28.87098 | 1 | 四川省 |
+| 四川省 | 510000 | province | 甘孜藏族自治州 | city | 0836 | 513300 | 101.9623 | 30.04952 | 1 | 四川省 |
+| 四川省 | 510000 | province | 眉山市 | city | 1833 | 511400 | 103.8484 | 30.07711 | 1 | 四川省 |
+| 四川省 | 510000 | province | 绵阳市 | city | 0816 | 510700 | 104.6791 | 31.46767 | 1 | 四川省 |
+| 四川省 | 510000 | province | 自贡市 | city | 0813 | 510300 | 104.7793 | 29.33924 | 1 | 四川省 |
+| 四川省 | 510000 | province | 资阳市 | city | 0832 | 512000 | 104.6273 | 30.12924 | 1 | 四川省 |
+| 四川省 | 510000 | province | 达州市 | city | 0818 | 511700 | 107.4678 | 31.20928 | 1 | 四川省 |
+| 四川省 | 510000 | province | 遂宁市 | city | 0825 | 510900 | 105.5926 | 30.53268 | 1 | 四川省 |
+| 四川省 | 510000 | province | 阿坝藏族羌族自治州 | city | 0837 | 513200 | 102.2245 | 31.89943 | 1 | 四川省 |
+| 四川省 | 510000 | province | 雅安市 | city | 0835 | 511800 | 103.0415 | 30.01000 | 1 | 四川省 |
+| 成都市 | 510100 | city | 双流区 | district | 028 | 510116 | 103.9234 | 30.57488 | 1 | 成都市 |
+| 成都市 | 510100 | city | 大邑县 | district | 028 | 510129 | 103.5123 | 30.57300 | 1 | 成都市 |
+| 成都市 | 510100 | city | 崇州市 | district | 028 | 510184 | 103.6730 | 30.63018 | 1 | 成都市 |
+| 成都市 | 510100 | city | 彭州市 | district | 028 | 510182 | 103.9577 | 30.99046 | 1 | 成都市 |
+| 成都市 | 510100 | city | 成华区 | district | 028 | 510108 | 104.1015 | 30.65997 | 1 | 成都市 |
+| 成都市 | 510100 | city | 新津区 | district | 028 | 510118 | 103.8109 | 30.41040 | 1 | 成都市 |
+| 成都市 | 510100 | city | 新都区 | district | 028 | 510114 | 104.1586 | 30.82357 | 1 | 成都市 |
+| 成都市 | 510100 | city | 武侯区 | district | 028 | 510107 | 104.0432 | 30.64185 | 1 | 成都市 |
+| 成都市 | 510100 | city | 温江区 | district | 028 | 510115 | 103.8564 | 30.68196 | 1 | 成都市 |
+| 成都市 | 510100 | city | 简阳市 | district | 028 | 510185 | 104.5476 | 30.41094 | 1 | 成都市 |
+| 成都市 | 510100 | city | 蒲江县 | district | 028 | 510131 | 103.5065 | 30.19756 | 1 | 成都市 |
+| 成都市 | 510100 | city | 邛崃市 | district | 028 | 510183 | 103.4642 | 30.41029 | 1 | 成都市 |
+| 成都市 | 510100 | city | 郫都区 | district | 028 | 510117 | 103.9005 | 30.79511 | 1 | 成都市 |
+| 成都市 | 510100 | city | 都江堰市 | district | 028 | 510181 | 103.6472 | 30.98876 | 1 | 成都市 |
+| 成都市 | 510100 | city | 金堂县 | district | 028 | 510121 | 104.4119 | 30.86203 | 1 | 成都市 |
+| 成都市 | 510100 | city | 金牛区 | district | 028 | 510106 | 104.0522 | 30.69136 | 1 | 成都市 |
+| 成都市 | 510100 | city | 锦江区 | district | 028 | 510104 | 104.1173 | 30.59873 | 1 | 成都市 |
+| 成都市 | 510100 | city | 青白江区 | district | 028 | 510113 | 104.2513 | 30.87860 | 1 | 成都市 |
+| 成都市 | 510100 | city | 青羊区 | district | 028 | 510105 | 104.0624 | 30.67458 | 1 | 成都市 |
+| 成都市 | 510100 | city | 龙泉驿区 | district | 028 | 510112 | 104.2754 | 30.55681 | 1 | 成都市 |
+| 济宁市 | 370800 | city | 任城区 | district | 0537 | 370811 | 116.6058 | 35.44423 | 1 | 济宁市 |
+| 济宁市 | 370800 | city | 兖州区 | district | 0537 | 370812 | 116.7836 | 35.55194 | 1 | 济宁市 |
+| 济宁市 | 370800 | city | 嘉祥县 | district | 0537 | 370829 | 116.3423 | 35.40794 | 1 | 济宁市 |
+| 济宁市 | 370800 | city | 微山县 | district | 0537 | 370826 | 117.1292 | 34.80666 | 1 | 济宁市 |
+| 济宁市 | 370800 | city | 曲阜市 | district | 0537 | 370881 | 116.9862 | 35.58193 | 1 | 济宁市 |
+| 济宁市 | 370800 | city | 梁山县 | district | 0537 | 370832 | 116.1318 | 35.76596 | 1 | 济宁市 |
+| 济宁市 | 370800 | city | 汶上县 | district | 0537 | 370830 | 116.4973 | 35.71189 | 1 | 济宁市 |
+| 济宁市 | 370800 | city | 泗水县 | district | 0537 | 370831 | 117.2508 | 35.66472 | 1 | 济宁市 |
+| 济宁市 | 370800 | city | 邹城市 | district | 0537 | 370883 | 117.0074 | 35.40254 | 1 | 济宁市 |
+| 济宁市 | 370800 | city | 金乡县 | district | 0537 | 370828 | 116.3373 | 35.07342 | 1 | 济宁市 |
+| 济宁市 | 370800 | city | 鱼台县 | district | 0537 | 370827 | 116.6505 | 35.01271 | 1 | 济宁市 |
+
 Include boundary polylines (requires `extensions = "all"`):
 
 ``` r
 getAdmin("四川省", subdistrict = 0,
          extensions = "all", include_polyline = TRUE)
 ```
-
-<table class="kable_wrapper">
-<tbody>
-<tr>
-<td>
-
-|      lng |      lat | name               | level | citycode | adcode |
-|---------:|---------:|:-------------------|:------|:---------|:-------|
-| 105.8440 | 32.43577 | 广元市             | city  | 0839     | 510800 |
-| 106.1106 | 30.83723 | 南充市             | city  | 0817     | 511300 |
-| 106.7475 | 31.86785 | 巴中市             | city  | 0827     | 511900 |
-| 104.3978 | 31.12745 | 德阳市             | city  | 0838     | 510600 |
-| 104.6791 | 31.46767 | 绵阳市             | city  | 0816     | 510700 |
-| 104.0663 | 30.57296 | 成都市             | city  | 028      | 510100 |
-| 106.6326 | 30.45635 | 广安市             | city  | 0826     | 511600 |
-| 107.4678 | 31.20928 | 达州市             | city  | 0818     | 511700 |
-| 105.5926 | 30.53268 | 遂宁市             | city  | 0825     | 510900 |
-| 104.6273 | 30.12924 | 资阳市             | city  | 0832     | 512000 |
-| 103.8484 | 30.07711 | 眉山市             | city  | 1833     | 511400 |
-| 105.0580 | 29.58021 | 内江市             | city  | 1832     | 511000 |
-| 103.7661 | 29.55228 | 乐山市             | city  | 0833     | 511100 |
-| 104.7793 | 29.33924 | 自贡市             | city  | 0813     | 510300 |
-| 105.4419 | 28.87098 | 泸州市             | city  | 0830     | 510500 |
-| 104.6428 | 28.75235 | 宜宾市             | city  | 0831     | 511500 |
-| 102.2677 | 27.88140 | 凉山彝族自治州     | city  | 0834     | 513400 |
-| 101.7185 | 26.58242 | 攀枝花市           | city  | 0812     | 510400 |
-| 101.9623 | 30.04952 | 甘孜藏族自治州     | city  | 0836     | 513300 |
-| 102.2245 | 31.89943 | 阿坝藏族羌族自治州 | city  | 0837     | 513200 |
-| 103.0415 | 30.01000 | 雅安市             | city  | 0835     | 511800 |
-
-</td>
-<td>
-
-|      lng |      lat | name     | level    | citycode | adcode |
-|---------:|---------:|:---------|:---------|:---------|:-------|
-| 103.9577 | 30.99046 | 彭州市   | district | 028      | 510182 |
-| 104.5476 | 30.41094 | 简阳市   | district | 028      | 510185 |
-| 103.5065 | 30.19756 | 蒲江县   | district | 028      | 510131 |
-| 103.9234 | 30.57488 | 双流区   | district | 028      | 510116 |
-| 103.6472 | 30.98876 | 都江堰市 | district | 028      | 510181 |
-| 103.9005 | 30.79511 | 郫都区   | district | 028      | 510117 |
-| 103.8564 | 30.68196 | 温江区   | district | 028      | 510115 |
-| 104.0624 | 30.67458 | 青羊区   | district | 028      | 510105 |
-| 104.1015 | 30.65997 | 成华区   | district | 028      | 510108 |
-| 104.0432 | 30.64185 | 武侯区   | district | 028      | 510107 |
-| 104.2513 | 30.87860 | 青白江区 | district | 028      | 510113 |
-| 103.6730 | 30.63018 | 崇州市   | district | 028      | 510184 |
-| 104.1173 | 30.59873 | 锦江区   | district | 028      | 510104 |
-| 104.2754 | 30.55681 | 龙泉驿区 | district | 028      | 510112 |
-| 103.8109 | 30.41040 | 新津区   | district | 028      | 510118 |
-| 103.4642 | 30.41029 | 邛崃市   | district | 028      | 510183 |
-| 103.5123 | 30.57300 | 大邑县   | district | 028      | 510129 |
-| 104.4119 | 30.86203 | 金堂县   | district | 028      | 510121 |
-| 104.1586 | 30.82357 | 新都区   | district | 028      | 510114 |
-| 104.0522 | 30.69136 | 金牛区   | district | 028      | 510106 |
-
-</td>
-<td>
-
-|      lng |      lat | name   | level    | citycode | adcode |
-|---------:|---------:|:-------|:---------|:---------|:-------|
-| 116.6505 | 35.01271 | 鱼台县 | district | 0537     | 370827 |
-| 117.1292 | 34.80666 | 微山县 | district | 0537     | 370826 |
-| 116.1318 | 35.76596 | 梁山县 | district | 0537     | 370832 |
-| 116.9862 | 35.58193 | 曲阜市 | district | 0537     | 370881 |
-| 117.0074 | 35.40254 | 邹城市 | district | 0537     | 370883 |
-| 116.3115 | 35.06658 | 金乡县 | district | 0537     | 370828 |
-| 116.3423 | 35.40794 | 嘉祥县 | district | 0537     | 370829 |
-| 117.2508 | 35.66472 | 泗水县 | district | 0537     | 370831 |
-| 116.4973 | 35.71189 | 汶上县 | district | 0537     | 370830 |
-| 116.7836 | 35.55194 | 兖州区 | district | 0537     | 370812 |
-| 116.6058 | 35.44423 | 任城区 | district | 0537     | 370811 |
-
-</td>
-</tr>
-</tbody>
-</table>
 
 `extractAdmin` is created to get results as tibble.
 
@@ -367,8 +353,9 @@ knitr::kable(res)
 
 ### Request signing
 
-AutoNavi's enterprise endpoints can be secured with a digital signature. Instead of
-threading the signature through every call, enable signing globally:
+AutoNavi’s enterprise endpoints can be secured with a digital signature.
+Instead of threading the signature through every call, enable signing
+globally:
 
 ``` r
 amap_config(secret = "YOUR-SECRET")
