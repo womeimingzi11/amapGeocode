@@ -67,7 +67,11 @@ batched workflows continue. When `FALSE` errors are raised as
 
 \item{batch}{Optional.
 When `TRUE`, requests are chunked into groups of ten coordinates using the
-API's batch mode. Defaults to `FALSE` for backwards compatibility.}
+API's batch mode.
+
+Bulk requests are executed with `httr2::req_perform_parallel()` (curl multi;
+no additional R sessions) and are protected by throttling configured via
+[amap_config()].}
 
 \item{details}{Optional.
 Character vector describing which extended list-columns to include in the

@@ -35,7 +35,10 @@ Throttling configuration for outgoing HTTP requests.
 Use `FALSE` to disable throttling, `TRUE` to enable with defaults, or a list
 with any of the following fields:
 `enabled` (logical), `rate` (numeric), `capacity` (numeric),
-`fill_time_s` (numeric), and `realm` (character).}
+`fill_time_s` (numeric), and `realm` (character).
+
+Defaults are safe for AutoNavi's QPS limits: `max_active = 3` and
+`throttle = list(rate = 3, fill_time_s = 1)`.}
 }
 \description{
 Configure Amap settings

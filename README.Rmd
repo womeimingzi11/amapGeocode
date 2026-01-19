@@ -44,8 +44,9 @@ However, AutoNavi has significant high precise, in my case, the Results from Bai
 
 - Unified HTTP handling via [{httr2}](https://httr2.r-lib.org) with structured diagnostics (`amap_api_error`) and automatic propagation of rate-limit headers.
 - Opt-in request signing through `amap_sign()`, `with_amap_signature()`, and `amap_config()` keeps sensitive secrets out of function calls.
-- `getCoord()` now supports `mode = "all"` for multi-match lookups as well as `batch = TRUE` to resolve up to ten addresses per request while preserving input order.
-- `getLocation()` gains batching plus rich POI, road, intersection, and AOI list-columns via the `details` argument when `extensions = "all"`.
+- `getCoord()` supports `mode = "all"` for multi-match lookups and `batch = TRUE` for native AutoNavi 10-at-a-time batching.
+- `getLocation()` supports native batching plus rich POI, road, intersection, and AOI list-columns via the `details` argument when `extensions = "all"`.
+- Bulk requests are executed with `httr2::req_perform_parallel()` (curl multi; no new R sessions) and protected by default throttling (3 requests/second). Tune with `amap_config()`.
 - `extractAdmin()` traverses every matching parent region, returning tidy parent metadata and optional boundary polylines when `extensions = "all"`.
 
 ## Installation
@@ -71,18 +72,32 @@ Then get results of geocoding, by `getCoord` function.
 
 ```{r getCoord_to_table_as_TRUE, eval = FALSE}
 library(amapGeocode)
+
+# Respect AutoNavi's documented QPS limit (defaults are already safe).
+# - throttling: 3 req/s
+# - max_active: 3 concurrent requests
+amap_config(
+  throttle = TRUE,
+  max_active = 3
+)
+
 # An individual request
-res <-
-  getCoord("四川省博物馆")
+res <- getCoord("四川省博物馆")
 knitr::kable(res)
+
 # Batch requests
-res <-
-  getCoord(c(
-    "四川省博物馆",
-    "成都市博物馆",
-    "四川省成都市武侯区金楠天街"
-  ), batch = TRUE)
+# - batch=TRUE uses AutoNavi's native batch mode (up to 10 addresses per HTTP request)
+# - the package may still issue multiple HTTP requests when you have >10 inputs;
+#   those requests are executed via curl-multi parallelism (no new R sessions)
+res <- getCoord(c(
+  "四川省博物馆",
+  "成都市博物馆",
+  "四川省成都市武侯区金楠天街"
+), batch = TRUE)
 knitr::kable(res)
+
+# Optional tuning (only increase if your key allows it)
+# amap_config(throttle = list(rate = 6, fill_time_s = 1), max_active = 6)
 ```
 
 Retrieve every candidate for a single query:
@@ -180,6 +195,7 @@ For temporary scopes, wrap the workflow with `with_amap_signature()`:
 
 ```r
 with_amap_signature("YOUR-SECRET", {
+  amap_config(throttle = TRUE, max_active = 3)
   getCoord("四川省博物馆", batch = TRUE)
 })
 ```
