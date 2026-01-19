@@ -21,28 +21,24 @@ performance and reliability using `httr2` for robust HTTP requests and
 - **Run all tests**:
 
   ``` r
-
   devtools::test()
   ```
 
 - **Run a specific test file**:
 
   ``` r
-
   testthat::test_file("tests/testthat/test-getCoord.R")
   ```
 
 - **Run a specific test case (by filter)**:
 
   ``` r
-
   devtools::test(filter = "pattern")
   ```
 
 - **Run full package check (CRAN standard)**:
 
   ``` r
-
   devtools::check()
   # or strict check used in CI
   rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"))
@@ -51,7 +47,6 @@ performance and reliability using `httr2` for robust HTTP requests and
 - **Check code coverage**:
 
   ``` r
-
   covr::report() 
   ```
 
@@ -60,21 +55,18 @@ performance and reliability using `httr2` for robust HTTP requests and
 - **Load package state (Simulate install)**:
 
   ``` r
-
   devtools::load_all() # Cmd+Shift+L / Ctrl+Shift+L
   ```
 
 - **Regenerate documentation (man/ files)**:
 
   ``` r
-
   devtools::document() # Cmd+Shift+D / Ctrl+Shift+D
   ```
 
 - **Install dependencies**:
 
   ``` r
-
   remotes::install_deps(dependencies = TRUE)
   ```
 
@@ -90,7 +82,6 @@ performance and reliability using `httr2` for robust HTTP requests and
   brace.
 
   ``` r
-
   if (condition) {
     # code
   } else {
@@ -145,14 +136,11 @@ performance and reliability using `httr2` for robust HTTP requests and
 ## Workflow Rules
 
 1.  **Documentation**: If you change a function signature, run
-    [`devtools::document()`](https://devtools.r-lib.org/reference/document.html)
-    immediately to update `man/`.
+    `devtools::document()` immediately to update `man/`.
 2.  **Tests**: Add tests for new features in `tests/testthat/`.
 3.  **News**: Update `NEWS.md` for user-facing changes.
 
 ## CI/CD
 
 - GitHub Actions run `R-CMD-check` on Windows, macOS, and Ubuntu.
-- Ensure your changes pass
-  [`devtools::check()`](https://devtools.r-lib.org/reference/check.html)
-  locally before pushing.
+- Ensure your changes pass `devtools::check()` locally before pushing.

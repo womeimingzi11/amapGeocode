@@ -38,7 +38,6 @@ Map API Key](https://lbs.amap.com/dev/). Set `amap_key` globally by
 following command:
 
 ``` r
-
 options(amap_key = 'REPLACE THIS BY YOUR KEY')
 ```
 
@@ -50,7 +49,6 @@ requests/second). You can tune concurrency/throttling with
 [`amap_config()`](https://womeimingzi11.github.io/amapGeocode/reference/amap_config.md).
 
 ``` r
-
 library(amapGeocode)
 
 # Defaults are safe, but you can set them explicitly
@@ -71,7 +69,6 @@ information from **JSON** or **XML**, the result can further be parsed
 by `extractCoord`.
 
 ``` r
-
 res <-
   getCoord('四川省博物馆', output = 'XML')
 res
@@ -80,7 +77,6 @@ res
 `extractCoord` is created to get result as a tibble.
 
 ``` r
-
 res
 tb <- 
   extractCoord(res)
@@ -92,7 +88,6 @@ knitr::kable(tb)
 get result of reverse geocoding, by `getLocation` function.
 
 ``` r
-
 # Safe defaults for bulk requests
 amap_config(throttle = TRUE, max_active = 3)
 
@@ -101,7 +96,6 @@ knitr::kable(res)
 ```
 
 ``` r
-
 res <-
    getLocation(104.0339, 30.66069, output = 'XML')
 res
@@ -110,7 +104,6 @@ res
 `extractLocation` is created to get result as a tibble.
 
 ``` r
-
 tb <- 
   extractLocation(res)
 knitr::kable(tb)
@@ -121,14 +114,12 @@ knitr::kable(tb)
 get result of reverse geocoding, by `getAdmin` function.
 
 ``` r
-
 res <- 
   getAdmin('四川省')
 knitr::kable(res)
 ```
 
 ``` r
-
 res <-
    getAdmin('四川省', output = 'XML')
 res
@@ -137,7 +128,6 @@ res
 `extractAdmin` is created to get result as a tibble.
 
 ``` r
-
 res
 tb <- 
   extractAdmin(res)
@@ -150,14 +140,12 @@ get result of reverse geocoding, by `convertCoord` function, here is how
 to convert coordinate from gps to AutoNavi
 
 ``` r
-
 res <- 
   convertCoord("103.9960,30.6475", coordsys = "gps")
 knitr::kable(res)
 ```
 
 ``` r
-
 res <-
   convertCoord('116.481499,39.990475',coordsys = 'gps', output = 'JSON')
 res
@@ -166,7 +154,6 @@ res
 `extractConvertCoord` is created to get result as a tibble.
 
 ``` r
-
 tb <- 
   extractConvertCoord(res)
 knitr::kable(tb)

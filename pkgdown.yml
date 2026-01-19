@@ -1,9 +1,9 @@
-pandoc: 3.8.3
+pandoc: 3.1.11
 pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   Introduction_to_amapGeocode: Introduction_to_amapGeocode.html
-last_built: 2026-01-19T07:54Z
+last_built: 2026-01-19T09:06Z
 urls:
   reference: https://womeimingzi11.github.io/amapGeocode/reference
   article: https://womeimingzi11.github.io/amapGeocode/articles

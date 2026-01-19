@@ -9,7 +9,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/womeimingzi11/amapGeocode/blob/HEAD/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/womeimingzi11/amapGeocode/blob/master/DESCRIPTION)
 
 Chen H (2026). *amapGeocode: An Interface to the 'AutoNavi Maps' API
 Geocoding Services*. R package version 0.9.0,

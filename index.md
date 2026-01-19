@@ -74,14 +74,12 @@ You can install the released version of amapGeocode from
 [CRAN](https://CRAN.R-project.org/package=amapGeocode) with:
 
 ``` r
-
 install.packages("amapGeocode")
 ```
 
 To install the development version, run following command:
 
 ``` r
-
 remotes::install_github('womeimingzi11/amapGeocode')
 ```
 
@@ -96,7 +94,6 @@ following command:
 Then get results of geocoding, by `getCoord` function.
 
 ``` r
-
 library(amapGeocode)
 
 # Respect AutoNavi's documented QPS limit (defaults are already safe).  -
@@ -122,7 +119,6 @@ knitr::kable(res)
 Retrieve every candidate for a single query:
 
 ``` r
-
 getCoord("四川省博物馆", mode = "all")
 ```
 
@@ -135,7 +131,6 @@ If you want to extract information from **JSON** or **XML**. The results
 can further be parsed by `extractCoord`.
 
 ``` r
-
 # An individual request
 res <- getCoord("四川省博物馆", output = "JSON")
 res
@@ -144,7 +139,6 @@ res
 `extractCoord` is created to get a result as a tibble.
 
 ``` r
-
 tb <- extractCoord(res)
 knitr::kable(tb)
 ```
@@ -154,7 +148,6 @@ knitr::kable(tb)
 get results of reverse geocoding, by `getLocation` function.
 
 ``` r
-
 res <- getLocation(103.996, 30.6475)
 knitr::kable(res)
 ```
@@ -163,7 +156,6 @@ Request extended POI, road, and AOI details (requires
 `extensions = "all"`):
 
 ``` r
-
 getLocation(103.9960, 30.6475,
            extensions = "all",
            details = c("pois", "roads", "roadinters", "aois"))
@@ -186,7 +178,6 @@ Because this function supports different administrative region levels,
 it is nonsense to bind their results.
 
 ``` r
-
 res <- getAdmin(c("四川省", "成都市", "济宁市"))
 knitr::kable(res)
 ```
@@ -194,7 +185,6 @@ knitr::kable(res)
 Include boundary polylines (requires `extensions = "all"`):
 
 ``` r
-
 getAdmin("四川省", subdistrict = 0,
          extensions = "all", include_polyline = TRUE)
 ```
@@ -212,7 +202,6 @@ input method is not as delicate as I expect. If you have any good idea,
 please let me know or just fork repo and pull a reques.**
 
 ``` r
-
 res <- convertCoord("103.9960,30.6475", coordsys = "gps")
 knitr::kable(res)
 ```
@@ -226,7 +215,6 @@ Instead of threading the signature through every call, enable signing
 globally:
 
 ``` r
-
 amap_config(secret = "YOUR-SECRET")
 getCoord("四川省博物馆")
 ```
@@ -235,7 +223,6 @@ For temporary scopes, wrap the workflow with
 [`with_amap_signature()`](https://womeimingzi11.github.io/amapGeocode/reference/with_amap_signature.md):
 
 ``` r
-
 with_amap_signature("YOUR-SECRET", {
   amap_config(throttle = TRUE, max_active = 3)
   getCoord("四川省博物馆", batch = TRUE)
