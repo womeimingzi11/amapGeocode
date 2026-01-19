@@ -379,6 +379,9 @@ know](mailto://chenhan28@gmail.com) once it’s broken or just open an
 
 ## Acknowledgements
 
+The ongoing development and maintenance of this project are powered by
+[Gemini 3](https://deepmind.google/technologies/gemini/).
+
 Hex Sticker was created by [hexSticker
 package](https://github.com/GuangchuangYu/hexSticker) with the world
 data from

@@ -191,6 +191,8 @@ with_amap_signature("YOUR-SECRET", {
 It's very common for API upgrades to make the downstream application, like amapGeocode,which is unavailable. Feel free to [let me know](mailto://chenhan28@gmail.com) once it's broken or just open an <a class="github-button" href="https://github.com/womeimingzi11/amapGeocode/issues" data-color-scheme="no-preference: light; light: light; dark: dark;" data-size="large" aria-label="Issue womeimingzi11/amapGeocode on GitHub">Issue</a>.
 
 ## Acknowledgements
+The ongoing development and maintenance of this project are powered by [Gemini 3](https://deepmind.google/technologies/gemini/).
+
 Hex Sticker was created by [hexSticker package](https://github.com/GuangchuangYu/hexSticker) with the world data from  [rnaturalearth](https://CRAN.R-project.org/package=rnaturalearth).
 
 ## Code of Conduct
