@@ -40,6 +40,7 @@ jobs:
         with:
           extra-packages: pkgdown
           needs: website
+          extra-system-packages: libtiff5
 
       - name: Install package
         run: R CMD INSTALL .
