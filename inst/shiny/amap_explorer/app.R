@@ -13,6 +13,8 @@ ui <- page_sidebar(
     title = "Navigation",
     navset_pill_list(
       id = "nav",
+      widths = c(12, 0),
+      well = FALSE,
       nav_panel("Geocoding", icon = icon("map-marker-alt"), value = "geocode"),
       nav_panel("Reverse Geocoding", icon = icon("globe-asia"), value = "reverse"),
       nav_panel("Convert Coords", icon = icon("exchange-alt"), value = "convert"),
