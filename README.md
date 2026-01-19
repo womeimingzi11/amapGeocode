@@ -16,7 +16,7 @@ status](https://www.r-pkg.org/badges/version/amapGeocode)](https://CRAN.R-projec
 [![License:
 MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Codecov test
-coverage](https://codecov.io/gh/womeimingzi11/amapGeocode/branch/master/graph/badge.svg)](https://codecov.io/gh/womeimingzi11/amapGeocode?branch=master)
+coverage](https://codecov.io/gh/womeimingzi11/amapGeocode/branch/master/graph/badge.svg)](https://app.codecov.io/gh/womeimingzi11/amapGeocode?branch=master)
 [![R-CMD-check](https://github.com/womeimingzi11/amapGeocode/workflows/R-CMD-check/badge.svg)](https://github.com/womeimingzi11/amapGeocode/actions)
 <!-- badges: end -->
 
