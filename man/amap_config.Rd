@@ -4,7 +4,14 @@
 \alias{amap_config}
 \title{Configure Amap settings}
 \usage{
-amap_config(signature = NULL, secret = NULL, key = NULL, enabled = TRUE)
+amap_config(
+  signature = NULL,
+  secret = NULL,
+  key = NULL,
+  enabled = TRUE,
+  max_active = NULL,
+  throttle = NULL
+)
 }
 \arguments{
 \item{signature}{Optional.
@@ -18,6 +25,17 @@ Optional API key override when signing is enabled.}
 
 \item{enabled}{Optional.
 Logical flag to enable or disable signing.}
+
+\item{max_active}{Optional.
+Maximum number of active concurrent HTTP requests when bulk operations are
+executed with `httr2::req_perform_parallel()`. Defaults to 3.}
+
+\item{throttle}{Optional.
+Throttling configuration for outgoing HTTP requests.
+Use `FALSE` to disable throttling, `TRUE` to enable with defaults, or a list
+with any of the following fields:
+`enabled` (logical), `rate` (numeric), `capacity` (numeric),
+`fill_time_s` (numeric), and `realm` (character).}
 }
 \description{
 Configure Amap settings
