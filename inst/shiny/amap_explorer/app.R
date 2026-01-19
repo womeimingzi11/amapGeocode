@@ -13,7 +13,6 @@ ui <- page_sidebar(
     title = "Navigation",
     navset_pill_list(
       id = "nav",
-      widths = c(12, 0),
       well = FALSE,
       nav_panel("Geocoding", icon = icon("map-marker-alt"), value = "geocode"),
       nav_panel("Reverse Geocoding", icon = icon("globe-asia"), value = "reverse"),
@@ -27,6 +26,25 @@ ui <- page_sidebar(
     )
   ),
   
+  tags$head(tags$style(HTML("
+    /* Custom style to make navset_pill_list take full width in sidebar */
+    .sidebar-content .row > [class*='col-']:first-child { 
+      width: 100%; 
+      flex: 0 0 100%; 
+      max-width: 100%; 
+    }
+    .sidebar-content .row > [class*='col-']:last-child { 
+      display: none; 
+    }
+    /* Improve nav link wrapping */
+    .nav-pills .nav-link { 
+      white-space: normal; 
+      line-height: 1.2; 
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+  "))),
+
   # Settings Panel
   conditionalPanel(
     condition = "input.nav == 'settings'",
