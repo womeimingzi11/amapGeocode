@@ -18,66 +18,73 @@ getCoord(
 )
 }
 \arguments{
-\item{address}{Required. Structured address information. Rules: Country/Region,
-Province/State, City, County/District, Town, Country, Road, Number, Room,
-Building.}
+\item{address}{Required.
+Structured address information.
+The value can be a character vector; each element will be queried in turn.}
 
-\item{key}{Optional. AutoNavi API key. You can also set it globally via
-\code{options(amap_key = "your-key")}.}
+\item{key}{Optional.
+AutoNavi API key. You can also set this globally via
+`options(amap_key = "your-key")`.}
 
-\item{city}{Optional city hint to narrow the search scope. Supports Chinese
-names, full pinyin, citycode, or adcode
-(\url{https://lbs.amap.com/api/webservice/download}).}
+\item{city}{Optional.
+City hint that narrows down the search scope. When `batch = TRUE`,
+only a single city value is supported.}
 
-\item{sig}{Optional digital signature supplied manually. Most workflows can
-enable automatic signing via \code{with_amap_signature()} or
-\code{amap_config()}.}
+\item{sig}{Optional.
+Digital signature supplied manually. Most users should instead enable
+automatic signing via [with_amap_signature()] or [amap_config()].}
 
-\item{output}{Optional output data structure. Supports \code{"data.table"},
-\code{"JSON"}, and \code{"XML"}. The default value is \code{"data.table"}.}
+\item{output}{Optional.
+Output data structure. Supported values are `"data.table"` (default),
+`"JSON"`, and `"XML"`.}
 
-\item{callback}{Optional JSONP callback function. Only applies when
-\code{output = "JSON"}.}
+\item{callback}{Optional.
+JSONP callback. When supplied the raw body is returned as a character
+vector.}
 
-\item{keep_bad_request}{Optional. When \code{TRUE}, API errors are converted
-into placeholder rows so that batched workflows continue.}
+\item{keep_bad_request}{Optional.
+When `TRUE` (default) API errors are converted into placeholder rows so
+that vectorised or batched workflows continue. When `FALSE` errors are
+raised as `amap_api_error` conditions.}
 
-\item{mode}{Optional. Controls how candidates are returned. Use \code{"best"}
-(the default) to keep the highest ranked candidate for each query or
-\code{"all"} to return every match alongside ranking metadata.}
+\item{mode}{Optional.
+Controls how geocode candidates are returned. Use `"best"` (default) to
+keep the highest ranked candidate for each query or `"all"` to return all
+matches alongside ranking metadata.}
 
-\item{batch}{Optional. When \code{TRUE}, requests are chunked into groups of
-ten addresses using the API's batch mode while preserving input order.}
+\item{batch}{Optional.
+When `TRUE`, requests are chunked into groups of ten addresses using the
+API's batch mode. Defaults to `FALSE` for backwards compatibility.}
 
-\item{...}{Optional arguments retained for forward compatibility.}
+\item{...}{Optional.
+Included for forward compatibility only.}
 }
 \value{
-A JSON, XML, or \code{data.table} representation of the geocode results. When
-\code{output = "data.table"}, the return value preserves the input order,
-provides optional multi-match metadata, and carries any rate-limit headers
-via a \code{rate_limit} attribute.
+When `output = "data.table"`, a `data.table` containing geocode results is
+returned. The table preserves the input order and gains a
+`rate_limit` attribute containing any rate limit headers returned by the API.
+When `mode = "all"`, additional metadata columns (`query`, `query_index`,
+and `match_rank`) are included. When `output` is `"JSON"` or `"XML"`,
+the parsed body is returned without further processing.
 }
 \description{
 Get coordinate from location
 }
 \examples{
-\dontrun{
-# Before calling getCoord(), set the key via options(amap_key = 'KEY')
-
-# Get geocode as a data.table
+\\dontrun{
+# Basic lookup (best match only)
 getCoord("IFS Chengdu")
 
-# Return all candidates
-getCoord("IFS Chengdu", mode = "all")
+# Retrieve all candidates for a single query
+getCoord("LOS ANGELES", mode = "all")
 
-# Batch up to ten requests
-a <- rep("IFS Chengdu", 10)
-getCoord(a, batch = TRUE)
+# Batch ten addresses at a time
+getCoord(rep("Chengdu IFS", 12), batch = TRUE)
 
-# Get geocode as XML
-getCoord("IFS Chengdu", output = "XML")
+# Temporarily enable automatic request signing
+with_amap_signature("your-secret", getCoord("IFS Chengdu"))
 }
 }
 \seealso{
-\code{\link{extractCoord}}
+[extractCoord()], [with_amap_signature()], [amap_config()]
 }

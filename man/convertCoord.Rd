@@ -15,38 +15,47 @@ convertCoord(
 )
 }
 \arguments{
-\item{locations}{Required coordinate string(s). Accepts a character vector.}
+\item{locations}{Required.
+Coordinate string(s) to convert. Accepts a character vector.}
 
-\item{key}{Optional AutoNavi API key. You can also set it globally via
-\code{options(amap_key = "your-key")}.}
+\item{key}{Optional.
+AutoNavi API key. You can also set this globally via
+`options(amap_key = "your-key")`.}
 
-\item{coordsys}{Optional source coordinate system (\code{"gps"},
-\code{"mapbar"}, \code{"baidu"}, \code{"autonavi"}).}
+\item{coordsys}{Optional.
+Source coordinate system (`gps`, `mapbar`, `baidu`, `autonavi`).}
 
-\item{sig}{Optional digital signature supplied manually.}
+\item{sig}{Optional.
+Manual digital signature. Most workflows can enable automatic signing via
+[with_amap_signature()] or [amap_config()].}
 
-\item{output}{Optional output data structure. Supports \code{"data.table"},
-\code{"JSON"}, and \code{"XML"}. The default value is
-\code{"data.table"}.}
+\item{output}{Optional.
+Output data structure. Supported values are `"data.table"` (default),
+`"JSON"`, and `"XML"`.}
 
-\item{keep_bad_request}{Optional. When \code{TRUE}, API errors are converted
-into placeholder rows so that batched workflows continue.}
+\item{keep_bad_request}{Optional.
+When `TRUE` (default) API errors are converted into placeholder rows so that
+batched workflows continue. When `FALSE` errors are raised as
+`amap_api_error` conditions.}
 
-\item{...}{Optional arguments retained for forward compatibility.}
+\item{...}{Optional.
+Included for forward compatibility only.}
 }
 \value{
-A JSON, XML, or \code{data.table} representation of the converted coordinates.
-When \code{output = "data.table"}, the return value preserves the input order
-and exposes any rate-limit headers via a \code{rate_limit} attribute.
+When `output = "data.table"`, a `data.table` with columns `lng` and `lat`
+is returned. The table preserves the input order and gains a `rate_limit`
+attribute containing any rate limit headers returned by the API. When
+`output` is `"JSON"` or `"XML"`, the parsed body is returned without
+further processing.
 }
 \description{
 Convert coordinates to the AutoNavi system
 }
 \examples{
-\dontrun{
+\\dontrun{
 convertCoord("116.481499,39.990475", coordsys = "gps")
 }
 }
 \seealso{
-\code{\link{extractConvertCoord}}
+[extractConvertCoord()], [with_amap_signature()], [amap_config()]
 }

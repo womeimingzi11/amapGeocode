@@ -7,28 +7,30 @@
 extractLocation(res, details = NULL)
 }
 \arguments{
-\item{res}{Required response object returned by \code{getLocation()} with
-\code{output = "JSON"} or by the AutoNavi reverse-geocoding API.}
+\item{res}{Required.
+Response object returned by [getLocation()] with `output = "JSON"` or by the
+AutoNavi reverse-geocoding API.}
 
-\item{details}{Optional character vector describing which extended detail
-payloads to parse into list-columns (\code{"pois"}, \code{"roads"},
-\code{"roadinters"}, \code{"aois"}). Use \code{"all"} to include every
-detail payload.}
+\item{details}{Optional.
+Character vector describing which extended detail payloads to parse into
+list-columns. Valid values are `"pois"`, `"roads"`, `"roadinters"`, and
+`"aois"`. Use `"all"` to include every detail payload.}
 }
 \value{
-A \code{data.table} describing the parsed reverse-geocode results. Each row
+A `data.table` describing the parsed reverse-geocode results. Each row
 corresponds to an element in the API response. When no data is present a
-single placeholder row filled with \code{NA} values is returned.
+single placeholder row filled with `NA` values is returned.
 }
 \description{
 Extract location from coordinate request
 }
 \examples{
-\dontrun{
+\\dontrun{
 raw <- getLocation(104.043284, 30.666864, output = "JSON")
 extractLocation(raw, details = c("pois", "roads"))
 }
+
 }
 \seealso{
-\code{\link{getLocation}}
+[getLocation()]
 }

@@ -7,22 +7,24 @@
 extractConvertCoord(res)
 }
 \arguments{
-\item{res}{Required response object returned by \code{convertCoord()} with
-\code{output = "JSON"} or by the AutoNavi coordinate conversion API.}
+\item{res}{Required.
+Response object returned by [convertCoord()] with `output = "JSON"` or by
+the AutoNavi coordinate conversion API.}
 }
 \value{
-A \code{data.table} with columns \code{lng} and \code{lat}. When no data is
-present a single placeholder row filled with \code{NA} values is returned.
+A `data.table` with columns `lng` and `lat`. When no data is present a
+single placeholder row filled with `NA` values is returned.
 }
 \description{
 Extract converted coordinates from a conversion response
 }
 \examples{
-\dontrun{
+\\dontrun{
 raw <- convertCoord("116.481499,39.990475", coordsys = "gps", output = "JSON")
 extractConvertCoord(raw)
 }
+
 }
 \seealso{
-\code{\link{convertCoord}}
+[convertCoord()]
 }

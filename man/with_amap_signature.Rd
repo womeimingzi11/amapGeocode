@@ -2,31 +2,10 @@
 % Please edit documentation in R/amap_http.R
 \name{with_amap_signature}
 \alias{with_amap_signature}
-\title{Temporarily enable AutoNavi request signing}
+\title{Execute code with temporary signature settings}
 \usage{
 with_amap_signature(secret, expr, key = NULL, enabled = TRUE)
 }
-\arguments{
-\item{secret}{Signing secret provided by AutoNavi.}
-
-\item{expr}{Code to evaluate with the signature configuration applied.}
-
-\item{key}{Optional key associated with the signing secret.}
-
-\item{enabled}{Logical flag; set to \code{FALSE} to disable signing inside
-\code{expr}.}
-}
-\value{
-The result of \code{expr}.
-}
 \description{
-Temporarily enable AutoNavi request signing for the evaluation of \code{expr}.
-The previous configuration is restored afterwards.
-}
-\examples{
-\dontrun{
-with_amap_signature("YOUR-SECRET", {
-  getCoord("IFS Chengdu")
-})
-}
+Execute code with temporary signature settings
 }

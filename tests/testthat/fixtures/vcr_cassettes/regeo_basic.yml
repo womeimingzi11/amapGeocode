@@ -1,0 +1,23 @@
+http_interactions:
+- request:
+    method: GET
+    uri: https://restapi.amap.com/v3/geocode/regeo?location=104.043284%2C30.666864&homeorcorp=0&key=FAKE_KEY
+  response:
+    status: 200
+    headers:
+      Server: Tengine
+      Date: Mon, 19 Jan 2026 01:29:35 GMT
+      Content-Type: application/json;charset=utf-8
+      Connection: close
+      Vary: Accept-Encoding
+      Content-Length: '803'
+      gsid: 011187010249176878617532200035330707185
+      sc: '0.005'
+      Access-Control-Allow-Origin: '*'
+      Access-Control-Allow-Methods: '*'
+      Access-Control-Allow-Headers: DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,key,x-biz,x-info,platinfo,encr,enginever,gzipped,poiid
+    body:
+      string: |
+        {"status":"1","regeocode":{"addressComponent":{"city":"成都市","province":"四川省","adcode":"510106","district":"金牛区","towncode":"510106013000","streetNumber":{"number":"39-5号","location":"104.043264,30.666934","direction":"北","distance":"7.98562","street":"十二桥路"},"country":"中国","township":"西安路街道","businessAreas":[{"location":"104.056430,30.668025","name":"长顺街","id":"510105"},{"location":"104.045944,30.675078","name":"永陵路","id":"510106"},{"location":"104.054729,30.656703","name":"小南街","id":"510105"}],"building":{"name":[],"type":[]},"neighborhood":{"name":[],"type":[]},"citycode":"028"},"formatted_address":"四川省成都市金牛区西安路街道十二桥路39-5号成都中医药大学十二桥校区"},"info":"OK","infocode":"10000"}
+  recorded_at: 2026-01-19 01:29:34
+recorded_with: VCR-vcr/2.1.0

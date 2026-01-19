@@ -29,7 +29,7 @@ amap_compact <- function(x) {
 
 amap_base_url <- function() {
   base <- getOption("amap_base_url", "https://restapi.amap.com")
-  sub("/+\$", "", base)
+  sub("/+$", "", base)
 }
 
 amap_get_key <- function(key = NULL) {
@@ -55,6 +55,8 @@ amap_signature_settings <- function() {
   utils::modifyList(defaults, settings)
 }
 
+#' Configure Amap settings
+#' @export
 amap_config <- function(signature = NULL, secret = NULL, key = NULL, enabled = TRUE) {
   if (!is.null(signature)) {
     if (isFALSE(signature)) {
@@ -79,6 +81,8 @@ amap_config <- function(signature = NULL, secret = NULL, key = NULL, enabled = T
   invisible(NULL)
 }
 
+#' Execute code with temporary signature settings
+#' @export
 with_amap_signature <- function(secret, expr, key = NULL, enabled = TRUE) {
   old <- getOption("amap_signature")
   on.exit(options(amap_signature = old), add = TRUE)
@@ -86,6 +90,8 @@ with_amap_signature <- function(secret, expr, key = NULL, enabled = TRUE) {
   force(expr)
 }
 
+#' Generate Amap signature
+#' @export
 amap_sign <- function(params, secret, path) {
   if (is.null(secret) || !nzchar(secret)) {
     rlang::abort("`secret` must be a non-empty string when creating an AutoNavi signature.")
@@ -152,7 +158,7 @@ abort_amap <- function(message, ...) {
     http_status = err$http_status,
     request = err$request,
     headers = err$headers,
-    body = err$body
+    response_body = err$body
   )
 }
 
@@ -248,15 +254,13 @@ amap_request <- function(endpoint,
     getOption(
       "amap_user_agent",
       sprintf("amapGeocode/%s (https://github.com/womeimingzi11/amapGeocode)",
-              as.character(utils::packageVersion("amapGeocode")))
+              tryCatch(as.character(utils::packageVersion("amapGeocode")), error = function(e) "dev"))
     )
   )
   req <- httr2::req_retry(
     req,
     max_tries = getOption("amap_retry_max_tries", 3),
-    max_seconds = getOption("amap_retry_max_seconds", 30),
-    backoff = httr2::req_retry_exponential(),
-    is_transient = httr2::req_retry_statuses()
+    max_seconds = getOption("amap_retry_max_seconds", 30)
   )
   resp <- httr2::req_perform(req)
   rate_limit <- amap_rate_limit(resp)

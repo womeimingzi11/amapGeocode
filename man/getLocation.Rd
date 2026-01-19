@@ -23,78 +23,87 @@ getLocation(
 )
 }
 \arguments{
-\item{lng}{Required longitude in decimal degrees.}
+\item{lng}{Required.
+Longitude in decimal degrees. Can be a numeric vector.}
 
-\item{lat}{Required latitude in decimal degrees. Must be the same length as
-\code{lng}.}
+\item{lat}{Required.
+Latitude in decimal degrees. Must be the same length as `lng`.}
 
-\item{key}{Optional AutoNavi API key. You can also set it globally via
-\code{options(amap_key = "your-key")}.}
+\item{key}{Optional.
+AutoNavi API key. You can also set this globally via
+`options(amap_key = "your-key")`.}
 
-\item{poitype}{Optional POI type filter (only meaningful when
-\code{extensions = "all"}).}
+\item{poitype}{Optional.
+Return nearby POI types. Only meaningful when `extensions = "all"`.}
 
-\item{radius}{Optional search radius in metres (0--3000).}
+\item{radius}{Optional.
+Search radius in metres (0-3000).}
 
-\item{extensions}{Optional result controller. Use \code{"base"} for basic
-results or \code{"all"} to request extended POI/road information.}
+\item{extensions}{Optional.
+Either `"base"` (default) or `"all"` to request extended detail payloads.}
 
-\item{roadlevel}{Optional road level filter (only meaningful when
-\code{extensions = "all"}).}
+\item{roadlevel}{Optional.
+Road level filter. Only applies when `extensions = "all"`.}
 
-\item{sig}{Optional digital signature supplied manually.}
+\item{sig}{Optional.
+Manual digital signature. Most workflows can enable automatic signing via
+[with_amap_signature()] or [amap_config()].}
 
-\item{output}{Optional output data structure. Supports \code{"data.table"},
-\code{"JSON"}, and \code{"XML"}. The default value is
-\code{"data.table"}.}
+\item{output}{Optional.
+Output format. Supported values are `"data.table"` (default), `"JSON"`,
+and `"XML"`.}
 
-\item{callback}{Optional JSONP callback function. Only applies when
-\code{output = "JSON"}.}
+\item{callback}{Optional.
+JSONP callback. When supplied the raw response string is returned.}
 
-\item{homeorcorp}{Optional ordering hint for POIs. \code{0} retains the API
-order, \code{1} prioritises home-related POIs, and \code{2} prioritises
-corporate POIs (only meaningful when \code{extensions = "all"}).}
+\item{homeorcorp}{Optional.
+Optimise POI ordering: `0` (default) for none, `1` for home-centric, `2` for
+corporate-centric ordering.}
 
-\item{keep_bad_request}{Optional. When \code{TRUE}, API errors are converted
-into placeholder rows so that batched workflows continue.}
+\item{keep_bad_request}{Optional.
+When `TRUE` (default) API errors are converted into placeholder rows so that
+batched workflows continue. When `FALSE` errors are raised as
+`amap_api_error` conditions.}
 
-\item{batch}{Optional. When \code{TRUE}, requests are chunked into groups of
-ten coordinates using the API's batch mode while preserving the input
-order.}
+\item{batch}{Optional.
+When `TRUE`, requests are chunked into groups of ten coordinates using the
+API's batch mode. Defaults to `FALSE` for backwards compatibility.}
 
-\item{details}{Optional character vector describing which extended detail
-payloads to parse into list-columns. Supported values are
-\code{"pois"}, \code{"roads"}, \code{"roadinters"}, and
-\code{"aois"}. Use \code{"all"} to include every detail payload when
-\code{extensions = "all"}.}
+\item{details}{Optional.
+Character vector describing which extended list-columns to include in the
+parsed output. Supported values are `"pois"`, `"roads"`, `"roadinters"`,
+and `"aois"`. Use `"all"` to include every detail payload. Defaults to
+`NULL`, which omits nested payloads.}
 
-\item{...}{Optional arguments retained for forward compatibility.}
+\item{...}{Optional.
+Included for forward compatibility only.}
 }
 \value{
-A JSON, XML, or \code{data.table} representation of the reverse geocode
-results. When \code{output = "data.table"}, the return value preserves the
-input order, optionally adds POI/road/AOI list-columns dictated by
-\code{details}, and exposes any rate-limit headers through a \code{rate_limit}
-attribute.
+When `output = "data.table"`, a `data.table` with one row per coordinate is
+returned. The table preserves the input order and gains a `rate_limit`
+attribute containing any rate limit headers returned by the API. When
+`details` are requested, corresponding list-columns (`pois`, `roads`,
+`roadinters`, `aois`) contain nested `data.table` objects. When `output` is
+`"JSON"` or `"XML"`, the parsed body is returned without further
+processing.
 }
 \description{
 Get location from coordinate
 }
 \examples{
-\dontrun{
-# Reverse geocode a single coordinate
+\\dontrun{
 getLocation(104.043284, 30.666864)
 
-# Request extended POI and road details
-getLocation(104.05, 30.67, extensions = "all",
-            details = c("pois", "roads"))
+# Request extended POI details
+getLocation(104.043284, 30.666864,
+            extensions = "all", details = "pois")
 
-# Batch up to ten coordinates
-lngs <- rep(104.043284, 10)
-lats <- rep(30.666864, 10)
+# Batch reverse-geocode ten points at a time
+lngs <- rep(104.043284, 12)
+lats <- rep(30.666864, 12)
 getLocation(lngs, lats, batch = TRUE)
 }
 }
 \seealso{
-\code{\link{extractLocation}}
+[extractLocation()], [with_amap_signature()], [amap_config()]
 }

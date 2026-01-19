@@ -2,30 +2,10 @@
 % Please edit documentation in R/amap_http.R
 \name{amap_config}
 \alias{amap_config}
-\title{Configure amapGeocode runtime options}
+\title{Configure Amap settings}
 \usage{
 amap_config(signature = NULL, secret = NULL, key = NULL, enabled = TRUE)
 }
-\arguments{
-\item{signature}{Optional list describing the signature configuration. Use
-\code{FALSE} to disable signing.}
-
-\item{secret}{Optional signing secret. Supplied when \code{signature} is
-\code{NULL}.}
-
-\item{key}{Optional key associated with the signing secret.}
-
-\item{enabled}{Logical flag used when setting the signature configuration
-via individual arguments.}
-}
-\value{
-The updated signature configuration (invisibly).
-}
 \description{
-Configure amapGeocode runtime options such as request signing secrets.
-}
-\examples{
-\dontrun{
-amap_config(secret = "YOUR-SECRET")
-}
+Configure Amap settings
 }

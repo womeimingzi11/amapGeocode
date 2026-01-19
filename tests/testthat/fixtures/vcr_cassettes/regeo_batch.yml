@@ -1,0 +1,23 @@
+http_interactions:
+- request:
+    method: GET
+    uri: https://restapi.amap.com/v3/geocode/regeo?location=104.043284%2C30.666864%7C104.05%2C30.67&batch=true&homeorcorp=0&key=FAKE_KEY
+  response:
+    status: 200
+    headers:
+      Server: Tengine
+      Date: Mon, 19 Jan 2026 01:29:35 GMT
+      Content-Type: application/json;charset=UTF-8
+      Transfer-Encoding: chunked
+      Connection: close
+      Vary: Accept-Encoding
+      gsid: 033039203122176878617574900062430092674
+      sc: '0.008'
+      Access-Control-Allow-Origin: '*'
+      Access-Control-Allow-Methods: '*'
+      Access-Control-Allow-Headers: DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,key,x-biz,x-info,platinfo,encr,enginever,gzipped,poiid
+      Content-Encoding: gzip
+    body:
+      string: '{"status":"1","info":"OK","infocode":"10000","regeocodes":[{"formatted_address":"四川省成都市金牛区西安路街道十二桥路39-5号成都中医药大学十二桥校区","addressComponent":{"country":"中国","province":"四川省","city":"成都市","citycode":"028","district":"金牛区","adcode":"510106","township":"西安路街道","towncode":"510106013000","neighborhood":{"name":[],"type":[]},"building":{"name":[],"type":[]},"streetNumber":{"street":"十二桥路","number":"39-5号","location":"104.043264,30.666934","direction":"北","distance":"7.98562"},"businessAreas":[{"location":"104.056430,30.668025","name":"长顺街","id":"510105"},{"location":"104.045944,30.675078","name":"永陵路","id":"510106"},{"location":"104.054729,30.656703","name":"小南街","id":"510105"}]}},{"formatted_address":"四川省成都市金牛区西安路街道四川省纪委商住楼","addressComponent":{"country":"中国","province":"四川省","city":"成都市","citycode":"028","district":"金牛区","adcode":"510106","township":"西安路街道","towncode":"510106013000","neighborhood":{"name":"四川省纪委商住楼","type":"商务住宅;住宅区;住宅小区"},"building":{"name":[],"type":[]},"streetNumber":{"street":"二道桥街","number":"48-附13-16号","location":"104.049770,30.669954","direction":"西","distance":"22.5881"},"businessAreas":[{"location":"104.056430,30.668025","name":"长顺街","id":"510105"},{"location":"104.045944,30.675078","name":"永陵路","id":"510106"},{"location":"104.060695,30.674065","name":"新华西路","id":"510105"}]}}]}'
+  recorded_at: 2026-01-19 01:29:35
+recorded_with: VCR-vcr/2.1.0

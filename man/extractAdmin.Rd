@@ -2,33 +2,36 @@
 % Please edit documentation in R/getAdmin.R
 \name{extractAdmin}
 \alias{extractAdmin}
-\title{Extract subordinate administrative regions}
+\title{Extract subordinate administrative regions from a district response}
 \usage{
 extractAdmin(res, include_polyline = FALSE)
 }
 \arguments{
-\item{res}{Required response object returned by \code{getAdmin()} with
-\code{output = "JSON"} or by the AutoNavi district API.}
+\item{res}{Required.
+Response object returned by [getAdmin()] with `output = "JSON"` or by the
+AutoNavi district API.}
 
 \item{include_polyline}{Logical indicating whether to include the polyline
-column (requires \code{extensions = "all"}).}
+column (requires `extensions = "all"`). Defaults to `FALSE`.}
 }
 \value{
-A \code{data.table} describing each administrative region in the response.
-The table includes parent metadata (\code{parent_name}, \code{parent_adcode},
-\code{parent_level}), centre coordinates (\code{lng}, \code{lat}), and a
-\code{depth} column describing the nesting level. When no results are present a
-single placeholder row filled with \code{NA} values is returned.
+A `data.table` describing each administrative region present in the response.
+The table includes parent metadata (`parent_name`, `parent_adcode`,
+`parent_level`), centre coordinates (`lng`, `lat`), and a `depth` column
+describing the nesting level (0 for the matched region, 1+ for subregions).
+When no results are present a single placeholder row filled with `NA` values
+is returned.
 }
 \description{
-Extract subordinate administrative regions from getAdmin request
+Extract subordinate administrative regions from a district response
 }
 \examples{
-\dontrun{
-raw <- getAdmin("四川省", subdistrict = 1, output = "JSON")
+\\dontrun{
+raw <- getAdmin("Sichuan Province", output = "JSON")
 extractAdmin(raw)
 }
+
 }
 \seealso{
-\code{\link{getAdmin}}
+[getAdmin()]
 }

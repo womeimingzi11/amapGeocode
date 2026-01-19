@@ -35,7 +35,7 @@ Suggests:
 VignetteBuilder:
     knitr
 Encoding: UTF-8
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.3
 Language: en-US
 URL: https://github.com/womeimingzi11/amapGeocode
 BugReports: https://github.com/womeimingzi11/amapGeocode/issues

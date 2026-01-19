@@ -178,7 +178,7 @@ extractConvertCoord <- function(res) {
   if (is.na(locations)) {
     return(convert_placeholder())
   }
-  coords <- strsplit(locations, pattern = ";", fixed = TRUE)[[1L]]
+  coords <- strsplit(locations, split = ";", fixed = TRUE)[[1L]]
   rows <- lapply(coords, function(coord) {
     split <- str_loc_to_num_coord(coord)
     data.table::data.table(lng = split[[1L]], lat = split[[2L]])

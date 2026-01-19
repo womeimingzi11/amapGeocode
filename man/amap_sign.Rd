@@ -2,27 +2,10 @@
 % Please edit documentation in R/amap_http.R
 \name{amap_sign}
 \alias{amap_sign}
-\title{Generate an AutoNavi digital signature}
+\title{Generate Amap signature}
 \usage{
 amap_sign(params, secret, path)
 }
-\arguments{
-\item{params}{List of query parameters used to build the request.}
-
-\item{secret}{The private signing secret supplied by AutoNavi.}
-
-\item{path}{Request path (for example \code{"v3/geocode/geo"}).}
-}
-\value{
-A lower-case MD5 signature string.
-}
 \description{
-Generate an AutoNavi digital signature using the canonical parameter ordering
-expected by the web service APIs.
-}
-\examples{
-\dontrun{
-amap_sign(list(address = "Chengdu", key = "FAKE_KEY"),
-          secret = "secret", path = "v3/geocode/geo")
-}
+Generate Amap signature
 }

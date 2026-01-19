@@ -417,13 +417,13 @@ location_entry_to_dt <- function(entry, details = character()) {
   if (is.null(entry)) {
     return(row)
   }
-  formatted_address <- scalar_or_na(entry$formatted_address)
+  formatted_address_val <- scalar_or_na(entry$formatted_address)
   address_component <- entry$addressComponent %||% list()
   street_number <- address_component$streetNumber %||% list()
-  neighborhood <- address_component$neighborhood %||% list()
-  building <- address_component$building %||% list()
+  neighborhood_val <- address_component$neighborhood %||% list()
+  building_val <- address_component$building %||% list()
   row[, `:=`(
-    formatted_address = formatted_address,
+    formatted_address = formatted_address_val,
     country = scalar_or_na(address_component$country),
     province = scalar_or_na(address_component$province),
     city = scalar_or_na(address_component$city),
@@ -434,8 +434,8 @@ location_entry_to_dt <- function(entry, details = character()) {
     adcode = scalar_or_na(address_component$adcode),
     street = scalar_or_na(street_number$street),
     number = scalar_or_na(street_number$number),
-    neighborhood = scalar_or_na(neighborhood$name),
-    building = scalar_or_na(building$name)
+    neighborhood = scalar_or_na(neighborhood_val$name),
+    building = scalar_or_na(building_val$name)
   )]
   if ("pois" %in% details) {
     row[, pois := list(list(detail_table(entry$pois, "pois")))]

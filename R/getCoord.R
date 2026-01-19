@@ -200,7 +200,13 @@ getCoord_raw <- function(address,
       }
     )
   }
-  city_values <- if (length(city) > 1L) city else rep_len(city, length(address))
+  city_values <- if (length(city) > 1L) {
+    city
+  } else if (is.null(city)) {
+    rep(list(NULL), length(address))
+  } else {
+    rep_len(city, length(address))
+  }
   results <- Map(mapper, address, city_values)
   if (length(address) == 1L) {
     results <- results[[1L]]
@@ -262,8 +268,9 @@ geocode_entry_to_dt <- function(entry, match_rank) {
   }
   location <- scalar_or_na(entry$location)
   coords <- if (!is.na(location)) str_loc_to_num_coord(location) else c(NA_real_, NA_real_)
-  neighborhood <- entry$neighborhood %||% list()
-  building <- entry$building %||% list()
+  neighborhood_val <- entry$neighborhood %||% list()
+  building_val <- entry$building %||% list()
+  
   row[, `:=`(
     lng = coords[[1L]],
     lat = coords[[2L]],
@@ -279,10 +286,10 @@ geocode_entry_to_dt <- function(entry, match_rank) {
     adcode = scalar_or_na(entry$adcode),
     level = scalar_or_na(entry$level),
     matchlevel = scalar_or_na(entry$matchlevel),
-    neighborhood = scalar_or_na(neighborhood$name),
-    neighborhood_type = scalar_or_na(neighborhood$type),
-    building = scalar_or_na(building$name),
-    building_type = scalar_or_na(building$type),
+    neighborhood = scalar_or_na(neighborhood_val$name),
+    neighborhood_type = scalar_or_na(neighborhood_val$type),
+    building = scalar_or_na(building_val$name),
+    building_type = scalar_or_na(building_val$type),
     location = location
   )]
   row

@@ -2,7 +2,7 @@
 % Please edit documentation in R/getAdmin.R
 \name{getAdmin}
 \alias{getAdmin}
-\title{Get subordinate administrative regions}
+\title{Get subordinate administrative regions from keywords}
 \usage{
 getAdmin(
   keywords,
@@ -20,59 +20,67 @@ getAdmin(
 )
 }
 \arguments{
-\item{keywords}{Required search keywords. Accepts a character vector; each
-entry is queried in turn.}
+\item{keywords}{Required.
+Search keywords. Accepts a character vector; each element is queried in turn.}
 
-\item{key}{Optional AutoNavi API key. You can also set it globally via
-\code{options(amap_key = "your-key")}.}
+\item{key}{Optional.
+AutoNavi API key. You can also set this globally via
+`options(amap_key = "your-key")`.}
 
-\item{subdistrict}{Optional subordinate administrative depth (0--3).}
+\item{subdistrict}{Optional.
+Subordinate administrative depth (0-3). Defaults to the API's behaviour.}
 
-\item{page}{Optional page number for paged results.}
+\item{page}{Optional.
+Page number when multiple pages are available.}
 
-\item{offset}{Optional maximum records per page (maximum 20).}
+\item{offset}{Optional.
+Maximum records per page (maximum 20).}
 
-\item{extensions}{Optional result controller. Use \code{"base"} or
-\code{"all"}. Required for polyline data.}
+\item{extensions}{Optional.
+Either `"base"` or `"all"`. Required for polyline data.}
 
-\item{filter}{Optional adcode used to filter administrative divisions.}
+\item{filter}{Optional.
+Filter by designated administrative divisions (adcode).}
 
-\item{callback}{Optional JSONP callback function. Only applies when
-\code{output = "JSON"}.}
+\item{callback}{Optional.
+JSONP callback. When supplied, the raw response string is returned.}
 
-\item{output}{Optional output data structure. Supports \code{"data.table"},
-\code{"JSON"}, and \code{"XML"}. The default value is
-\code{"data.table"}.}
+\item{output}{Optional.
+Output data structure. Supported values are `"data.table"` (default),
+`"JSON"`, and `"XML"`.}
 
-\item{keep_bad_request}{Optional. When \code{TRUE}, API errors are converted
-into placeholder rows so that batched workflows continue.}
+\item{keep_bad_request}{Optional.
+When `TRUE` (default) API errors are converted into placeholder rows so that
+batched workflows continue. When `FALSE` errors are raised as
+`amap_api_error` conditions.}
 
-\item{include_polyline}{Optional. When \code{TRUE} and when
-\code{extensions = "all"}, boundary polylines are included in the parsed
-output.}
+\item{include_polyline}{Optional.
+When `TRUE`, and when the request is made with `extensions = "all"`,
+polyline strings are included in the parsed output.}
 
-\item{...}{Optional arguments retained for forward compatibility.}
+\item{...}{Optional.
+Included for forward compatibility only.}
 }
 \value{
-A JSON, XML, or \code{data.table} representation of the administrative region
-results. When \code{output = "data.table"}, the return value includes parent
-metadata (\code{parent_name}, \code{parent_adcode}, \code{parent_level}) and a
-\code{depth} column describing the nesting level. Any rate-limit headers are
-available via the \code{rate_limit} attribute.
+When `output = "data.table"`, a `data.table` containing administrative
+region details is returned. The table preserves the input order and includes
+parent metadata (`parent_name`, `parent_adcode`, `parent_level`) and a `depth`
+column describing the nesting level. A `rate_limit` attribute is attached when
+rate limit headers are present. When `output` is `"JSON"` or `"XML"`, the
+parsed body is returned without further processing.
 }
 \description{
-Get subordinate administrative regions
+Get subordinate administrative regions from keywords
 }
 \examples{
-\dontrun{
-# Query child regions for Sichuan province
-getAdmin("四川省", subdistrict = 1)
+\\dontrun{
+getAdmin("Sichuan Province", subdistrict = 1)
 
-# Include boundary polylines (requires extensions = "all")
-getAdmin("四川省", subdistrict = 0,
+# Include polylines (requires extensions = "all")
+getAdmin("Sichuan Province", subdistrict = 1,
          extensions = "all", include_polyline = TRUE)
 }
 }
 \seealso{
-\code{\link{extractAdmin}}
+[extractAdmin()], [with_amap_signature()], [amap_config()]
 }
