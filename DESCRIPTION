@@ -31,7 +31,12 @@ Suggests:
     httptest2,
     vcr,
     spelling,
-    covr
+    covr,
+    shiny,
+    bslib,
+    DT,
+    readr,
+    tools
 VignetteBuilder:
     knitr
 Encoding: UTF-8
