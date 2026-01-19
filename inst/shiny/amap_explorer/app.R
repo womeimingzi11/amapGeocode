@@ -9,6 +9,7 @@ ui <- page_sidebar(
   title = "amapGeocode Explorer",
   theme = bs_theme(version = 5, bootswatch = "flatly"),
   sidebar = sidebar(
+    width = 300,
     title = "Navigation",
     navset_pill_list(
       id = "nav",
