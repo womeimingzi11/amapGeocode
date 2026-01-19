@@ -25,7 +25,7 @@ single placeholder row filled with `NA` values is returned.
 Extract location from coordinate request
 }
 \examples{
-\\dontrun{
+\dontrun{
 raw <- getLocation(104.043284, 30.666864, output = "JSON")
 extractLocation(raw, details = c("pois", "roads"))
 }

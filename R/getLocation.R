@@ -54,7 +54,7 @@
 #' @export
 #'
 #' @examples
-#' \\dontrun{
+#' \dontrun{
 #' getLocation(104.043284, 30.666864)
 #'
 #' # Request extended POI details
@@ -268,7 +268,7 @@ get_location_raw <- function(coords,
 #' single placeholder row filled with `NA` values is returned.
 #'
 #' @examples
-#' \\dontrun{
+#' \dontrun{
 #' raw <- getLocation(104.043284, 30.666864, output = "JSON")
 #' extractLocation(raw, details = c("pois", "roads"))
 #' }
@@ -364,6 +364,7 @@ location_finalize <- function(tbl, details) {
     "neighborhood", "building"
   )
   detail_cols <- intersect(c("pois", "roads", "roadinters", "aois"), details)
+  query_index <- query_lng <- query_lat <- NULL
   if (!nrow(tbl)) {
     result <- dplyr::select(tbl, dplyr::all_of(c(base_cols, detail_cols, "query_index", "query_lng", "query_lat")))
   } else {

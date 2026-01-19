@@ -56,6 +56,14 @@ amap_signature_settings <- function() {
 }
 
 #' Configure Amap settings
+#' @param signature Optional.
+#' Signature configuration. Use `FALSE` to disable, a single string secret, or a list.
+#' @param secret Optional.
+#' Secret key used for request signing.
+#' @param key Optional.
+#' Optional API key override when signing is enabled.
+#' @param enabled Optional.
+#' Logical flag to enable or disable signing.
 #' @export
 amap_config <- function(signature = NULL, secret = NULL, key = NULL, enabled = TRUE) {
   if (!is.null(signature)) {
@@ -82,6 +90,14 @@ amap_config <- function(signature = NULL, secret = NULL, key = NULL, enabled = T
 }
 
 #' Execute code with temporary signature settings
+#' @param secret Required.
+#' Secret key used for request signing.
+#' @param expr Required.
+#' Expression to evaluate with signing enabled.
+#' @param key Optional.
+#' Optional API key override when signing is enabled.
+#' @param enabled Optional.
+#' Logical flag to enable or disable signing.
 #' @export
 with_amap_signature <- function(secret, expr, key = NULL, enabled = TRUE) {
   old <- getOption("amap_signature")
@@ -91,6 +107,12 @@ with_amap_signature <- function(secret, expr, key = NULL, enabled = TRUE) {
 }
 
 #' Generate Amap signature
+#' @param params Required.
+#' Named list of request parameters to sign.
+#' @param secret Required.
+#' Secret key used for request signing.
+#' @param path Required.
+#' Request path portion of the API URL.
 #' @export
 amap_sign <- function(params, secret, path) {
   if (is.null(secret) || !nzchar(secret)) {

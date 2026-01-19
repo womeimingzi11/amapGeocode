@@ -26,7 +26,7 @@ is returned.
 Extract subordinate administrative regions from a district response
 }
 \examples{
-\\dontrun{
+\dontrun{
 raw <- getAdmin("Sichuan Province", output = "JSON")
 extractAdmin(raw)
 }

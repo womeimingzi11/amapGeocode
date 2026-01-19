@@ -71,7 +71,7 @@ the parsed body is returned without further processing.
 Get coordinate from location
 }
 \examples{
-\\dontrun{
+\dontrun{
 # Basic lookup (best match only)
 getCoord("IFS Chengdu")
 

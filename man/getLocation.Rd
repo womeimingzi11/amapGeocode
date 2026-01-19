@@ -91,7 +91,7 @@ processing.
 Get location from coordinate
 }
 \examples{
-\\dontrun{
+\dontrun{
 getLocation(104.043284, 30.666864)
 
 # Request extended POI details

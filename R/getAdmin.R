@@ -42,7 +42,7 @@
 #' @export
 #'
 #' @examples
-#' \\dontrun{
+#' \dontrun{
 #' getAdmin("Sichuan Province", subdistrict = 1)
 #'
 #' # Include polylines (requires extensions = "all")
@@ -131,6 +131,7 @@ getAdmin <- function(keywords,
   if (!nrow(combined)) {
     return(combined)
   }
+  query_index <- depth <- parent_name <- name <- NULL
   combined <- combined |> dplyr::arrange(query_index, depth, parent_name, name)
   combined <- dplyr::select(combined, -query_index)
 
@@ -205,7 +206,7 @@ get_admin_raw <- function(keywords,
 #' is returned.
 #'
 #' @examples
-#' \\dontrun{
+#' \dontrun{
 #' raw <- getAdmin("Sichuan Province", output = "JSON")
 #' extractAdmin(raw)
 #' }
@@ -229,6 +230,7 @@ extractAdmin <- function(res, include_polyline = FALSE) {
   tbl <- dplyr::bind_rows(rows)
   # When depth > 0 rows exist, return only those (subordinate regions).
   # Otherwise return the matched region itself (depth 0).
+  depth <- NULL
   if (any(tbl$depth > 0)) {
     tbl <- dplyr::filter(tbl, depth > 0)
   }

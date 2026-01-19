@@ -44,7 +44,7 @@
 #' @export
 #'
 #' @examples
-#' \\dontrun{
+#' \dontrun{
 #' # Basic lookup (best match only)
 #' getCoord("IFS Chengdu")
 #'
@@ -228,7 +228,7 @@ get_coord_raw <- function(address,
 #' returned.
 #'
 #' @examples
-#' \\dontrun{
+#' \dontrun{
 #' raw <- getCoord("IFS Chengdu", output = "JSON")
 #' extractCoord(raw)
 #' }
@@ -380,6 +380,7 @@ geocode_finalize <- function(tbl, mode) {
     return(dplyr::select(tbl, dplyr::all_of(base_cols)))
   }
   if (identical(mode, "best")) {
+    query_index <- NULL
     best <- dplyr::ungroup(dplyr::slice(dplyr::group_by(tbl, query_index), 1L))
     best <- dplyr::arrange(best, query_index)
     keep <- intersect(c(base_cols, extra_cols), names(best))
@@ -390,6 +391,7 @@ geocode_finalize <- function(tbl, mode) {
   }
   ordered_cols <- c("query", "query_index", "match_rank", base_cols, extra_cols)
   present <- intersect(ordered_cols, names(tbl))
+  query_index <- match_rank <- NULL
   tbl <- dplyr::mutate(tbl, match_rank = ifelse(is.na(match_rank), 1L, match_rank))
   tbl <- dplyr::arrange(tbl, query_index, match_rank)
   dplyr::select(tbl, dplyr::all_of(present))

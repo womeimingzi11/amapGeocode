@@ -31,7 +31,7 @@
 #' @export
 #'
 #' @examples
-#' \\dontrun{
+#' \dontrun{
 #' convertCoord("116.481499,39.990475", coordsys = "gps")
 #' }
 convertCoord <- function(locations,
@@ -163,7 +163,7 @@ convert_coord_raw <- function(locations,
 #' single placeholder row filled with `NA` values is returned.
 #'
 #' @examples
-#' \\dontrun{
+#' \dontrun{
 #' raw <- convertCoord("116.481499,39.990475", coordsys = "gps", output = "JSON")
 #' extractConvertCoord(raw)
 #' }

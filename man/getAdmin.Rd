@@ -73,7 +73,7 @@ parsed body is returned without further processing.
 Get subordinate administrative regions from keywords
 }
 \examples{
-\\dontrun{
+\dontrun{
 getAdmin("Sichuan Province", subdistrict = 1)
 
 # Include polylines (requires extensions = "all")

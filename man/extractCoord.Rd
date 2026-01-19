@@ -22,7 +22,7 @@ returned.
 Extract coordinate from a geocoding response
 }
 \examples{
-\\dontrun{
+\dontrun{
 raw <- getCoord("IFS Chengdu", output = "JSON")
 extractCoord(raw)
 }

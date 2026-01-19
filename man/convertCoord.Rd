@@ -52,7 +52,7 @@ further processing.
 Convert coordinates to the AutoNavi system
 }
 \examples{
-\\dontrun{
+\dontrun{
 convertCoord("116.481499,39.990475", coordsys = "gps")
 }
 }

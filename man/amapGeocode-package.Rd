@@ -11,7 +11,8 @@ Getting and parsing data of location geocode/reverse-geocode and administrative 
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://womeimingzi11.github.io/amapGeocode https://github.com/womeimingzi11/amapGeocode}
+  \item \url{https://womeimingzi11.github.io/amapGeocode}
+  \item \url{https://github.com/womeimingzi11/amapGeocode}
   \item Report bugs at \url{https://github.com/womeimingzi11/amapGeocode/issues}
 }
 

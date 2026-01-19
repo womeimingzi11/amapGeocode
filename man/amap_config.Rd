@@ -6,6 +6,19 @@
 \usage{
 amap_config(signature = NULL, secret = NULL, key = NULL, enabled = TRUE)
 }
+\arguments{
+\item{signature}{Optional.
+Signature configuration. Use `FALSE` to disable, a single string secret, or a list.}
+
+\item{secret}{Optional.
+Secret key used for request signing.}
+
+\item{key}{Optional.
+Optional API key override when signing is enabled.}
+
+\item{enabled}{Optional.
+Logical flag to enable or disable signing.}
+}
 \description{
 Configure Amap settings
 }

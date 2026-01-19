@@ -6,6 +6,16 @@
 \usage{
 amap_sign(params, secret, path)
 }
+\arguments{
+\item{params}{Required.
+Named list of request parameters to sign.}
+
+\item{secret}{Required.
+Secret key used for request signing.}
+
+\item{path}{Required.
+Request path portion of the API URL.}
+}
 \description{
 Generate Amap signature
 }

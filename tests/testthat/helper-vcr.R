@@ -1,5 +1,7 @@
-key <- Sys.getenv("AMAP_KEY", "f632155636ebb63dd477968e1dcff27e")
-if (key == "") key <- "FAKE_KEY"
+key <- Sys.getenv("AMAP_KEY")
+if (key == "") {
+  key <- "FAKE_KEY"
+}
 
 options(amap_key = key)
 

@@ -19,7 +19,7 @@ single placeholder row filled with `NA` values is returned.
 Extract converted coordinates from a conversion response
 }
 \examples{
-\\dontrun{
+\dontrun{
 raw <- convertCoord("116.481499,39.990475", coordsys = "gps", output = "JSON")
 extractConvertCoord(raw)
 }
