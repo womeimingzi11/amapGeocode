@@ -13,7 +13,7 @@ getLocation(
   extensions = NULL,
   roadlevel = NULL,
   sig = NULL,
-  output = "data.table",
+  output = "tibble",
   callback = NULL,
   homeorcorp = 0,
   keep_bad_request = TRUE,
@@ -50,7 +50,7 @@ Manual digital signature. Most workflows can enable automatic signing via
 [with_amap_signature()] or [amap_config()].}
 
 \item{output}{Optional.
-Output format. Supported values are `"data.table"` (default), `"JSON"`,
+Output format. Supported values are `"tibble"` (default), `"JSON"`,
 and `"XML"`.}
 
 \item{callback}{Optional.
@@ -79,11 +79,11 @@ and `"aois"`. Use `"all"` to include every detail payload. Defaults to
 Included for forward compatibility only.}
 }
 \value{
-When `output = "data.table"`, a `data.table` with one row per coordinate is
+When `output = "tibble"`, a `tibble` with one row per coordinate is
 returned. The table preserves the input order and gains a `rate_limit`
 attribute containing any rate limit headers returned by the API. When
 `details` are requested, corresponding list-columns (`pois`, `roads`,
-`roadinters`, `aois`) contain nested `data.table` objects. When `output` is
+`roadinters`, `aois`) contain nested `tibble` objects. When `output` is
 `"JSON"` or `"XML"`, the parsed body is returned without further
 processing.
 }

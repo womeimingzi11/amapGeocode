@@ -1,7 +1,7 @@
 Type: Package
 Package: amapGeocode
 Title: An Interface to the 'AutoNavi Maps' API Geocoding Services
-Version: 0.7.0
+Version: 0.9.0
 Authors@R: 
     c(person(given = "Han",
              family = "Chen",
@@ -19,10 +19,10 @@ Imports:
     jsonlite,
     rlang,
     digest,
-    sjmisc,
-    stats,
     xml2,
-    data.table
+    tibble,
+    dplyr,
+    utils
 Suggests: 
     stringr,
     knitr,
@@ -37,5 +37,5 @@ VignetteBuilder:
 Encoding: UTF-8
 RoxygenNote: 7.3.3
 Language: en-US
-URL: https://github.com/womeimingzi11/amapGeocode
+URL: https://womeimingzi11.github.io/amapGeocode https://github.com/womeimingzi11/amapGeocode
 BugReports: https://github.com/womeimingzi11/amapGeocode/issues

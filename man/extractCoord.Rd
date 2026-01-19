@@ -12,7 +12,7 @@ Response object returned by [getCoord()] with `output = "JSON"` or by the
 AutoNavi geocoding API.}
 }
 \value{
-A `data.table` with one row per geocode candidate. The table contains the
+A `tibble` with one row per geocode candidate. The table contains the
 original columns provided by the API alongside a `match_rank` column that
 indicates the ordering reported by AutoNavi. When the response does not
 contain any matches a single placeholder row filled with `NA` values is
@@ -23,7 +23,7 @@ Extract coordinate from a geocoding response
 }
 \examples{
 \\dontrun{
-raw <- getCoord("IFS Chengdu", output = "JSON")[[1]]
+raw <- getCoord("IFS Chengdu", output = "JSON")
 extractCoord(raw)
 }
 

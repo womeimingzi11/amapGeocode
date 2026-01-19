@@ -1,3 +1,16 @@
+# amapGeocode 0.9.0
+* Switched default tabular outputs to `tibble` with tidyverse helpers.
+* Refined documentation to align with new outputs and pkgdown Bootstrap 5.
+* Improved error handling consistency and example stability.
+
+# amapGeocode 0.8.0
+* Migrated the HTTP stack to {httr2}, unifying retries, diagnostics, and rate-limit metadata via `amap_request()` and `amap_api_error`.
+* Added request signing helpers (`amap_sign()`, `with_amap_signature()`, `amap_config()`) to simplify secure integrations.
+* `getCoord()` now supports `mode = "all"` for multi-match results and `batch = TRUE` for 10-at-a-time requests, with `extractCoord()` returning stable columns.
+* `getLocation()` gains batching plus optional POI/road/AOI list-columns through the new `details` argument in `extractLocation()`.
+* `extractAdmin()` iterates over multiple parents and can emit boundary polylines when `include_polyline = TRUE`.
+* Test suite migrated to offline {vcr}/{httptest2} fixtures covering multi-result, extensions, and error scenarios.
+
 # amapGeocode 0.7.0
 # amapGeocode 0.8.0
 * Migrated the HTTP stack to {httr2}, unifying retries, diagnostics, and rate-limit metadata via `amap_request()` and `amap_api_error`.
@@ -21,7 +34,7 @@
 
 # amapGeocode 0.4.0
 * Return bad request as NA tibble
-* Replace `tibble` by `data.table`
+* Replace `data.table` by `tibble`
 
 # amapGeocode 0.3.1
 * Improve the examples of functions

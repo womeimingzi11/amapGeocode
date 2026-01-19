@@ -6,11 +6,9 @@
 #' @return
 #' vector contains Longitude and Latitude in numeric
 str_loc_to_num_coord <- function(str_location) {
-  # seperate a location strings by comma
-  sperated_str_loc <-
-    stringr::str_split(str_location, pattern = ",", simplify = TRUE)
-
-  as.numeric(sperated_str_loc)
+  if (is.na(str_location) || !nzchar(str_location)) return(c(NA_real_, NA_real_))
+  parts <- strsplit(str_location, split = ",", fixed = TRUE)[[1L]]
+  as.numeric(parts)
 }
 
 #' Take longitude and latitude from location string out.

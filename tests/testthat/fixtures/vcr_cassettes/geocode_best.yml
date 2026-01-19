@@ -6,17 +6,17 @@ http_interactions:
     status: 200
     headers:
       Server: Tengine
-      Date: Mon, 19 Jan 2026 01:29:34 GMT
+      Date: Mon, 19 Jan 2026 01:52:43 GMT
       Content-Type: application/json;charset=UTF-8
       Content-Length: '412'
       Connection: close
       Vary: Accept-Encoding
-      gsid: 033061084011176878617400000037680057447
+      gsid: 033061187230176878756386300037480867399
       sc: '0.005'
       Access-Control-Allow-Origin: '*'
       Access-Control-Allow-Methods: '*'
       Access-Control-Allow-Headers: DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,key,x-biz,x-info,platinfo,encr,enginever,gzipped,poiid
     body:
       string: '{"status":"1","info":"OK","infocode":"10000","count":"1","geocodes":[{"formatted_address":"四川省成都市锦江区成都IFS","country":"中国","province":"四川省","citycode":"028","city":"成都市","district":"锦江区","township":[],"neighborhood":{"name":[],"type":[]},"building":{"name":[],"type":[]},"adcode":"510104","street":[],"number":[],"location":"104.081504,30.654802","level":"兴趣点"}]}'
-  recorded_at: 2026-01-19 01:29:33
+  recorded_at: 2026-01-19 01:52:43
 recorded_with: VCR-vcr/2.1.0

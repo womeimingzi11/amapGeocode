@@ -12,7 +12,7 @@ Response object returned by [convertCoord()] with `output = "JSON"` or by
 the AutoNavi coordinate conversion API.}
 }
 \value{
-A `data.table` with columns `lng` and `lat`. When no data is present a
+A `tibble` with columns `lng` and `lat`. When no data is present a
 single placeholder row filled with `NA` values is returned.
 }
 \description{

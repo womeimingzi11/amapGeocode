@@ -2,6 +2,7 @@
 "_PACKAGE"
 
 ## usethis namespace: start
-#' @import data.table
+#' @importFrom tibble tibble
+#' @importFrom dplyr mutate arrange bind_rows
 ## usethis namespace: end
 NULL

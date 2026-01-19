@@ -9,7 +9,7 @@ getCoord(
   key = NULL,
   city = NULL,
   sig = NULL,
-  output = "data.table",
+  output = "tibble",
   callback = NULL,
   keep_bad_request = TRUE,
   mode = c("best", "all"),
@@ -35,7 +35,7 @@ Digital signature supplied manually. Most users should instead enable
 automatic signing via [with_amap_signature()] or [amap_config()].}
 
 \item{output}{Optional.
-Output data structure. Supported values are `"data.table"` (default),
+Output data structure. Supported values are `"tibble"` (default),
 `"JSON"`, and `"XML"`.}
 
 \item{callback}{Optional.
@@ -60,7 +60,7 @@ API's batch mode. Defaults to `FALSE` for backwards compatibility.}
 Included for forward compatibility only.}
 }
 \value{
-When `output = "data.table"`, a `data.table` containing geocode results is
+When `output = "tibble"`, a `tibble` containing geocode results is
 returned. The table preserves the input order and gains a
 `rate_limit` attribute containing any rate limit headers returned by the API.
 When `mode = "all"`, additional metadata columns (`query`, `query_index`,

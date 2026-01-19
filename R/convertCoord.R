@@ -11,7 +11,7 @@
 #' Manual digital signature. Most workflows can enable automatic signing via
 #' [with_amap_signature()] or [amap_config()].
 #' @param output Optional.
-#' Output data structure. Supported values are `"data.table"` (default),
+#' Output data structure. Supported values are `"tibble"` (default),
 #' `"JSON"`, and `"XML"`.
 #' @param keep_bad_request Optional.
 #' When `TRUE` (default) API errors are converted into placeholder rows so that
@@ -21,7 +21,7 @@
 #' Included for forward compatibility only.
 #'
 #' @return
-#' When `output = "data.table"`, a `data.table` with columns `lng` and `lat`
+#' When `output = "tibble"`, a `tibble` with columns `lng` and `lat`
 #' is returned. The table preserves the input order and gains a `rate_limit`
 #' attribute containing any rate limit headers returned by the API. When
 #' `output` is `"JSON"` or `"XML"`, the parsed body is returned without
@@ -38,14 +38,14 @@ convertCoord <- function(locations,
                          key = NULL,
                          coordsys = NULL,
                          sig = NULL,
-                         output = "data.table",
+                         output = "tibble",
                          keep_bad_request = TRUE,
                          ...) {
   locations <- as.character(locations)
   output_upper <- toupper(output)
 
-  if (output_upper != "DATA.TABLE") {
-    return(convertCoord_raw(
+  if (output_upper != "TIBBLE") {
+    return(convert_coord_raw(
       locations,
       key = key,
       coordsys = coordsys,
@@ -87,22 +87,24 @@ convertCoord <- function(locations,
     resp <- perform_request(query, key)
     if (inherits(resp, "amap_request_error")) {
       placeholder <- convert_placeholder()
-      placeholder[, `:=`(query = location, query_index = i)]
+      placeholder$query <- location
+      placeholder$query_index <- i
       rows[[length(rows) + 1L]] <- placeholder
       next
     }
     rate_limits[[length(rate_limits) + 1L]] <- attr(resp, "rate_limit")
     parsed <- extractConvertCoord(resp$body)
-    parsed[, `:=`(query = location, query_index = i)]
+    parsed$query <- location
+    parsed$query_index <- i
     rows[[length(rows) + 1L]] <- parsed
   }
 
-  combined <- data.table::rbindlist(rows, fill = TRUE)
+  combined <- dplyr::bind_rows(rows)
   if (!nrow(combined)) {
     return(combined)
   }
-  data.table::setorder(combined, query_index)
-  combined[, `:=`(query_index = NULL, query = NULL)]
+  combined <- combined |> dplyr::arrange(query_index)
+  combined <- dplyr::select(combined, -query_index, -query)
 
   rate_limit <- Filter(Negate(is.null), rate_limits)
   if (length(rate_limit)) {
@@ -112,7 +114,7 @@ convertCoord <- function(locations,
   combined
 }
 
-convertCoord_raw <- function(locations,
+convert_coord_raw <- function(locations,
                              key = NULL,
                              coordsys = NULL,
                              sig = NULL,
@@ -157,7 +159,7 @@ convertCoord_raw <- function(locations,
 #' the AutoNavi coordinate conversion API.
 #'
 #' @return
-#' A `data.table` with columns `lng` and `lat`. When no data is present a
+#' A `tibble` with columns `lng` and `lat`. When no data is present a
 #' single placeholder row filled with `NA` values is returned.
 #'
 #' @examples
@@ -170,9 +172,10 @@ convertCoord_raw <- function(locations,
 #' @export
 extractConvertCoord <- function(res) {
   parsed <- normalize_convert_response(res)
+  # print(str(parsed)) 
   status <- parsed$status %||% parsed$Status
   if (!is.null(status) && !identical(as.character(status), "1")) {
-    stop(parsed$info %||% parsed$message %||% "AutoNavi API request failed", call. = FALSE)
+    rlang::abort(parsed$info %||% parsed$message %||% "AutoNavi API request failed", call = NULL)
   }
   locations <- scalar_or_na(parsed$locations)
   if (is.na(locations)) {
@@ -181,9 +184,9 @@ extractConvertCoord <- function(res) {
   coords <- strsplit(locations, split = ";", fixed = TRUE)[[1L]]
   rows <- lapply(coords, function(coord) {
     split <- str_loc_to_num_coord(coord)
-    data.table::data.table(lng = split[[1L]], lat = split[[2L]])
+    tibble::tibble(lng = split[[1L]], lat = split[[2L]])
   })
-  data.table::rbindlist(rows, fill = TRUE)
+  dplyr::bind_rows(rows)
 }
 
 normalize_convert_response <- function(res) {
@@ -197,5 +200,5 @@ normalize_convert_response <- function(res) {
 }
 
 convert_placeholder <- function() {
-  data.table::data.table(lng = NA_real_, lat = NA_real_)
+  tibble::tibble(lng = NA_real_, lat = NA_real_)
 }

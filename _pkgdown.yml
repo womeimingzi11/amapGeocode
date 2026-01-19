@@ -1,3 +1,5 @@
+url: https://womeimingzi11.github.io/amapGeocode
+
 template:
-  params:
-    bootswatch: flatly
+  bootstrap: 5
+  bootswatch: flatly

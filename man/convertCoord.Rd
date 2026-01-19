@@ -9,7 +9,7 @@ convertCoord(
   key = NULL,
   coordsys = NULL,
   sig = NULL,
-  output = "data.table",
+  output = "tibble",
   keep_bad_request = TRUE,
   ...
 )
@@ -30,7 +30,7 @@ Manual digital signature. Most workflows can enable automatic signing via
 [with_amap_signature()] or [amap_config()].}
 
 \item{output}{Optional.
-Output data structure. Supported values are `"data.table"` (default),
+Output data structure. Supported values are `"tibble"` (default),
 `"JSON"`, and `"XML"`.}
 
 \item{keep_bad_request}{Optional.
@@ -42,7 +42,7 @@ batched workflows continue. When `FALSE` errors are raised as
 Included for forward compatibility only.}
 }
 \value{
-When `output = "data.table"`, a `data.table` with columns `lng` and `lat`
+When `output = "tibble"`, a `tibble` with columns `lng` and `lat`
 is returned. The table preserves the input order and gains a `rate_limit`
 attribute containing any rate limit headers returned by the API. When
 `output` is `"JSON"` or `"XML"`, the parsed body is returned without

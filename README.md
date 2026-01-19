@@ -27,7 +27,7 @@ coverage](https://codecov.io/gh/womeimingzi11/amapGeocode/branch/master/graph/ba
 [博客](https://blog.washman.top/post/amapgeocode-%E4%BD%BF%E7%94%A8r%E8%BF%9B%E8%A1%8C%E9%AB%98%E5%BE%B7%E5%9C%B0%E5%9B%BE%E5%9C%B0%E7%90%86%E7%BC%96%E7%A0%81-%E9%80%86%E7%BC%96%E7%A0%81.zh-hans/)
 or [知乎](https://zhuanlan.zhihu.com/p/264281505)
 
-## Introduction <img src="man/figures/hexSticker-logo.png" align="right" width="100"/>
+## Introduction <img src="man/figures/hexSticker-logo.png" align="right" width="100" alt="amapGeocode hex sticker"/>
 
 Geocoding and Reverse Geocoding Services are widely used to provide data
 about coordinate and location information, including longitude,
@@ -49,12 +49,12 @@ name as an input, while the other one is `getLocation()` which needs two
 numeric longitude and latitude values as inputs.
 
 The `getCoord()` function extracts coordinate information from input
-character location name and outputs the results as `data.table`, `XML`
-or `JSON (as list)`. And the `getLocation()` function extracts location
+character location name and outputs the results as `tibble`, `XML` or
+`JSON (as list)`. And the `getLocation()` function extracts location
 information from input numeric longitude and latitude values and outputs
-the results as `data.table`, `XML` or `JSON (as list)`. With the
-`data.table` format as output, it’s highly readable and can be used as
-an alternative of `data.frame`
+the results as `tibble`, `XML` or `JSON (as list)`. With the `tibble`
+format as output, it’s highly readable and can be used as an alternative
+of `data.frame`
 
 amapGeocode is inspired by
 [baidumap](https://github.com/badbye/baidumap) and
@@ -137,8 +137,8 @@ getCoord("四川省博物馆", mode = "all")
 
 The responses we get from **AutoNavi Map API** is **JSON** or **XML**.
 For readability, we transform them to
-[`data.table`](https://CRAN.R-project.org/package=data.table), by
-setting `output` argument as `data.table` by default.
+[`tibble`](https://CRAN.R-project.org/package=tibble), by setting
+`output` argument as `tibble` by default.
 
 If you want to extract information from **JSON** or **XML**. The results
 can further be parsed by `extractCoord`.
@@ -211,7 +211,7 @@ res
 #> [1] "省"
 ```
 
-`extractCoord` is created to get a result as a data.table.
+`extractCoord` is created to get a result as a tibble.
 
 ``` r
 tb <- extractCoord(res)
@@ -244,19 +244,18 @@ getLocation(103.9960, 30.6475,
            details = c("pois", "roads", "roadinters", "aois"))
 ```
 
-`extractLocation` is created to get a result as a data.table.
+`extractLocation` is created to get a result as a tibble.
 
 ### Get Subordinate Administrative Region
 
 get results of reverse geocoding, by `getAdmin` function.
 
 There is a difference between getAdmin and other function, no matter the
-`output` argument is `data.table` or not, the result won’t be a jointed
+`output` argument is `tibble` or not, the result won’t be a jointed
 table by different parent administrative region. For example, with the
-`output = data.table`, all the lower level administrative region of
-Province A and Province B will be bound as one data.table, respectively.
-But the table of province A and table of province B won’t be bound
-further.
+`output = tibble`, all the lower level administrative region of Province
+A and Province B will be bound as one tibble, respectively. But the
+table of province A and table of province B won’t be bound further.
 
 Because this function supports different administrative region levels,
 it is nonsense to bind their results.
@@ -349,7 +348,7 @@ knitr::kable(res)
 |---------:|--------:|
 | 103.9983 | 30.6449 |
 
-`extractConvertCoord` is created to get result as data.table.
+`extractConvertCoord` is created to get result as tibble.
 
 ### Request signing
 

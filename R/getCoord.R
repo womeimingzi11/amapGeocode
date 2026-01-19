@@ -13,7 +13,7 @@
 #' Digital signature supplied manually. Most users should instead enable
 #' automatic signing via [with_amap_signature()] or [amap_config()].
 #' @param output Optional.
-#' Output data structure. Supported values are `"data.table"` (default),
+#' Output data structure. Supported values are `"tibble"` (default),
 #' `"JSON"`, and `"XML"`.
 #' @param callback Optional.
 #' JSONP callback. When supplied the raw body is returned as a character
@@ -33,7 +33,7 @@
 #' Included for forward compatibility only.
 #'
 #' @return
-#' When `output = "data.table"`, a `data.table` containing geocode results is
+#' When `output = "tibble"`, a `tibble` containing geocode results is
 #' returned. The table preserves the input order and gains a
 #' `rate_limit` attribute containing any rate limit headers returned by the API.
 #' When `mode = "all"`, additional metadata columns (`query`, `query_index`,
@@ -61,7 +61,7 @@ getCoord <- function(address,
                      key = NULL,
                      city = NULL,
                      sig = NULL,
-                     output = "data.table",
+                     output = "tibble",
                      callback = NULL,
                      keep_bad_request = TRUE,
                      mode = c("best", "all"),
@@ -69,14 +69,14 @@ getCoord <- function(address,
                      ...) {
   mode <- match.arg(mode)
   if (missing(address) || length(address) == 0) {
-    return(data.table::data.table())
+    return(tibble::tibble())
   }
 
   output_upper <- toupper(output)
   addresses <- as.character(address)
 
-  if (output_upper != "DATA.TABLE") {
-    return(getCoord_raw(addresses,
+  if (output_upper != "TIBBLE") {
+    return(get_coord_raw(addresses,
                         key = key,
                         city = city,
                         sig = sig,
@@ -151,12 +151,12 @@ getCoord <- function(address,
     }
   }
 
-  combined <- data.table::rbindlist(rows, fill = TRUE)
+  combined <- dplyr::bind_rows(rows)
   if (!nrow(combined)) {
     return(geocode_finalize(combined, mode))
   }
 
-  combined <- combined[order(query_index, match_rank)]
+  combined <- combined |> dplyr::arrange(query_index, match_rank)
   result <- geocode_finalize(combined, mode)
 
   rate_limit <- Filter(Negate(is.null), rate_limits)
@@ -167,7 +167,7 @@ getCoord <- function(address,
   result
 }
 
-getCoord_raw <- function(address,
+get_coord_raw <- function(address,
                          key = NULL,
                          city = NULL,
                          sig = NULL,
@@ -221,7 +221,7 @@ getCoord_raw <- function(address,
 #' AutoNavi geocoding API.
 #'
 #' @return
-#' A `data.table` with one row per geocode candidate. The table contains the
+#' A `tibble` with one row per geocode candidate. The table contains the
 #' original columns provided by the API alongside a `match_rank` column that
 #' indicates the ordering reported by AutoNavi. When the response does not
 #' contain any matches a single placeholder row filled with `NA` values is
@@ -229,7 +229,7 @@ getCoord_raw <- function(address,
 #'
 #' @examples
 #' \\dontrun{
-#' raw <- getCoord("IFS Chengdu", output = "JSON")[[1]]
+#' raw <- getCoord("IFS Chengdu", output = "JSON")
 #' extractCoord(raw)
 #' }
 #'
@@ -239,15 +239,18 @@ extractCoord <- function(res) {
   parsed <- normalize_geocode_response(res)
   status <- parsed$status %||% parsed$Status
   if (!is.null(status) && !identical(as.character(status), "1")) {
-    stop(parsed$info %||% parsed$message %||% "AutoNavi API request failed", call. = FALSE)
+    rlang::abort(parsed$info %||% parsed$message %||% "AutoNavi API request failed", call = NULL)
   }
   geocodes <- parsed$geocodes
   count <- suppressWarnings(as.integer(parsed$count))
   if (is.null(geocodes) || length(geocodes) == 0 || isTRUE(count == 0)) {
-    return(geocode_placeholder(1L, NA_integer_, NA_character_)[, `:=`(query = NULL, query_index = NULL)])
+    out <- geocode_placeholder(1L, NA_integer_, NA_character_)
+    out$query <- NULL
+    out$query_index <- NULL
+    return(out)
   }
   rows <- lapply(seq_along(geocodes), function(i) geocode_entry_to_dt(geocodes[[i]], match_rank = i))
-  data.table::rbindlist(rows, fill = TRUE)
+  dplyr::bind_rows(rows)
 }
 
 normalize_geocode_response <- function(res) {
@@ -262,7 +265,7 @@ normalize_geocode_response <- function(res) {
 
 geocode_entry_to_dt <- function(entry, match_rank) {
   row <- geocode_template(1L)
-  row[, match_rank := match_rank]
+  row$match_rank <- match_rank
   if (is.null(entry)) {
     return(row)
   }
@@ -271,7 +274,7 @@ geocode_entry_to_dt <- function(entry, match_rank) {
   neighborhood_val <- entry$neighborhood %||% list()
   building_val <- entry$building %||% list()
   
-  row[, `:=`(
+  dplyr::mutate(row,
     lng = coords[[1L]],
     lat = coords[[2L]],
     formatted_address = scalar_or_na(entry$formatted_address),
@@ -291,12 +294,11 @@ geocode_entry_to_dt <- function(entry, match_rank) {
     building = scalar_or_na(building_val$name),
     building_type = scalar_or_na(building_val$type),
     location = location
-  )]
-  row
+  )
 }
 
 geocode_template <- function(n = 1L) {
-  data.table::data.table(
+  tibble::tibble(
     match_rank = rep(NA_integer_, n),
     lng = rep(NA_real_, n),
     lat = rep(NA_real_, n),
@@ -325,10 +327,10 @@ geocode_template <- function(n = 1L) {
 geocode_placeholder <- function(n = 1L, query_index = NA_integer_, query = NA_character_) {
   tbl <- geocode_template(n)
   if (!all(is.na(query))) {
-    tbl[, query := rep(query, length.out = n)]
+    tbl$query <- rep(query, length.out = n)
   }
   if (!all(is.na(query_index))) {
-    tbl[, query_index := rep(query_index, length.out = n)]
+    tbl$query_index <- rep(query_index, length.out = n)
   }
   tbl
 }
@@ -338,12 +340,13 @@ parse_single_geocode <- function(body, query, index) {
   geocodes <- parsed$geocodes
   if (is.null(geocodes) || length(geocodes) == 0) {
     out <- geocode_placeholder(1L, index, query)
-    out[, match_rank := 1L]
+    out$match_rank <- 1L
     return(out)
   }
   rows <- lapply(seq_along(geocodes), function(i) geocode_entry_to_dt(geocodes[[i]], match_rank = i))
-  tbl <- data.table::rbindlist(rows, fill = TRUE)
-  tbl[, `:=`(query = query, query_index = index)]
+  tbl <- dplyr::bind_rows(rows)
+  tbl$query <- query
+  tbl$query_index <- index
   tbl
 }
 
@@ -357,9 +360,10 @@ parse_batch_geocode <- function(body, queries, indices) {
   for (i in seq_along(indices)) {
     entry <- if (length(geocodes) >= i) geocodes[[i]] else NULL
     rows[[i]] <- geocode_entry_to_dt(entry, match_rank = 1L)
-    rows[[i]][, `:=`(query = queries[[i]], query_index = indices[[i]])]
+    rows[[i]]$query <- queries[[i]]
+    rows[[i]]$query_index <- indices[[i]]
   }
-  data.table::rbindlist(rows, fill = TRUE)
+  dplyr::bind_rows(rows)
 }
 
 geocode_finalize <- function(tbl, mode) {
@@ -373,20 +377,20 @@ geocode_finalize <- function(tbl, mode) {
     "building", "building_type", "location"
   )
   if (!nrow(tbl)) {
-    return(tbl[, ..base_cols])
+    return(dplyr::select(tbl, dplyr::all_of(base_cols)))
   }
   if (identical(mode, "best")) {
-    best <- tbl[, .SD[1L], by = query_index]
-    best <- best[order(query_index)]
+    best <- dplyr::ungroup(dplyr::slice(dplyr::group_by(tbl, query_index), 1L))
+    best <- dplyr::arrange(best, query_index)
     keep <- intersect(c(base_cols, extra_cols), names(best))
     if (length(keep)) {
-      best <- best[, ..keep]
+      best <- dplyr::select(best, dplyr::all_of(keep))
     }
-    return(best[, ..base_cols])
+    return(dplyr::select(best, dplyr::all_of(base_cols)))
   }
   ordered_cols <- c("query", "query_index", "match_rank", base_cols, extra_cols)
   present <- intersect(ordered_cols, names(tbl))
-  tbl[, match_rank := ifelse(is.na(match_rank), 1L, match_rank)]
-  data.table::setorder(tbl, query_index, match_rank)
-  tbl[, ..present]
+  tbl <- dplyr::mutate(tbl, match_rank = ifelse(is.na(match_rank), 1L, match_rank))
+  tbl <- dplyr::arrange(tbl, query_index, match_rank)
+  dplyr::select(tbl, dplyr::all_of(present))
 }

@@ -13,7 +13,7 @@ getAdmin(
   extensions = NULL,
   filter = NULL,
   callback = NULL,
-  output = "data.table",
+  output = "tibble",
   keep_bad_request = TRUE,
   include_polyline = FALSE,
   ...
@@ -46,7 +46,7 @@ Filter by designated administrative divisions (adcode).}
 JSONP callback. When supplied, the raw response string is returned.}
 
 \item{output}{Optional.
-Output data structure. Supported values are `"data.table"` (default),
+Output data structure. Supported values are `"tibble"` (default),
 `"JSON"`, and `"XML"`.}
 
 \item{keep_bad_request}{Optional.
@@ -62,7 +62,7 @@ polyline strings are included in the parsed output.}
 Included for forward compatibility only.}
 }
 \value{
-When `output = "data.table"`, a `data.table` containing administrative
+When `output = "tibble"`, a `tibble` containing administrative
 region details is returned. The table preserves the input order and includes
 parent metadata (`parent_name`, `parent_adcode`, `parent_level`) and a `depth`
 column describing the nesting level. A `rate_limit` attribute is attached when

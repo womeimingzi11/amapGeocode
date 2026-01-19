@@ -1,13 +1,12 @@
 ## Test environments
-* local R installation, R 4.0.5
-* win-builder (R 4.0.5)
+* local R installation, R 4.5.0
+* win-builder (devel)
 
 ## R CMD check results
 
 0 errors | 0 warnings | 0 note
 
-* An upgrade:
-
-  1. Merge `to_tb` and `output` argument
-  2. Improve the implement of parallel requests
-  3. Replace `parallel` with `future`
+## Changes
+* Switch default tabular output to tibble across the API.
+* Align documentation, examples, and pkgdown site with tibble outputs.
+* Modernize internal helpers and error handling for CRAN readiness.

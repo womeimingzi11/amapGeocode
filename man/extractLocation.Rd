@@ -17,7 +17,7 @@ list-columns. Valid values are `"pois"`, `"roads"`, `"roadinters"`, and
 `"aois"`. Use `"all"` to include every detail payload.}
 }
 \value{
-A `data.table` describing the parsed reverse-geocode results. Each row
+A `tibble` describing the parsed reverse-geocode results. Each row
 corresponds to an element in the API response. When no data is present a
 single placeholder row filled with `NA` values is returned.
 }

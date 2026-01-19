@@ -2,7 +2,7 @@
 
 ## Project Overview
 `amapGeocode` is an R package that provides an interface to the AutoNavi Maps (Amap) API for geocoding and reverse geocoding.
-It prioritizes performance and reliability using `httr2` for robust HTTP requests and `data.table` for efficient data manipulation.
+It prioritizes performance and reliability using `httr2` for robust HTTP requests and `tibble` for tidy data manipulation.
 
 ## Development Tools
 - **Language**: R (>= 4.1.0)
@@ -71,14 +71,14 @@ It prioritizes performance and reliability using `httr2` for robust HTTP request
 - **Variables**: `snake_case`.
 
 ### Data Handling
-- **data.table**: This is the primary data structure.
-  - Use `data.table::rbindlist` for combining results.
-  - Use `data.table` syntax for filtering/ordering.
-  - Ensure `output = "data.table"` is the default behavior.
+- **tibble**: This is the primary data structure.
+  - Use `dplyr::bind_rows` for combining results.
+  - Use `dplyr::arrange`/`dplyr::select` for ordering and column selection.
+  - Ensure `output = "tibble"` is the default behavior.
 
 ### Imports & Namespaces
 - **Explicit Calls**: Use `package::function()` for imported dependencies (e.g., `rlang::inform`, `jsonlite::fromJSON`).
-- **Exceptions**: Heavily used packages (like `data.table` internals) may be imported in `NAMESPACE` if absolutely necessary, but explicit is preferred to avoid conflicts.
+- **Exceptions**: If you add many tidyverse helpers, consider adding explicit imports in `NAMESPACE` to reduce `::` noise.
 
 ### Error Handling & Logging
 - **API Errors**: Use `tryCatch` to handle API failures gracefully.

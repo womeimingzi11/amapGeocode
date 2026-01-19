@@ -6,16 +6,16 @@ http_interactions:
     status: 200
     headers:
       Server: Tengine
-      Date: Mon, 19 Jan 2026 01:29:33 GMT
+      Date: Mon, 19 Jan 2026 01:52:42 GMT
       Content-Type: application/json;charset=UTF-8
       Content-Length: '92'
       Connection: close
-      gsid: 033060253071176878617309900045140730135
-      sc: '0.004'
+      gsid: 033043206254176878756200200086460753106
+      sc: '0.003'
       Access-Control-Allow-Origin: '*'
       Access-Control-Allow-Methods: '*'
       Access-Control-Allow-Headers: DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,key,x-biz,x-info,platinfo,encr,enginever,gzipped,poiid
     body:
       string: '{"status":"1","info":"ok","infocode":"10000","locations":"116.487585177952,39.991754014757"}'
-  recorded_at: 2026-01-19 01:29:32
+  recorded_at: 2026-01-19 01:52:41
 recorded_with: VCR-vcr/2.1.0

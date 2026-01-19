@@ -19,7 +19,7 @@
 #' Manual digital signature. Most workflows can enable automatic signing via
 #' [with_amap_signature()] or [amap_config()].
 #' @param output Optional.
-#' Output format. Supported values are `"data.table"` (default), `"JSON"`,
+#' Output format. Supported values are `"tibble"` (default), `"JSON"`,
 #' and `"XML"`.
 #' @param callback Optional.
 #' JSONP callback. When supplied the raw response string is returned.
@@ -42,11 +42,11 @@
 #' Included for forward compatibility only.
 #'
 #' @return
-#' When `output = "data.table"`, a `data.table` with one row per coordinate is
+#' When `output = "tibble"`, a `tibble` with one row per coordinate is
 #' returned. The table preserves the input order and gains a `rate_limit`
 #' attribute containing any rate limit headers returned by the API. When
 #' `details` are requested, corresponding list-columns (`pois`, `roads`,
-#' `roadinters`, `aois`) contain nested `data.table` objects. When `output` is
+#' `roadinters`, `aois`) contain nested `tibble` objects. When `output` is
 #' `"JSON"` or `"XML"`, the parsed body is returned without further
 #' processing.
 #'
@@ -74,7 +74,7 @@ getLocation <- function(lng,
                         extensions = NULL,
                         roadlevel = NULL,
                         sig = NULL,
-                        output = "data.table",
+                        output = "tibble",
                         callback = NULL,
                         homeorcorp = 0,
                         keep_bad_request = TRUE,
@@ -82,14 +82,14 @@ getLocation <- function(lng,
                         details = NULL,
                         ...) {
   if (length(lng) != length(lat)) {
-    stop("The numbers of longitude and latitude values are mismatched", call. = FALSE)
+    rlang::abort("The numbers of longitude and latitude values are mismatched", call = NULL)
   }
   output_upper <- toupper(output)
   details <- normalize_location_details(details)
   coords <- num_coord_to_str_loc(lng, lat)
 
-  if (output_upper != "DATA.TABLE") {
-    return(getLocation_raw(
+  if (output_upper != "TIBBLE") {
+    return(get_location_raw(
       coords,
       key = key,
       poitype = poitype,
@@ -144,11 +144,9 @@ getLocation <- function(lng,
       resp <- perform_request(query, key, chunk_size = length(idx))
       if (inherits(resp, "amap_request_error")) {
         rows[[length(rows) + 1L]] <- location_placeholder(length(idx), details)
-        rows[[length(rows)]][, `:=`(
-          query_index = query_index[idx],
-          query_lng = lng[idx],
-          query_lat = lat[idx]
-        )]
+        rows[[length(rows)]]$query_index <- query_index[idx]
+        rows[[length(rows)]]$query_lng <- lng[idx]
+        rows[[length(rows)]]$query_lat <- lat[idx]
         next
       }
       rate_limits[[length(rate_limits) + 1L]] <- attr(resp, "rate_limit")
@@ -175,7 +173,9 @@ getLocation <- function(lng,
       resp <- perform_request(query, key)
       if (inherits(resp, "amap_request_error")) {
         rows[[length(rows) + 1L]] <- location_placeholder(1L, details)
-        rows[[length(rows)]][, `:=`(query_index = i, query_lng = lng[[i]], query_lat = lat[[i]])]
+        rows[[length(rows)]]$query_index <- i
+        rows[[length(rows)]]$query_lng <- lng[[i]]
+        rows[[length(rows)]]$query_lat <- lat[[i]]
         next
       }
       rate_limits[[length(rate_limits) + 1L]] <- attr(resp, "rate_limit")
@@ -189,22 +189,22 @@ getLocation <- function(lng,
     }
   }
 
-  combined <- data.table::rbindlist(rows, fill = TRUE)
+  combined <- dplyr::bind_rows(rows)
   if (!nrow(combined)) {
     return(location_finalize(combined, details))
   }
-  combined <- combined[order(query_index)]
+  combined <- combined |> dplyr::arrange(query_index)
   result <- location_finalize(combined, details)
 
   rate_limit <- Filter(Negate(is.null), rate_limits)
   if (length(rate_limit)) {
     attr(result, "rate_limit") <- rate_limit[[length(rate_limit)]]
   }
-  attr(result, "query") <- data.frame(lng = lng, lat = lat)
+  attr(result, "query") <- tibble::tibble(lng = lng, lat = lat)
   result
 }
 
-getLocation_raw <- function(coords,
+get_location_raw <- function(coords,
                             key = NULL,
                             poitype = NULL,
                             radius = NULL,
@@ -263,7 +263,7 @@ getLocation_raw <- function(coords,
 #' `"aois"`. Use `"all"` to include every detail payload.
 #'
 #' @return
-#' A `data.table` describing the parsed reverse-geocode results. Each row
+#' A `tibble` describing the parsed reverse-geocode results. Each row
 #' corresponds to an element in the API response. When no data is present a
 #' single placeholder row filled with `NA` values is returned.
 #'
@@ -280,14 +280,14 @@ extractLocation <- function(res, details = NULL) {
   entries <- location_entries_from_body(res)
   if (!length(entries)) {
     out <- location_placeholder(1L, details)
-    out[, c("query_index", "query_lng", "query_lat") := NULL]
+    out <- dplyr::select(out, -query_index, -query_lng, -query_lat)
     return(out)
   }
   rows <- lapply(entries, function(entry) location_entry_to_dt(entry, details = details))
-  tbl <- data.table::rbindlist(rows, fill = TRUE)
+  tbl <- dplyr::bind_rows(rows)
   drop <- intersect(c("query_index", "query_lng", "query_lat"), names(tbl))
   if (length(drop)) {
-    tbl[, (drop) := NULL]
+    tbl <- dplyr::select(tbl, -dplyr::all_of(drop))
   }
   tbl
 }
@@ -303,7 +303,7 @@ normalize_location_details <- function(details) {
   valid <- c("pois", "roads", "roadinters", "aois")
   invalid <- setdiff(details, valid)
   if (length(invalid)) {
-    stop(sprintf("Unknown detail type(s): %s", paste(invalid, collapse = ", ")), call. = FALSE)
+    rlang::abort(sprintf("Unknown detail type(s): %s", paste(invalid, collapse = ", ")), call = NULL)
   }
   unique(intersect(details, valid))
 }
@@ -331,12 +331,16 @@ parse_single_location <- function(body, lng, lat, index, details) {
   entries <- location_entries_from_body(body)
   if (!length(entries)) {
     out <- location_placeholder(1L, details)
-    out[, `:=`(query_index = index, query_lng = lng, query_lat = lat)]
+    out$query_index <- index
+    out$query_lng <- lng
+    out$query_lat <- lat
     return(out)
   }
   rows <- lapply(entries, function(entry) location_entry_to_dt(entry, details = details))
-  tbl <- data.table::rbindlist(rows, fill = TRUE)
-  tbl[, `:=`(query_index = index, query_lng = lng, query_lat = lat)]
+  tbl <- dplyr::bind_rows(rows)
+  tbl$query_index <- index
+  tbl$query_lng <- lng
+  tbl$query_lat <- lat
   tbl
 }
 
@@ -346,9 +350,11 @@ parse_batch_location <- function(body, coords, lng, lat, indices, details) {
   for (i in seq_along(indices)) {
     entry <- if (length(entries) >= i) entries[[i]] else NULL
     rows[[i]] <- location_entry_to_dt(entry, details = details)
-    rows[[i]][, `:=`(query_index = indices[[i]], query_lng = lng[[i]], query_lat = lat[[i]])]
+    rows[[i]]$query_index <- indices[[i]]
+    rows[[i]]$query_lng <- lng[[i]]
+    rows[[i]]$query_lat <- lat[[i]]
   }
-  data.table::rbindlist(rows, fill = TRUE)
+  dplyr::bind_rows(rows)
 }
 
 location_finalize <- function(tbl, details) {
@@ -359,16 +365,16 @@ location_finalize <- function(tbl, details) {
   )
   detail_cols <- intersect(c("pois", "roads", "roadinters", "aois"), details)
   if (!nrow(tbl)) {
-    result <- tbl[, c(base_cols, detail_cols, "query_index", "query_lng", "query_lat"), with = FALSE]
+    result <- dplyr::select(tbl, dplyr::all_of(c(base_cols, detail_cols, "query_index", "query_lng", "query_lat")))
   } else {
     ordered <- c("query_index", "query_lng", "query_lat", base_cols, detail_cols)
     present <- intersect(ordered, names(tbl))
-    data.table::setorder(tbl, query_index)
-    result <- tbl[, ..present]
+    tbl <- dplyr::arrange(tbl, query_index)
+    result <- dplyr::select(tbl, dplyr::all_of(present))
   }
   drop <- intersect(c("query_index", "query_lng", "query_lat"), names(result))
   if (length(drop)) {
-    result[, (drop) := NULL]
+    result <- dplyr::select(result, -dplyr::all_of(drop))
   }
   result
 }
@@ -379,7 +385,7 @@ location_placeholder <- function(n = 1L, details = character()) {
 }
 
 location_template <- function(n = 1L, details = character()) {
-  tbl <- data.table::data.table(
+  tbl <- tibble::tibble(
     formatted_address = rep(NA_character_, n),
     country = rep(NA_character_, n),
     province = rep(NA_character_, n),
@@ -398,16 +404,16 @@ location_template <- function(n = 1L, details = character()) {
     query_lat = rep(NA_real_, n)
   )
   if ("pois" %in% details) {
-    tbl[, pois := rep(list(empty_detail_table("pois")), n)]
+    tbl$pois <- rep(list(empty_detail_table("pois")), n)
   }
   if ("roads" %in% details) {
-    tbl[, roads := rep(list(empty_detail_table("roads")), n)]
+    tbl$roads <- rep(list(empty_detail_table("roads")), n)
   }
   if ("roadinters" %in% details) {
-    tbl[, roadinters := rep(list(empty_detail_table("roadinters")), n)]
+    tbl$roadinters <- rep(list(empty_detail_table("roadinters")), n)
   }
   if ("aois" %in% details) {
-    tbl[, aois := rep(list(empty_detail_table("aois")), n)]
+    tbl$aois <- rep(list(empty_detail_table("aois")), n)
   }
   tbl
 }
@@ -422,7 +428,7 @@ location_entry_to_dt <- function(entry, details = character()) {
   street_number <- address_component$streetNumber %||% list()
   neighborhood_val <- address_component$neighborhood %||% list()
   building_val <- address_component$building %||% list()
-  row[, `:=`(
+  row <- dplyr::mutate(row,
     formatted_address = formatted_address_val,
     country = scalar_or_na(address_component$country),
     province = scalar_or_na(address_component$province),
@@ -436,18 +442,18 @@ location_entry_to_dt <- function(entry, details = character()) {
     number = scalar_or_na(street_number$number),
     neighborhood = scalar_or_na(neighborhood_val$name),
     building = scalar_or_na(building_val$name)
-  )]
+  )
   if ("pois" %in% details) {
-    row[, pois := list(list(detail_table(entry$pois, "pois")))]
+    row$pois <- list(detail_table(entry$pois, "pois"))
   }
   if ("roads" %in% details) {
-    row[, roads := list(list(detail_table(entry$roads, "roads")))]
+    row$roads <- list(detail_table(entry$roads, "roads"))
   }
   if ("roadinters" %in% details) {
-    row[, roadinters := list(list(detail_table(entry$roadinters, "roadinters")))]
+    row$roadinters <- list(detail_table(entry$roadinters, "roadinters"))
   }
   if ("aois" %in% details) {
-    row[, aois := list(list(detail_table(entry$aois, "aois")))]
+    row$aois <- list(detail_table(entry$aois, "aois"))
   }
   row
 }
@@ -455,13 +461,12 @@ location_entry_to_dt <- function(entry, details = character()) {
 empty_detail_table <- function(type) {
   fields <- location_detail_fields()[[type]]
   if (is.null(fields)) {
-    return(data.table::data.table())
+    return(tibble::tibble())
   }
   empty <- rep(list(character()), length(fields))
   names(empty) <- fields
-  dt <- data.table::as.data.table(empty)
-  data.table::setnames(dt, fields)
-  dt[0]
+  dt <- tibble::as_tibble(empty)
+  dplyr::slice(dt, 0)
 }
 
 detail_table <- function(items, type) {
@@ -471,9 +476,9 @@ detail_table <- function(items, type) {
   }
   rows <- lapply(items, function(item) {
     values <- lapply(fields, function(field) scalar_or_na(item[[field]]))
-    data.table::as.data.table(as.list(stats::setNames(values, fields)))
+    tibble::as_tibble(as.list(rlang::set_names(values, fields)))
   })
-  data.table::rbindlist(rows, fill = TRUE)
+  dplyr::bind_rows(rows)
 }
 
 location_detail_fields <- function() {

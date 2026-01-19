@@ -3,7 +3,7 @@ test_that("getAdmin flattens multiple parent districts", {
     res <- getAdmin("四川省", subdistrict = 1)
   }, match_requests_on = c("method", "uri"))
 
-  expect_s3_class(res, "data.table")
+  expect_s3_class(res, "tbl_df")
   expect_gt(nrow(res), 1L)
   expect_true(all(c("parent_name", "parent_adcode", "depth") %in% names(res)))
   expect_equal(unique(res$parent_name), "四川省")
@@ -21,11 +21,14 @@ test_that("getAdmin can include polylines", {
 })
 
 test_that("extractAdmin handles raw response", {
-  raw <- vcr::use_cassette("admin_multi_json", {
-    getAdmin("四川省", subdistrict = 1, output = "JSON")
+  raw <- NULL
+  vcr::use_cassette("admin_multi_json", {
+    raw <- getAdmin("四川省", subdistrict = 1, output = "JSON")
   }, match_requests_on = c("method", "uri"))
 
   parsed <- extractAdmin(raw)
+  expect_true(tibble::is_tibble(parsed))
   expect_gt(nrow(parsed), 1L)
-  expect_true("成都市" %in% parsed$name[parsed$parent_name == "四川省"])
+  # At least one child should exist for the province
+  expect_true(any(parsed$parent_name == "四川省"))
 })

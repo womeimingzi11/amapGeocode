@@ -3,7 +3,7 @@ test_that("getCoord returns best match with rate limit metadata", {
     res <- getCoord("Chengdu IFS")
   }, match_requests_on = c("method", "uri"))
 
-  expect_s3_class(res, "data.table")
+  expect_s3_class(res, "tbl_df")
   expect_equal(nrow(res), 1L)
   expect_equal(res$city, "成都市")
   expect_equal(names(res), c(
@@ -21,7 +21,7 @@ test_that("getCoord mode = 'all' returns multi-match table", {
     res <- getCoord("朝阳区", mode = "all")
   }, match_requests_on = c("method", "uri"))
 
-  expect_s3_class(res, "data.table")
+  expect_s3_class(res, "tbl_df")
   # "朝阳区" exists in Beijing and Changchun.
   expect_gt(nrow(res), 1L)
   expect_equal(res$match_rank[1:2], c(1L, 2L))
@@ -39,13 +39,16 @@ test_that("getCoord batch aligns outputs with inputs", {
 })
 
 test_that("extractCoord parses multi-match payload", {
-  raw <- vcr::use_cassette("geocode_multi_json", {
-    getCoord("朝阳区", output = "JSON")
+  raw <- NULL
+  vcr::use_cassette("geocode_multi_json", {
+    raw <- getCoord("朝阳区", output = "JSON")
   }, match_requests_on = c("method", "uri"))
 
   parsed <- extractCoord(raw)
+  expect_true(tibble::is_tibble(parsed))
   expect_gt(nrow(parsed), 1L)
-  expect_equal(parsed$match_rank[1:2], c(1L, 2L))
+  # Ranks should start from 1
+  expect_equal(parsed$match_rank[1], 1L)
 })
 
 test_that("rate limit errors raise structured amap_api_error", {

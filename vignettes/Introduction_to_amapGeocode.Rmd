@@ -21,7 +21,7 @@ Geocoding and Reverse Geocoding Services are widely used to provide data about c
 
 amapGeocode is built to provide high precise geocoding and reverse geocoding service which powered by AutoNavi Map API service. Here are two main functions to use are `getCoord()` which takes a character location name as an input and `getLocation()` which takes two numeric longitude and latitude values as inputs.
 
-The `getCoord()` function extracts coordinate information from input character location name and output the result as `data.table`, `XML` or `JSON (as list)`. And the `getLocation()` function extracts location information from input numeric longitude and latitude values and output the result as `tibble`, `XML` or `JSON (as list)`. With the `tibble` format as output, it's highly readable and easy to be used to `tidy` workflow.
+The `getCoord()` function extracts coordinate information from input character location name and output the result as `tibble`, `XML` or `JSON (as list)`. And the `getLocation()` function extracts location information from input numeric longitude and latitude values and output the result as `tibble`, `XML` or `JSON (as list)`. With the `tibble` format as output, it's highly readable and easy to be used to `tidy` workflow.
 
 ## Usage
 ### Geocoding
@@ -40,17 +40,17 @@ res <-
 knitr::kable(res)
 ```
 
-The response we get from **AutoNavi Map API** is **JSON** or **XML**. For readability, we transform them to [`data.table`](https://CRAN.R-project.org/package=data.table), by setting `to_table` argument as `TRUE` by default.
+The response we get from **AutoNavi Map API** is **JSON** or **XML**. For readability, we transform them to [`tibble`](https://CRAN.R-project.org/package=tibble), by setting `output` argument as `tibble` by default.
 
-If anyone want to get response as **JSON** or **XML**, just set `to_table = FALSE`. If anyone want to extract information from **JSON** or **XML**. The result can further be parsed by `extractCoord`.
+If anyone want to get response as **JSON** or **XML**, just set `output = "JSON"` or `output = "XML"`. If anyone want to extract information from **JSON** or **XML**, the result can further be parsed by `extractCoord`.
 
 ```r
 res <-
-  getCoord('四川省博物馆', output = 'XML',to_table = FALSE)
+  getCoord('四川省博物馆', output = 'XML')
 res
 ```
 
-`extractCoord` is created to get result as a data.table.
+`extractCoord` is created to get result as a tibble.
 
 ```r
 res
@@ -70,11 +70,11 @@ knitr::kable(res)
 
 ```r
 res <-
-   getLocation(104.0339, 30.66069, output = 'XML',to_table = FALSE)
+   getLocation(104.0339, 30.66069, output = 'XML')
 res
 ```
 
-`extractLocation` is created to get result as a data.table.
+`extractLocation` is created to get result as a tibble.
 
 ```r
 tb <- 
@@ -94,11 +94,11 @@ knitr::kable(res)
 
 ```r
 res <-
-   getAdmin('四川省', output = 'XML', to_table = FALSE)
+   getAdmin('四川省', output = 'XML')
 res
 ```
 
-`extractAdmin` is created to get result as a data.table.
+`extractAdmin` is created to get result as a tibble.
 
 ```r
 res
@@ -119,11 +119,11 @@ knitr::kable(res)
 
 ```r
 res <-
-  convertCoord('116.481499,39.990475',coordsys = 'gps', to_table = FALSE)
+  convertCoord('116.481499,39.990475',coordsys = 'gps', output = 'JSON')
 res
 ```
 
-`extractConvertCoord` is created to get result as a data.table.
+`extractConvertCoord` is created to get result as a tibble.
 
 ```r
 tb <- 

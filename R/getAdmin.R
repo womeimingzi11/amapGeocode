@@ -18,7 +18,7 @@
 #' @param callback Optional.
 #' JSONP callback. When supplied, the raw response string is returned.
 #' @param output Optional.
-#' Output data structure. Supported values are `"data.table"` (default),
+#' Output data structure. Supported values are `"tibble"` (default),
 #' `"JSON"`, and `"XML"`.
 #' @param keep_bad_request Optional.
 #' When `TRUE` (default) API errors are converted into placeholder rows so that
@@ -31,7 +31,7 @@
 #' Included for forward compatibility only.
 #'
 #' @return
-#' When `output = "data.table"`, a `data.table` containing administrative
+#' When `output = "tibble"`, a `tibble` containing administrative
 #' region details is returned. The table preserves the input order and includes
 #' parent metadata (`parent_name`, `parent_adcode`, `parent_level`) and a `depth`
 #' column describing the nesting level. A `rate_limit` attribute is attached when
@@ -57,15 +57,15 @@ getAdmin <- function(keywords,
                      extensions = NULL,
                      filter = NULL,
                      callback = NULL,
-                     output = "data.table",
+                     output = "tibble",
                      keep_bad_request = TRUE,
                      include_polyline = FALSE,
                      ...) {
   keywords <- as.character(keywords)
   output_upper <- toupper(output)
 
-  if (output_upper != "DATA.TABLE") {
-    return(getAdmin_raw(
+  if (output_upper != "TIBBLE") {
+    return(get_admin_raw(
       keywords,
       key = key,
       subdistrict = subdistrict,
@@ -115,22 +115,24 @@ getAdmin <- function(keywords,
     resp <- perform_request(query, key)
     if (inherits(resp, "amap_request_error")) {
       placeholder <- admin_placeholder(include_polyline)
-      placeholder[, `:=`(query = keyword, query_index = i)]
+      placeholder$query <- keyword
+      placeholder$query_index <- i
       rows[[length(rows) + 1L]] <- placeholder
       next
     }
     rate_limits[[length(rate_limits) + 1L]] <- attr(resp, "rate_limit")
     parsed <- extractAdmin(resp$body, include_polyline = include_polyline)
-    parsed[, `:=`(query = keyword, query_index = i)]
+    parsed$query <- keyword
+    parsed$query_index <- i
     rows[[length(rows) + 1L]] <- parsed
   }
 
-  combined <- data.table::rbindlist(rows, fill = TRUE)
+  combined <- dplyr::bind_rows(rows)
   if (!nrow(combined)) {
     return(combined)
   }
-  data.table::setorder(combined, query_index, depth, parent_name, name)
-  combined[, query_index := NULL]
+  combined <- combined |> dplyr::arrange(query_index, depth, parent_name, name)
+  combined <- dplyr::select(combined, -query_index)
 
   rate_limit <- Filter(Negate(is.null), rate_limits)
   if (length(rate_limit)) {
@@ -140,7 +142,7 @@ getAdmin <- function(keywords,
   combined
 }
 
-getAdmin_raw <- function(keywords,
+get_admin_raw <- function(keywords,
                          key = NULL,
                          subdistrict = NULL,
                          page = NULL,
@@ -195,7 +197,7 @@ getAdmin_raw <- function(keywords,
 #' column (requires `extensions = "all"`). Defaults to `FALSE`.
 #'
 #' @return
-#' A `data.table` describing each administrative region present in the response.
+#' A `tibble` describing each administrative region present in the response.
 #' The table includes parent metadata (`parent_name`, `parent_adcode`,
 #' `parent_level`), centre coordinates (`lng`, `lat`), and a `depth` column
 #' describing the nesting level (0 for the matched region, 1+ for subregions).
@@ -214,7 +216,7 @@ extractAdmin <- function(res, include_polyline = FALSE) {
   parsed <- normalize_admin_response(res)
   status <- parsed$status %||% parsed$Status
   if (!is.null(status) && !identical(as.character(status), "1")) {
-    stop(parsed$info %||% parsed$message %||% "AutoNavi API request failed", call. = FALSE)
+    rlang::abort(parsed$info %||% parsed$message %||% "AutoNavi API request failed", call = NULL)
   }
   districts <- parsed$districts
   if (is.null(districts) || length(districts) == 0) {
@@ -224,13 +226,13 @@ extractAdmin <- function(res, include_polyline = FALSE) {
   if (!length(rows)) {
     return(admin_placeholder(include_polyline))
   }
-  tbl <- data.table::rbindlist(rows, fill = TRUE)
-  child_rows <- tbl[depth > 0]
-  if (nrow(child_rows)) {
-    tbl <- child_rows
+  tbl <- dplyr::bind_rows(rows)
+  # When depth > 0 rows exist, return only those (subordinate regions).
+  # Otherwise return the matched region itself (depth 0).
+  if (any(tbl$depth > 0)) {
+    tbl <- dplyr::filter(tbl, depth > 0)
   }
-  data.table::setcolorder(tbl, admin_column_order(include_polyline))
-  tbl
+  dplyr::select(tbl, dplyr::all_of(admin_column_order(include_polyline)))
 }
 
 normalize_admin_response <- function(res) {
@@ -284,7 +286,7 @@ admin_placeholder <- function(include_polyline = FALSE) {
   empty[["lng"]] <- NA_real_
   empty[["lat"]] <- NA_real_
   empty[["depth"]] <- 0L
-  data.table::as.data.table(empty)
+  tibble::as_tibble(empty)
 }
 
 admin_column_order <- function(include_polyline = FALSE) {

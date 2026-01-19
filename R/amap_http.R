@@ -9,7 +9,7 @@
 }
 
 scalar_or_na <- function(x) {
-  if (is.null(x) || sjmisc::is_empty(x)) {
+  if (is.null(x) || rlang::is_empty(x)) {
     return(NA_character_)
   }
   value <- x[[1L]]
@@ -230,7 +230,7 @@ amap_request <- function(endpoint,
   key <- amap_get_key(key)
   query <- amap_compact(query)
   query$key <- key
-  if (!is.null(output) && !identical(output, "data.table")) {
+  if (!is.null(output) && !identical(output, "tibble")) {
     query$output <- output
   }
   if (!is.null(callback)) {

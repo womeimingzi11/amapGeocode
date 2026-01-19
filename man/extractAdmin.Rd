@@ -15,7 +15,7 @@ AutoNavi district API.}
 column (requires `extensions = "all"`). Defaults to `FALSE`.}
 }
 \value{
-A `data.table` describing each administrative region present in the response.
+A `tibble` describing each administrative region present in the response.
 The table includes parent metadata (`parent_name`, `parent_adcode`,
 `parent_level`), centre coordinates (`lng`, `lat`), and a `depth` column
 describing the nesting level (0 for the matched region, 1+ for subregions).
