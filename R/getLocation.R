@@ -32,7 +32,11 @@
 #' `amap_api_error` conditions.
 #' @param batch Optional.
 #' When `TRUE`, requests are chunked into groups of ten coordinates using the
-#' API's batch mode. Defaults to `FALSE` for backwards compatibility.
+#' API's batch mode.
+#'
+#' Bulk requests are executed with `httr2::req_perform_parallel()` (curl multi;
+#' no additional R sessions) and are protected by throttling configured via
+#' [amap_config()].
 #' @param details Optional.
 #' Character vector describing which extended list-columns to include in the
 #' parsed output. Supported values are `"pois"`, `"roads"`, `"roadinters"`,
@@ -108,30 +112,23 @@ getLocation <- function(lng,
   rate_limits <- list()
   query_index <- seq_along(coords)
 
-  perform_request <- function(query, key, chunk_size = 1L) {
-    tryCatch(
-      amap_request(
-        endpoint = "geocode/regeo",
-        query = query,
-        key = key,
-        output = NULL,
-        callback = callback
-      ),
-      amap_api_error = function(err) {
-        if (isTRUE(keep_bad_request)) {
-          structure(list(error = err, chunk_size = chunk_size), class = "amap_request_error")
-        } else {
-          rlang::cnd_signal(err)
-        }
-      }
+  max_active <- getOption("amap_max_active", 3)
+
+  build_prepared <- function(query) {
+    amap_prepare_request(
+      endpoint = "geocode/regeo",
+      query = query,
+      key = key,
+      output = NULL,
+      callback = callback
     )
   }
 
   if (isTRUE(batch) && length(coords) > 1L) {
     indices <- split(seq_along(coords), ceiling(seq_along(coords) / 10))
-    for (idx in indices) {
+    batch_queries <- lapply(indices, function(idx) {
       chunk_coords <- coords[idx]
-      query <- list(
+      list(
         location = paste(chunk_coords, collapse = "|"),
         batch = "true",
         poitype = poitype,
@@ -141,17 +138,63 @@ getLocation <- function(lng,
         sig = sig,
         homeorcorp = homeorcorp
       )
-      resp <- perform_request(query, key, chunk_size = length(idx))
-      if (inherits(resp, "amap_request_error")) {
+    })
+
+    prepared <- lapply(batch_queries, build_prepared)
+    reqs <- lapply(prepared, function(x) x$req)
+    resps <- httr2::req_perform_parallel(
+      reqs,
+      on_error = "return",
+      progress = FALSE,
+      max_active = max_active
+    )
+
+    for (i in seq_along(resps)) {
+      idx <- indices[[i]]
+      chunk_coords <- coords[idx]
+      prep <- prepared[[i]]
+      resp <- resps[[i]]
+
+      out <- tryCatch(
+        {
+          if (inherits(resp, "httr2_response")) {
+            amap_process_response(
+              resp = resp,
+              endpoint = prep$endpoint,
+              query = prep$query,
+              output = prep$output,
+              callback = prep$callback
+            )
+          } else {
+            rlang::abort("Request failed", parent = resp)
+          }
+        },
+        amap_api_error = function(err) {
+          if (isTRUE(keep_bad_request)) {
+            structure(list(error = err, chunk_size = length(idx)), class = "amap_request_error")
+          } else {
+            rlang::cnd_signal(err)
+          }
+        },
+        error = function(err) {
+          if (isTRUE(keep_bad_request)) {
+            structure(list(error = err, chunk_size = length(idx)), class = "amap_request_error")
+          } else {
+            rlang::abort("Request failed", parent = err)
+          }
+        }
+      )
+
+      if (inherits(out, "amap_request_error")) {
         rows[[length(rows) + 1L]] <- location_placeholder(length(idx), details)
         rows[[length(rows)]]$query_index <- query_index[idx]
         rows[[length(rows)]]$query_lng <- lng[idx]
         rows[[length(rows)]]$query_lat <- lat[idx]
         next
       }
-      rate_limits[[length(rate_limits) + 1L]] <- attr(resp, "rate_limit")
+      rate_limits[[length(rate_limits) + 1L]] <- attr(out, "rate_limit")
       rows[[length(rows) + 1L]] <- parse_batch_location(
-        resp$body,
+        out$body,
         coords = chunk_coords,
         lng = lng[idx],
         lat = lat[idx],
@@ -160,7 +203,7 @@ getLocation <- function(lng,
       )
     }
   } else {
-    for (i in seq_along(coords)) {
+    prepared <- lapply(seq_along(coords), function(i) {
       query <- list(
         location = coords[[i]],
         poitype = poitype,
@@ -170,17 +213,60 @@ getLocation <- function(lng,
         sig = sig,
         homeorcorp = homeorcorp
       )
-      resp <- perform_request(query, key)
-      if (inherits(resp, "amap_request_error")) {
+      build_prepared(query)
+    })
+    reqs <- lapply(prepared, function(x) x$req)
+    resps <- httr2::req_perform_parallel(
+      reqs,
+      on_error = "return",
+      progress = FALSE,
+      max_active = max_active
+    )
+
+    for (i in seq_along(resps)) {
+      prep <- prepared[[i]]
+      resp <- resps[[i]]
+
+      out <- tryCatch(
+        {
+          if (inherits(resp, "httr2_response")) {
+            amap_process_response(
+              resp = resp,
+              endpoint = prep$endpoint,
+              query = prep$query,
+              output = prep$output,
+              callback = prep$callback
+            )
+          } else {
+            rlang::abort("Request failed", parent = resp)
+          }
+        },
+        amap_api_error = function(err) {
+          if (isTRUE(keep_bad_request)) {
+            structure(list(error = err, chunk_size = 1L), class = "amap_request_error")
+          } else {
+            rlang::cnd_signal(err)
+          }
+        },
+        error = function(err) {
+          if (isTRUE(keep_bad_request)) {
+            structure(list(error = err, chunk_size = 1L), class = "amap_request_error")
+          } else {
+            rlang::abort("Request failed", parent = err)
+          }
+        }
+      )
+
+      if (inherits(out, "amap_request_error")) {
         rows[[length(rows) + 1L]] <- location_placeholder(1L, details)
         rows[[length(rows)]]$query_index <- i
         rows[[length(rows)]]$query_lng <- lng[[i]]
         rows[[length(rows)]]$query_lat <- lat[[i]]
         next
       }
-      rate_limits[[length(rate_limits) + 1L]] <- attr(resp, "rate_limit")
+      rate_limits[[length(rate_limits) + 1L]] <- attr(out, "rate_limit")
       rows[[length(rows) + 1L]] <- parse_single_location(
-        resp$body,
+        out$body,
         lng = lng[[i]],
         lat = lat[[i]],
         index = i,

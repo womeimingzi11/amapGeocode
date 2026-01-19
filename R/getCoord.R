@@ -28,7 +28,11 @@
 #' matches alongside ranking metadata.
 #' @param batch Optional.
 #' When `TRUE`, requests are chunked into groups of ten addresses using the
-#' API's batch mode. Defaults to `FALSE` for backwards compatibility.
+#' API's batch mode.
+#'
+#' Bulk requests are executed with `httr2::req_perform_parallel()` (curl multi;
+#' no additional R sessions) and are protected by throttling configured via
+#' [amap_config()].
 #' @param ... Optional.
 #' Included for forward compatibility only.
 #'
@@ -94,28 +98,21 @@ getCoord <- function(address,
   rate_limits <- list()
   query_index <- seq_along(addresses)
 
-  perform_request <- function(query, key, chunk_size = 1L) {
-    tryCatch(
-      amap_request(
-        endpoint = "geocode/geo",
-        query = query,
-        key = key,
-        output = NULL,
-        callback = callback
-      ),
-      amap_api_error = function(err) {
-        if (isTRUE(keep_bad_request)) {
-          structure(list(error = err, chunk_size = chunk_size), class = "amap_request_error")
-        } else {
-          rlang::cnd_signal(err)
-        }
-      }
+  max_active <- getOption("amap_max_active", 3)
+
+  build_prepared <- function(query) {
+    amap_prepare_request(
+      endpoint = "geocode/geo",
+      query = query,
+      key = key,
+      output = NULL,
+      callback = callback
     )
   }
 
   if (isTRUE(batch) && length(addresses) > 1L) {
     indices <- split(seq_along(addresses), ceiling(seq_along(addresses) / 10))
-    for (idx in indices) {
+    batch_queries <- lapply(indices, function(idx) {
       chunk_addresses <- addresses[idx]
       query <- list(
         address = paste(chunk_addresses, collapse = "|"),
@@ -125,29 +122,119 @@ getCoord <- function(address,
       if (!is.null(city) && length(city) == 1L) {
         query$city <- city
       }
-      resp <- perform_request(query, key, chunk_size = length(idx))
-      if (inherits(resp, "amap_request_error")) {
+      query
+    })
+
+    prepared <- lapply(batch_queries, build_prepared)
+    reqs <- lapply(prepared, function(x) x$req)
+    resps <- httr2::req_perform_parallel(
+      reqs,
+      on_error = "return",
+      progress = FALSE,
+      max_active = max_active
+    )
+
+    for (i in seq_along(resps)) {
+      idx <- indices[[i]]
+      chunk_addresses <- addresses[idx]
+      prep <- prepared[[i]]
+      resp <- resps[[i]]
+
+      out <- tryCatch(
+        {
+          if (inherits(resp, "httr2_response")) {
+            amap_process_response(
+              resp = resp,
+              endpoint = prep$endpoint,
+              query = prep$query,
+              output = prep$output,
+              callback = prep$callback
+            )
+          } else {
+            rlang::abort("Request failed", parent = resp)
+          }
+        },
+        amap_api_error = function(err) {
+          if (isTRUE(keep_bad_request)) {
+            structure(list(error = err, chunk_size = length(idx)), class = "amap_request_error")
+          } else {
+            rlang::cnd_signal(err)
+          }
+        },
+        error = function(err) {
+          if (isTRUE(keep_bad_request)) {
+            structure(list(error = err, chunk_size = length(idx)), class = "amap_request_error")
+          } else {
+            rlang::abort("Request failed", parent = err)
+          }
+        }
+      )
+
+      if (inherits(out, "amap_request_error")) {
         rows[[length(rows) + 1L]] <- geocode_placeholder(length(idx), query_index[idx], chunk_addresses)
         next
       }
-      rate_limits[[length(rate_limits) + 1L]] <- attr(resp, "rate_limit")
-      rows[[length(rows) + 1L]] <- parse_batch_geocode(resp$body, chunk_addresses, query_index[idx])
+      rate_limits[[length(rate_limits) + 1L]] <- attr(out, "rate_limit")
+      rows[[length(rows) + 1L]] <- parse_batch_geocode(out$body, chunk_addresses, query_index[idx])
     }
   } else {
-    for (i in seq_along(addresses)) {
+    prepared <- lapply(seq_along(addresses), function(i) {
       current_city <- if (length(city) > 1L) city[[i]] else city
       query <- list(
         address = addresses[[i]],
         city = current_city,
         sig = sig
       )
-      resp <- perform_request(query, key)
-      if (inherits(resp, "amap_request_error")) {
+      build_prepared(query)
+    })
+    reqs <- lapply(prepared, function(x) x$req)
+    resps <- httr2::req_perform_parallel(
+      reqs,
+      on_error = "return",
+      progress = FALSE,
+      max_active = max_active
+    )
+
+    for (i in seq_along(resps)) {
+      prep <- prepared[[i]]
+      resp <- resps[[i]]
+
+      out <- tryCatch(
+        {
+          if (inherits(resp, "httr2_response")) {
+            amap_process_response(
+              resp = resp,
+              endpoint = prep$endpoint,
+              query = prep$query,
+              output = prep$output,
+              callback = prep$callback
+            )
+          } else {
+            rlang::abort("Request failed", parent = resp)
+          }
+        },
+        amap_api_error = function(err) {
+          if (isTRUE(keep_bad_request)) {
+            structure(list(error = err, chunk_size = 1L), class = "amap_request_error")
+          } else {
+            rlang::cnd_signal(err)
+          }
+        },
+        error = function(err) {
+          if (isTRUE(keep_bad_request)) {
+            structure(list(error = err, chunk_size = 1L), class = "amap_request_error")
+          } else {
+            rlang::abort("Request failed", parent = err)
+          }
+        }
+      )
+
+      if (inherits(out, "amap_request_error")) {
         rows[[length(rows) + 1L]] <- geocode_placeholder(1L, i, addresses[[i]])
         next
       }
-      rate_limits[[length(rate_limits) + 1L]] <- attr(resp, "rate_limit")
-      rows[[length(rows) + 1L]] <- parse_single_geocode(resp$body, addresses[[i]], i)
+      rate_limits[[length(rate_limits) + 1L]] <- attr(out, "rate_limit")
+      rows[[length(rows) + 1L]] <- parse_single_geocode(out$body, addresses[[i]], i)
     }
   }
 

@@ -31,12 +31,19 @@ Before start geocoding and reverse geocoding, please apply a [AutoNavi Map API K
 options(amap_key = 'REPLACE THIS BY YOUR KEY')
 ```
 
-Then get result of geocoding, by `getCoord` function. 
+Then get result of geocoding, by `getCoord` function.
+
+For bulk workloads, amapGeocode uses curl-multi parallelism (via {httr2}) and
+applies safe defaults that respect AutoNavi's QPS limit (3 requests/second). You
+can tune concurrency/throttling with `amap_config()`.
 
 ```r
 library(amapGeocode)
-res <-
-  getCoord('四川省博物馆')
+
+# Defaults are safe, but you can set them explicitly
+amap_config(throttle = TRUE, max_active = 3)
+
+res <- getCoord('四川省博物馆')
 knitr::kable(res)
 ```
 
@@ -60,11 +67,13 @@ knitr::kable(tb)
 ```
 ### Reverse Geocoding
 
-get result of reverse geocoding, by `getLocation` function. 
+get result of reverse geocoding, by `getLocation` function.
 
 ```r
-res <- 
-  getLocation(104.043284, 30.666864)
+# Safe defaults for bulk requests
+amap_config(throttle = TRUE, max_active = 3)
+
+res <- getLocation(104.043284, 30.666864)
 knitr::kable(res)
 ```
 

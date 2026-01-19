@@ -55,6 +55,25 @@ amap_signature_settings <- function() {
   utils::modifyList(defaults, settings)
 }
 
+amap_throttle_settings <- function() {
+  settings <- getOption("amap_throttle")
+  defaults <- list(
+    enabled = TRUE,
+    rate = 3,
+    capacity = NULL,
+    fill_time_s = 1,
+    realm = NULL
+  )
+  if (is.null(settings)) {
+    return(defaults)
+  }
+  resolved <- utils::modifyList(defaults, settings)
+  if (is.null(resolved$rate) && is.null(resolved$capacity)) {
+    resolved$rate <- 3
+  }
+  resolved
+}
+
 #' Configure Amap settings
 #' @param signature Optional.
 #' Signature configuration. Use `FALSE` to disable, a single string secret, or a list.
@@ -64,8 +83,25 @@ amap_signature_settings <- function() {
 #' Optional API key override when signing is enabled.
 #' @param enabled Optional.
 #' Logical flag to enable or disable signing.
+#' @param max_active Optional.
+#' Maximum number of active concurrent HTTP requests when bulk operations are
+#' executed with `httr2::req_perform_parallel()`. Defaults to 3.
+#' @param throttle Optional.
+#' Throttling configuration for outgoing HTTP requests.
+#' Use `FALSE` to disable throttling, `TRUE` to enable with defaults, or a list
+#' with any of the following fields:
+#' `enabled` (logical), `rate` (numeric), `capacity` (numeric),
+#' `fill_time_s` (numeric), and `realm` (character).
+#'
+#' Defaults are safe for AutoNavi's QPS limits: `max_active = 3` and
+#' `throttle = list(rate = 3, fill_time_s = 1)`.
 #' @export
-amap_config <- function(signature = NULL, secret = NULL, key = NULL, enabled = TRUE) {
+amap_config <- function(signature = NULL,
+                        secret = NULL,
+                        key = NULL,
+                        enabled = TRUE,
+                        max_active = NULL,
+                        throttle = NULL) {
   if (!is.null(signature)) {
     if (isFALSE(signature)) {
       options(amap_signature = NULL)
@@ -86,6 +122,28 @@ amap_config <- function(signature = NULL, secret = NULL, key = NULL, enabled = T
   if (!is.null(secret)) {
     options(amap_signature = list(secret = secret, key = key, enabled = enabled))
   }
+
+  if (!is.null(max_active)) {
+    if (!is.numeric(max_active) || length(max_active) != 1L || is.na(max_active) || max_active < 1) {
+      rlang::abort("`max_active` must be a single positive number when supplied.")
+    }
+    options(amap_max_active = as.integer(max_active))
+  }
+
+  if (!is.null(throttle)) {
+    if (isFALSE(throttle)) {
+      options(amap_throttle = list(enabled = FALSE))
+    } else if (isTRUE(throttle)) {
+      options(amap_throttle = list(enabled = TRUE))
+    } else if (is.list(throttle)) {
+      current <- amap_throttle_settings()
+      updated <- utils::modifyList(current, throttle)
+      options(amap_throttle = updated)
+    } else {
+      rlang::abort("`throttle` must be FALSE, TRUE, or a list when supplied.")
+    }
+  }
+
   invisible(NULL)
 }
 
@@ -242,13 +300,13 @@ amap_check_status <- function(parsed, resp, endpoint, query) {
   )
 }
 
-amap_request <- function(endpoint,
-                         query = list(),
-                         key = NULL,
-                         method = "GET",
-                         body = NULL,
-                         output = NULL,
-                         callback = NULL) {
+amap_prepare_request <- function(endpoint,
+                                 query = list(),
+                                 key = NULL,
+                                 method = "GET",
+                                 body = NULL,
+                                 output = NULL,
+                                 callback = NULL) {
   key <- amap_get_key(key)
   query <- amap_compact(query)
   query$key <- key
@@ -258,11 +316,13 @@ amap_request <- function(endpoint,
   if (!is.null(callback)) {
     query$callback <- callback
   }
+
   settings <- amap_signature_settings()
   if (isTRUE(settings$enabled) && is.null(query$sig) && !is.null(settings$secret)) {
     candidate <- utils::modifyList(query, list(key = settings$key %||% key))
     query$sig <- amap_sign(candidate, settings$secret, file.path("v3", endpoint))
   }
+
   req <- httr2::request(amap_base_url())
   req <- httr2::req_url_path_append(req, "v3")
   req <- httr2::req_url_path_append(req, endpoint)
@@ -284,7 +344,43 @@ amap_request <- function(endpoint,
     max_tries = getOption("amap_retry_max_tries", 3),
     max_seconds = getOption("amap_retry_max_seconds", 30)
   )
-  resp <- httr2::req_perform(req)
+
+  throttle_settings <- amap_throttle_settings()
+  if (isTRUE(throttle_settings$enabled)) {
+    if (!is.null(throttle_settings$rate)) {
+      req <- httr2::req_throttle(
+        req,
+        rate = throttle_settings$rate,
+        fill_time_s = throttle_settings$fill_time_s,
+        realm = throttle_settings$realm
+      )
+    } else {
+      req <- httr2::req_throttle(
+        req,
+        capacity = throttle_settings$capacity,
+        fill_time_s = throttle_settings$fill_time_s,
+        realm = throttle_settings$realm
+      )
+    }
+  }
+
+  structure(
+    list(
+      req = req,
+      endpoint = endpoint,
+      query = query,
+      output = output,
+      callback = callback
+    ),
+    class = "amap_prepared_request"
+  )
+}
+
+amap_process_response <- function(resp,
+                                 endpoint,
+                                 query,
+                                 output = NULL,
+                                 callback = NULL) {
   rate_limit <- amap_rate_limit(resp)
   status_code <- httr2::resp_status(resp)
   body_raw <- httr2::resp_body_raw(resp)
@@ -319,5 +415,31 @@ amap_request <- function(endpoint,
     ),
     class = "amap_response",
     rate_limit = rate_limit
+  )
+}
+
+amap_request <- function(endpoint,
+                         query = list(),
+                         key = NULL,
+                         method = "GET",
+                         body = NULL,
+                         output = NULL,
+                         callback = NULL) {
+  prepared <- amap_prepare_request(
+    endpoint = endpoint,
+    query = query,
+    key = key,
+    method = method,
+    body = body,
+    output = output,
+    callback = callback
+  )
+  resp <- httr2::req_perform(prepared$req)
+  amap_process_response(
+    resp = resp,
+    endpoint = prepared$endpoint,
+    query = prepared$query,
+    output = prepared$output,
+    callback = prepared$callback
   )
 }
