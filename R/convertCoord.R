@@ -58,42 +58,78 @@ convertCoord <- function(locations,
   rows <- list()
   rate_limits <- list()
   query_index <- seq_along(locations)
+  max_active <- getOption("amap_max_active", 3)
 
-  perform_request <- function(query, key) {
-    tryCatch(
-      amap_request(
-        endpoint = "assistant/coordinate/convert",
-        query = query,
-        key = key,
-        output = NULL
-      ),
+  build_prepared <- function(query) {
+    amap_prepare_request(
+      endpoint = "assistant/coordinate/convert",
+      query = query,
+      key = key,
+      output = NULL
+    )
+  }
+
+  queries <- lapply(locations, function(location) {
+    list(
+      locations = location,
+      coordsys = coordsys,
+      sig = sig
+    )
+  })
+
+  prepared <- lapply(queries, build_prepared)
+  reqs <- lapply(prepared, function(x) x$req)
+  resps <- httr2::req_perform_parallel(
+    reqs,
+    on_error = "return",
+    progress = FALSE,
+    max_active = max_active
+  )
+
+  for (i in seq_along(resps)) {
+    location <- locations[[i]]
+    prep <- prepared[[i]]
+    resp <- resps[[i]]
+
+    out <- tryCatch(
+      {
+        if (inherits(resp, "httr2_response")) {
+          amap_process_response(
+            resp = resp,
+            endpoint = prep$endpoint,
+            query = prep$query,
+            output = prep$output,
+            callback = prep$callback
+          )
+        } else {
+          rlang::abort("Request failed", parent = resp)
+        }
+      },
       amap_api_error = function(err) {
         if (isTRUE(keep_bad_request)) {
           structure(list(error = err), class = "amap_request_error")
         } else {
           rlang::cnd_signal(err)
         }
+      },
+      error = function(err) {
+        if (isTRUE(keep_bad_request)) {
+          structure(list(error = err), class = "amap_request_error")
+        } else {
+          rlang::abort("Request failed", parent = err)
+        }
       }
     )
-  }
 
-  for (i in seq_along(locations)) {
-    location <- locations[[i]]
-    query <- list(
-      locations = location,
-      coordsys = coordsys,
-      sig = sig
-    )
-    resp <- perform_request(query, key)
-    if (inherits(resp, "amap_request_error")) {
+    if (inherits(out, "amap_request_error")) {
       placeholder <- convert_placeholder()
       placeholder$query <- location
       placeholder$query_index <- i
       rows[[length(rows) + 1L]] <- placeholder
       next
     }
-    rate_limits[[length(rate_limits) + 1L]] <- attr(resp, "rate_limit")
-    parsed <- extractConvertCoord(resp$body)
+    rate_limits[[length(rate_limits) + 1L]] <- attr(out, "rate_limit")
+    parsed <- extractConvertCoord(out$body)
     parsed$query <- location
     parsed$query_index <- i
     rows[[length(rows) + 1L]] <- parsed
@@ -182,11 +218,11 @@ extractConvertCoord <- function(res) {
     return(convert_placeholder())
   }
   coords <- strsplit(locations, split = ";", fixed = TRUE)[[1L]]
-  rows <- lapply(coords, function(coord) {
-    split <- str_loc_to_num_coord(coord)
-    tibble::tibble(lng = split[[1L]], lat = split[[2L]])
-  })
-  dplyr::bind_rows(rows)
+  splits <- str_loc_to_num_coord(coords)
+  if (length(coords) == 1L) {
+    splits <- matrix(splits, nrow = 1L)
+  }
+  tibble::tibble(lng = splits[, 1L], lat = splits[, 2L])
 }
 
 normalize_convert_response <- function(res) {

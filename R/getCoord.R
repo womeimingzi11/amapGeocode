@@ -362,8 +362,8 @@ geocode_entry_to_dt <- function(entry, match_rank) {
   building_val <- entry$building %||% list()
   
   dplyr::mutate(row,
-    lng = coords[[1L]],
-    lat = coords[[2L]],
+    lng = coords[1L],
+    lat = coords[2L],
     formatted_address = scalar_or_na(entry$formatted_address),
     country = scalar_or_na(entry$country),
     province = scalar_or_na(entry$province),

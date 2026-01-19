@@ -82,29 +82,20 @@ getAdmin <- function(keywords,
   rows <- list()
   rate_limits <- list()
   query_index <- seq_along(keywords)
+  max_active <- getOption("amap_max_active", 3)
 
-  perform_request <- function(query, key) {
-    tryCatch(
-      amap_request(
-        endpoint = "config/district",
-        query = query,
-        key = key,
-        output = NULL,
-        callback = callback
-      ),
-      amap_api_error = function(err) {
-        if (isTRUE(keep_bad_request)) {
-          structure(list(error = err), class = "amap_request_error")
-        } else {
-          rlang::cnd_signal(err)
-        }
-      }
+  build_prepared <- function(query) {
+    amap_prepare_request(
+      endpoint = "config/district",
+      query = query,
+      key = key,
+      output = NULL,
+      callback = callback
     )
   }
 
-  for (i in seq_along(keywords)) {
-    keyword <- keywords[[i]]
-    query <- list(
+  queries <- lapply(keywords, function(keyword) {
+    list(
       keywords = keyword,
       subdistrict = subdistrict,
       page = page,
@@ -112,16 +103,61 @@ getAdmin <- function(keywords,
       extensions = extensions,
       filter = filter
     )
-    resp <- perform_request(query, key)
-    if (inherits(resp, "amap_request_error")) {
+  })
+
+  prepared <- lapply(queries, build_prepared)
+  reqs <- lapply(prepared, function(x) x$req)
+  resps <- httr2::req_perform_parallel(
+    reqs,
+    on_error = "return",
+    progress = FALSE,
+    max_active = max_active
+  )
+
+  for (i in seq_along(resps)) {
+    keyword <- keywords[[i]]
+    prep <- prepared[[i]]
+    resp <- resps[[i]]
+
+    out <- tryCatch(
+      {
+        if (inherits(resp, "httr2_response")) {
+          amap_process_response(
+            resp = resp,
+            endpoint = prep$endpoint,
+            query = prep$query,
+            output = prep$output,
+            callback = prep$callback
+          )
+        } else {
+          rlang::abort("Request failed", parent = resp)
+        }
+      },
+      amap_api_error = function(err) {
+        if (isTRUE(keep_bad_request)) {
+          structure(list(error = err), class = "amap_request_error")
+        } else {
+          rlang::cnd_signal(err)
+        }
+      },
+      error = function(err) {
+        if (isTRUE(keep_bad_request)) {
+          structure(list(error = err), class = "amap_request_error")
+        } else {
+          rlang::abort("Request failed", parent = err)
+        }
+      }
+    )
+
+    if (inherits(out, "amap_request_error")) {
       placeholder <- admin_placeholder(include_polyline)
       placeholder$query <- keyword
       placeholder$query_index <- i
       rows[[length(rows) + 1L]] <- placeholder
       next
     }
-    rate_limits[[length(rate_limits) + 1L]] <- attr(resp, "rate_limit")
-    parsed <- extractAdmin(resp$body, include_polyline = include_polyline)
+    rate_limits[[length(rate_limits) + 1L]] <- attr(out, "rate_limit")
+    parsed <- extractAdmin(out$body, include_polyline = include_polyline)
     parsed$query <- keyword
     parsed$query_index <- i
     rows[[length(rows) + 1L]] <- parsed
@@ -268,8 +304,8 @@ district_row <- function(district, parent, depth, include_polyline) {
     level = scalar_or_na(district$level),
     citycode = scalar_or_na(district$citycode),
     adcode = scalar_or_na(district$adcode),
-    lng = coords[[1L]],
-    lat = coords[[2L]],
+    lng = coords[1L],
+    lat = coords[2L],
     depth = depth
   )
   if (isTRUE(include_polyline)) {
