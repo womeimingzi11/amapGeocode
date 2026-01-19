@@ -1,0 +1,110 @@
+# Get coordinate from location
+
+Get coordinate from location
+
+## Usage
+
+``` r
+getCoord(
+  address,
+  key = NULL,
+  city = NULL,
+  sig = NULL,
+  output = "tibble",
+  callback = NULL,
+  keep_bad_request = TRUE,
+  mode = c("best", "all"),
+  batch = FALSE,
+  ...
+)
+```
+
+## Arguments
+
+- address:
+
+  Required. Structured address information. The value can be a character
+  vector; each element will be queried in turn.
+
+- key:
+
+  Optional. AutoNavi API key. You can also set this globally via
+  \`options(amap_key = "your-key")\`.
+
+- city:
+
+  Optional. City hint that narrows down the search scope. When \`batch =
+  TRUE\`, only a single city value is supported.
+
+- sig:
+
+  Optional. Digital signature supplied manually. Most users should
+  instead enable automatic signing via \[with_amap_signature()\] or
+  \[amap_config()\].
+
+- output:
+
+  Optional. Output data structure. Supported values are \`"tibble"\`
+  (default), \`"JSON"\`, and \`"XML"\`.
+
+- callback:
+
+  Optional. JSONP callback. When supplied the raw body is returned as a
+  character vector.
+
+- keep_bad_request:
+
+  Optional. When \`TRUE\` (default) API errors are converted into
+  placeholder rows so that vectorised or batched workflows continue.
+  When \`FALSE\` errors are raised as \`amap_api_error\` conditions.
+
+- mode:
+
+  Optional. Controls how geocode candidates are returned. Use \`"best"\`
+  (default) to keep the highest ranked candidate for each query or
+  \`"all"\` to return all matches alongside ranking metadata.
+
+- batch:
+
+  Optional. When \`TRUE\`, requests are chunked into groups of ten
+  addresses using the API's batch mode.
+
+  Bulk requests are executed with \`httr2::req_perform_parallel()\`
+  (curl multi; no additional R sessions) and are protected by throttling
+  configured via \[amap_config()\].
+
+- ...:
+
+  Optional. Included for forward compatibility only.
+
+## Value
+
+When \`output = "tibble"\`, a \`tibble\` containing geocode results is
+returned. The table preserves the input order and gains a \`rate_limit\`
+attribute containing any rate limit headers returned by the API. When
+\`mode = "all"\`, additional metadata columns (\`query\`,
+\`query_index\`, and \`match_rank\`) are included. When \`output\` is
+\`"JSON"\` or \`"XML"\`, the parsed body is returned without further
+processing.
+
+## See also
+
+\[extractCoord()\], \[with_amap_signature()\], \[amap_config()\]
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+# Basic lookup (best match only)
+getCoord("IFS Chengdu")
+
+# Retrieve all candidates for a single query
+getCoord("LOS ANGELES", mode = "all")
+
+# Batch ten addresses at a time
+getCoord(rep("Chengdu IFS", 12), batch = TRUE)
+
+# Temporarily enable automatic request signing
+with_amap_signature("your-secret", getCoord("IFS Chengdu"))
+} # }
+```

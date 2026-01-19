@@ -1,0 +1,307 @@
+# [amapGeocode](https://github.com/womeimingzi11/amapGeocode)
+
+## Introduction ![amapGeocode hex sticker](reference/figures/hexSticker-logo.png)
+
+Geocoding and Reverse Geocoding Services are widely used to provide data
+about coordinate and location information, including longitude,
+latitude, formatted location name, administrative region with different
+levels. There are some packages can provide geocode service such as
+[tidygeocoder](https://CRAN.R-project.org/package=tidygeocoder),
+baidumap, and baidugeo. However, some of them do not always provide
+precise information in China, and some of them are unavailable with the
+upgrade backend API.
+
+amapGeocode is built to provide high precise geocoding and reverse
+geocoding service, and it provides an interface for the AutoNavi(高德)
+Maps API geocoding services. API docs can be found
+[here](https://lbs.amap.com/) and
+[here](https://lbs.amap.com/api/webservice/summary/). Here are two main
+functions to use, one is
+[`getCoord()`](https://womeimingzi11.github.io/amapGeocode/reference/getCoord.md)
+which needs a character location name as an input, while the other one
+is
+[`getLocation()`](https://womeimingzi11.github.io/amapGeocode/reference/getLocation.md)
+which needs two numeric longitude and latitude values as inputs.
+
+The
+[`getCoord()`](https://womeimingzi11.github.io/amapGeocode/reference/getCoord.md)
+function extracts coordinate information from input character location
+name and outputs the results as `tibble`, `XML` or `JSON (as list)`. And
+the
+[`getLocation()`](https://womeimingzi11.github.io/amapGeocode/reference/getLocation.md)
+function extracts location information from input numeric longitude and
+latitude values and outputs the results as `tibble`, `XML` or
+`JSON (as list)`. With the `tibble` format as output, it’s highly
+readable and can be used as an alternative of `data.frame`
+
+amapGeocode is inspired by
+[baidumap](https://github.com/badbye/baidumap) and
+[baidugeo](https://github.com/ChrisMuir/baidugeo). If you want to choose
+the Baidu Map API, these packages are good choices.
+
+However, AutoNavi has significant high precise, in my case, the Results
+from Baidu were unsatisfactory.
+
+## Highlights
+
+- Unified HTTP handling via [{httr2}](https://httr2.r-lib.org) with
+  structured diagnostics (`amap_api_error`) and automatic propagation of
+  rate-limit headers.
+- Opt-in request signing through
+  [`amap_sign()`](https://womeimingzi11.github.io/amapGeocode/reference/amap_sign.md),
+  [`with_amap_signature()`](https://womeimingzi11.github.io/amapGeocode/reference/with_amap_signature.md),
+  and
+  [`amap_config()`](https://womeimingzi11.github.io/amapGeocode/reference/amap_config.md)
+  keeps sensitive secrets out of function calls.
+- [`getCoord()`](https://womeimingzi11.github.io/amapGeocode/reference/getCoord.md)
+  supports `mode = "all"` for multi-match lookups and `batch = TRUE` for
+  native AutoNavi 10-at-a-time batching.
+- [`getLocation()`](https://womeimingzi11.github.io/amapGeocode/reference/getLocation.md)
+  supports native batching plus rich POI, road, intersection, and AOI
+  list-columns via the `details` argument when `extensions = "all"`.
+- Bulk requests are executed with
+  [`httr2::req_perform_parallel()`](https://httr2.r-lib.org/reference/req_perform_parallel.html)
+  (curl multi; no new R sessions) and protected by default throttling (3
+  requests/second). Tune with
+  [`amap_config()`](https://womeimingzi11.github.io/amapGeocode/reference/amap_config.md).
+- [`extractAdmin()`](https://womeimingzi11.github.io/amapGeocode/reference/extractAdmin.md)
+  traverses every matching parent region, returning tidy parent metadata
+  and optional boundary polylines when `extensions = "all"`.
+
+## Installation
+
+You can install the released version of amapGeocode from
+[CRAN](https://CRAN.R-project.org/package=amapGeocode) with:
+
+``` r
+
+install.packages("amapGeocode")
+```
+
+To install the development version, run following command:
+
+``` r
+
+remotes::install_github('womeimingzi11/amapGeocode')
+```
+
+## Usage
+
+### Geocoding
+
+Before start geocoding and reverse geocoding, please apply a [AutoNavi
+Map API Key](https://lbs.amap.com/dev/). Set `amap_key` globally by
+following command:
+
+Then get results of geocoding, by `getCoord` function.
+
+``` r
+
+library(amapGeocode)
+
+# Respect AutoNavi's documented QPS limit (defaults are already safe).  -
+# throttling: 3 req/s - max_active: 3 concurrent requests
+amap_config(throttle = TRUE, max_active = 3)
+
+# An individual request
+res <- getCoord("四川省博物馆")
+knitr::kable(res)
+
+# Batch requests - batch=TRUE uses AutoNavi's native batch mode (up to 10
+# addresses per HTTP request) - the package may still issue multiple HTTP
+# requests when you have >10 inputs; those requests are executed via curl-multi
+# parallelism (no new R sessions)
+res <- getCoord(c("四川省博物馆", "成都市博物馆", "四川省成都市武侯区金楠天街"),
+    batch = TRUE)
+knitr::kable(res)
+
+# Optional tuning (only increase if your key allows it) amap_config(throttle =
+# list(rate = 6, fill_time_s = 1), max_active = 6)
+```
+
+Retrieve every candidate for a single query:
+
+``` r
+
+getCoord("四川省博物馆", mode = "all")
+```
+
+The responses we get from **AutoNavi Map API** is **JSON** or **XML**.
+For readability, we transform them to
+[`tibble`](https://CRAN.R-project.org/package=tibble), by setting
+`output` argument as `tibble` by default.
+
+If you want to extract information from **JSON** or **XML**. The results
+can further be parsed by `extractCoord`.
+
+``` r
+
+# An individual request
+res <- getCoord("四川省博物馆", output = "JSON")
+res
+```
+
+`extractCoord` is created to get a result as a tibble.
+
+``` r
+
+tb <- extractCoord(res)
+knitr::kable(tb)
+```
+
+### Reverse Geocoding
+
+get results of reverse geocoding, by `getLocation` function.
+
+``` r
+
+res <- getLocation(103.996, 30.6475)
+knitr::kable(res)
+```
+
+Request extended POI, road, and AOI details (requires
+`extensions = "all"`):
+
+``` r
+
+getLocation(103.9960, 30.6475,
+           extensions = "all",
+           details = c("pois", "roads", "roadinters", "aois"))
+```
+
+`extractLocation` is created to get a result as a tibble.
+
+### Get Subordinate Administrative Region
+
+get results of reverse geocoding, by `getAdmin` function.
+
+There is a difference between getAdmin and other function, no matter the
+`output` argument is `tibble` or not, the result won’t be a jointed
+table by different parent administrative region. For example, with the
+`output = tibble`, all the lower level administrative region of Province
+A and Province B will be bound as one tibble, respectively. But the
+table of province A and table of province B won’t be bound further.
+
+Because this function supports different administrative region levels,
+it is nonsense to bind their results.
+
+``` r
+
+res <- getAdmin(c("四川省", "成都市", "济宁市"))
+knitr::kable(res)
+```
+
+Include boundary polylines (requires `extensions = "all"`):
+
+``` r
+
+getAdmin("四川省", subdistrict = 0,
+         extensions = "all", include_polyline = TRUE)
+```
+
+`extractAdmin` is created to get results as tibble.
+
+### Convert coordinate point from other coordinate system to AutoNavi
+
+get results of reverse geocoding, by `convertCoord` function, here is
+how to convert coordinate from gps to AutoNavi.
+
+**Please not, this is still a very experimental function because I have
+no experience at converting coordinates. The implementation of this
+input method is not as delicate as I expect. If you have any good idea,
+please let me know or just fork repo and pull a reques.**
+
+``` r
+
+res <- convertCoord("103.9960,30.6475", coordsys = "gps")
+knitr::kable(res)
+```
+
+`extractConvertCoord` is created to get result as tibble.
+
+### Request signing
+
+AutoNavi’s enterprise endpoints can be secured with a digital signature.
+Instead of threading the signature through every call, enable signing
+globally:
+
+``` r
+
+amap_config(secret = "YOUR-SECRET")
+getCoord("四川省博物馆")
+```
+
+For temporary scopes, wrap the workflow with
+[`with_amap_signature()`](https://womeimingzi11.github.io/amapGeocode/reference/with_amap_signature.md):
+
+``` r
+
+with_amap_signature("YOUR-SECRET", {
+  amap_config(throttle = TRUE, max_active = 3)
+  getCoord("四川省博物馆", batch = TRUE)
+})
+```
+
+## Bug report
+
+It’s very common for API upgrades to make the downstream application,
+like amapGeocode,which is unavailable. Feel free to [let me
+know](mailto://chenhan28@gmail.com) once it’s broken or just open an
+[Issue](https://github.com/womeimingzi11/amapGeocode/issues).
+
+## Acknowledgements
+
+The ongoing development and maintenance of this project are powered by
+[Gemini 3](https://deepmind.google/technologies/gemini/).
+
+Hex Sticker was created by [hexSticker
+package](https://github.com/GuangchuangYu/hexSticker) with the world
+data from
+[rnaturalearth](https://CRAN.R-project.org/package=rnaturalearth).
+
+## Code of Conduct
+
+Please note that the amapGeocode project is released with a [Contributor
+Code of
+Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html).
+By contributing to this project, you agree to abide by its terms.
+
+# Package index
+
+## All functions
+
+- [`amap_config()`](https://womeimingzi11.github.io/amapGeocode/reference/amap_config.md)
+  : Configure Amap settings
+- [`amap_gui()`](https://womeimingzi11.github.io/amapGeocode/reference/amap_gui.md)
+  : Launch the amapGeocode Graphical Interface
+- [`amap_sign()`](https://womeimingzi11.github.io/amapGeocode/reference/amap_sign.md)
+  : Generate Amap signature
+- [`convertCoord()`](https://womeimingzi11.github.io/amapGeocode/reference/convertCoord.md)
+  : Convert coordinates to the AutoNavi system
+- [`extractAdmin()`](https://womeimingzi11.github.io/amapGeocode/reference/extractAdmin.md)
+  : Extract subordinate administrative regions from a district response
+- [`extractConvertCoord()`](https://womeimingzi11.github.io/amapGeocode/reference/extractConvertCoord.md)
+  : Extract converted coordinates from a conversion response
+- [`extractCoord()`](https://womeimingzi11.github.io/amapGeocode/reference/extractCoord.md)
+  : Extract coordinate from a geocoding response
+- [`extractLocation()`](https://womeimingzi11.github.io/amapGeocode/reference/extractLocation.md)
+  : Extract location from coordinate request
+- [`getAdmin()`](https://womeimingzi11.github.io/amapGeocode/reference/getAdmin.md)
+  : Get subordinate administrative regions from keywords
+- [`getCoord()`](https://womeimingzi11.github.io/amapGeocode/reference/getCoord.md)
+  : Get coordinate from location
+- [`getLocation()`](https://womeimingzi11.github.io/amapGeocode/reference/getLocation.md)
+  : Get location from coordinate
+- [`num_coord_to_str_loc()`](https://womeimingzi11.github.io/amapGeocode/reference/num_coord_to_str_loc.md)
+  : Take longitude and latitude from location string out.
+- [`str_loc_to_num_coord()`](https://womeimingzi11.github.io/amapGeocode/reference/str_loc_to_num_coord.md)
+  : Take longitude and latitude from location string out.
+- [`with_amap_signature()`](https://womeimingzi11.github.io/amapGeocode/reference/with_amap_signature.md)
+  : Execute code with temporary signature settings
+
+# Articles
+
+### All vignettes
+
+- [Introduction to
+  amapGeocode](https://womeimingzi11.github.io/amapGeocode/articles/Introduction_to_amapGeocode.md):

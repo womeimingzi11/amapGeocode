@@ -1,0 +1,182 @@
+# Introduction to amapGeocode
+
+Geocoding and Reverse Geocoding Services are widely used to provide data
+about coordinate and location information, including longitude,
+latitude, formatted location name, administrative region with different
+levels. There are some package can provide geocode service such as
+[tidygeocoder](https://CRAN.R-project.org/package=tidygeocoder),
+[baidumap](https://github.com/badbye/baidumap) and
+[baidugeo](https://github.com/ChrisMuir/baidugeo). However, some of them
+not always provide precise information in China, and some of them is
+unavailable with upgrade backend API.
+
+amapGeocode is built to provide high precise geocoding and reverse
+geocoding service which powered by AutoNavi Map API service. Here are
+two main functions to use are
+[`getCoord()`](https://womeimingzi11.github.io/amapGeocode/reference/getCoord.md)
+which takes a character location name as an input and
+[`getLocation()`](https://womeimingzi11.github.io/amapGeocode/reference/getLocation.md)
+which takes two numeric longitude and latitude values as inputs.
+
+The
+[`getCoord()`](https://womeimingzi11.github.io/amapGeocode/reference/getCoord.md)
+function extracts coordinate information from input character location
+name and output the result as `tibble`, `XML` or `JSON (as list)`. And
+the
+[`getLocation()`](https://womeimingzi11.github.io/amapGeocode/reference/getLocation.md)
+function extracts location information from input numeric longitude and
+latitude values and output the result as `tibble`, `XML` or
+`JSON (as list)`. With the `tibble` format as output, it’s highly
+readable and easy to be used to `tidy` workflow.
+
+## Usage
+
+### Geocoding
+
+Before start geocoding and reverse geocoding, please apply a [AutoNavi
+Map API Key](https://lbs.amap.com/dev/). Set `amap_key` globally by
+following command:
+
+``` r
+
+options(amap_key = 'REPLACE THIS BY YOUR KEY')
+```
+
+Then get result of geocoding, by `getCoord` function.
+
+For bulk workloads, amapGeocode uses curl-multi parallelism (via
+{httr2}) and applies safe defaults that respect AutoNavi’s QPS limit (3
+requests/second). You can tune concurrency/throttling with
+[`amap_config()`](https://womeimingzi11.github.io/amapGeocode/reference/amap_config.md).
+
+``` r
+
+library(amapGeocode)
+
+# Defaults are safe, but you can set them explicitly
+amap_config(throttle = TRUE, max_active = 3)
+
+res <- getCoord('四川省博物馆')
+knitr::kable(res)
+```
+
+The response we get from **AutoNavi Map API** is **JSON** or **XML**.
+For readability, we transform them to
+[`tibble`](https://CRAN.R-project.org/package=tibble), by setting
+`output` argument as `tibble` by default.
+
+If anyone want to get response as **JSON** or **XML**, just set
+`output = "JSON"` or `output = "XML"`. If anyone want to extract
+information from **JSON** or **XML**, the result can further be parsed
+by `extractCoord`.
+
+``` r
+
+res <-
+  getCoord('四川省博物馆', output = 'XML')
+res
+```
+
+`extractCoord` is created to get result as a tibble.
+
+``` r
+
+res
+tb <- 
+  extractCoord(res)
+knitr::kable(tb)
+```
+
+### Reverse Geocoding
+
+get result of reverse geocoding, by `getLocation` function.
+
+``` r
+
+# Safe defaults for bulk requests
+amap_config(throttle = TRUE, max_active = 3)
+
+res <- getLocation(104.043284, 30.666864)
+knitr::kable(res)
+```
+
+``` r
+
+res <-
+   getLocation(104.0339, 30.66069, output = 'XML')
+res
+```
+
+`extractLocation` is created to get result as a tibble.
+
+``` r
+
+tb <- 
+  extractLocation(res)
+knitr::kable(tb)
+```
+
+### Get Subordinate Administrative Region
+
+get result of reverse geocoding, by `getAdmin` function.
+
+``` r
+
+res <- 
+  getAdmin('四川省')
+knitr::kable(res)
+```
+
+``` r
+
+res <-
+   getAdmin('四川省', output = 'XML')
+res
+```
+
+`extractAdmin` is created to get result as a tibble.
+
+``` r
+
+res
+tb <- 
+  extractAdmin(res)
+knitr::kable(tb)
+```
+
+### Convert coordinate point from other coordinate system to AutoNavi
+
+get result of reverse geocoding, by `convertCoord` function, here is how
+to convert coordinate from gps to AutoNavi
+
+``` r
+
+res <- 
+  convertCoord("103.9960,30.6475", coordsys = "gps")
+knitr::kable(res)
+```
+
+``` r
+
+res <-
+  convertCoord('116.481499,39.990475',coordsys = 'gps', output = 'JSON')
+res
+```
+
+`extractConvertCoord` is created to get result as a tibble.
+
+``` r
+
+tb <- 
+  extractConvertCoord(res)
+knitr::kable(tb)
+```
+
+For more functions and improvements, Coming Soon!
+
+## Bug report
+
+It’s very common for API upgrades to make the downstream application,
+like amapGeocode, to be unavailable. Feel free to [let me
+know](mailto://chenhan28@gmail.com) once it’s broken or just open an
+[Issue](https://github.com/womeimingzi11/amapGeocode/issues).
