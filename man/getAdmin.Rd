@@ -77,8 +77,10 @@ Get subordinate administrative regions from keywords
 getAdmin("Sichuan Province", subdistrict = 1)
 
 # Include polylines (requires extensions = "all")
-getAdmin("Sichuan Province", subdistrict = 1,
-         extensions = "all", include_polyline = TRUE)
+getAdmin("Sichuan Province",
+  subdistrict = 1,
+  extensions = "all", include_polyline = TRUE
+)
 }
 }
 \seealso{

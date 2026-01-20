@@ -13,14 +13,6 @@
 * Test suite migrated to offline {vcr}/{httptest2} fixtures covering multi-result, extensions, and error scenarios.
 
 # amapGeocode 0.7.0
-# amapGeocode 0.8.0
-* Migrated the HTTP stack to {httr2}, unifying retries, diagnostics, and rate-limit metadata via `amap_request()` and `amap_api_error`.
-* Added request signing helpers (`amap_sign()`, `with_amap_signature()`, `amap_config()`) to simplify secure integrations.
-* `getCoord()` now supports `mode = "all"` for multi-match results and `batch = TRUE` for 10-at-a-time requests, with `extractCoord()` returning stable columns.
-* `getLocation()` gains batching plus optional POI/road/AOI list-columns through the new `details` argument in `extractLocation()`.
-* `extractAdmin()` iterates over multiple parents and can emit boundary polylines when `include_polyline = TRUE`.
-* Test suite migrated to offline {vcr}/{httptest2} fixtures covering multi-result, extensions, and error scenarios.
-
 * Since 0.7.0, the Version of R under 4.1.0 will not support anymore.
 
 # amapGeocode 0.6.0

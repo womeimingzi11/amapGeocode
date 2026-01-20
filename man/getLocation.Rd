@@ -100,7 +100,8 @@ getLocation(104.043284, 30.666864)
 
 # Request extended POI details
 getLocation(104.043284, 30.666864,
-            extensions = "all", details = "pois")
+  extensions = "all", details = "pois"
+)
 
 # Batch reverse-geocode ten points at a time
 lngs <- rep(104.043284, 12)

@@ -81,12 +81,13 @@ getCoord <- function(address,
 
   if (output_upper != "TIBBLE") {
     return(get_coord_raw(addresses,
-                        key = key,
-                        city = city,
-                        sig = sig,
-                        output = output,
-                        callback = callback,
-                        keep_bad_request = keep_bad_request))
+      key = key,
+      city = city,
+      sig = sig,
+      output = output,
+      callback = callback,
+      keep_bad_request = keep_bad_request
+    ))
   }
 
   if (batch && length(city) > 1L) {
@@ -255,12 +256,12 @@ getCoord <- function(address,
 }
 
 get_coord_raw <- function(address,
-                         key = NULL,
-                         city = NULL,
-                         sig = NULL,
-                         output = "JSON",
-                         callback = NULL,
-                         keep_bad_request = TRUE) {
+                          key = NULL,
+                          city = NULL,
+                          sig = NULL,
+                          output = "JSON",
+                          callback = NULL,
+                          keep_bad_request = TRUE) {
   mapper <- function(addr, city_value) {
     query <- list(
       address = addr,
@@ -360,7 +361,7 @@ geocode_entry_to_dt <- function(entry, match_rank) {
   coords <- if (!is.na(location)) str_loc_to_num_coord(location) else c(NA_real_, NA_real_)
   neighborhood_val <- entry$neighborhood %||% list()
   building_val <- entry$building %||% list()
-  
+
   dplyr::mutate(row,
     lng = coords[1L],
     lat = coords[2L],

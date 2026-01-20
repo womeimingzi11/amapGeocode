@@ -140,7 +140,7 @@ convertCoord <- function(locations,
     return(combined)
   }
   combined <- combined |> dplyr::arrange(query_index)
-  combined <- dplyr::select(combined, -query_index, -query)
+  combined <- dplyr::select(combined, -c("query_index", "query"))
 
   rate_limit <- Filter(Negate(is.null), rate_limits)
   if (length(rate_limit)) {
@@ -151,11 +151,11 @@ convertCoord <- function(locations,
 }
 
 convert_coord_raw <- function(locations,
-                             key = NULL,
-                             coordsys = NULL,
-                             sig = NULL,
-                             output = "JSON",
-                             keep_bad_request = TRUE) {
+                              key = NULL,
+                              coordsys = NULL,
+                              sig = NULL,
+                              output = "JSON",
+                              keep_bad_request = TRUE) {
   mapper <- function(location) {
     query <- list(
       locations = location,
@@ -208,7 +208,7 @@ convert_coord_raw <- function(locations,
 #' @export
 extractConvertCoord <- function(res) {
   parsed <- normalize_convert_response(res)
-  # print(str(parsed)) 
+  # print(str(parsed))
   status <- parsed$status %||% parsed$Status
   if (!is.null(status) && !identical(as.character(status), "1")) {
     rlang::abort(parsed$info %||% parsed$message %||% "AutoNavi API request failed", call = NULL)

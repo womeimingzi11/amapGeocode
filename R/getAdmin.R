@@ -46,8 +46,10 @@
 #' getAdmin("Sichuan Province", subdistrict = 1)
 #'
 #' # Include polylines (requires extensions = "all")
-#' getAdmin("Sichuan Province", subdistrict = 1,
-#'          extensions = "all", include_polyline = TRUE)
+#' getAdmin("Sichuan Province",
+#'   subdistrict = 1,
+#'   extensions = "all", include_polyline = TRUE
+#' )
 #' }
 getAdmin <- function(keywords,
                      key = NULL,
@@ -180,15 +182,15 @@ getAdmin <- function(keywords,
 }
 
 get_admin_raw <- function(keywords,
-                         key = NULL,
-                         subdistrict = NULL,
-                         page = NULL,
-                         offset = NULL,
-                         extensions = NULL,
-                         filter = NULL,
-                         output = "JSON",
-                         callback = NULL,
-                         keep_bad_request = TRUE) {
+                          key = NULL,
+                          subdistrict = NULL,
+                          page = NULL,
+                          offset = NULL,
+                          extensions = NULL,
+                          filter = NULL,
+                          output = "JSON",
+                          callback = NULL,
+                          keep_bad_request = TRUE) {
   mapper <- function(keyword) {
     query <- list(
       keywords = keyword,

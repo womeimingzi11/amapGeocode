@@ -335,8 +335,10 @@ amap_prepare_request <- function(endpoint,
     req,
     getOption(
       "amap_user_agent",
-      sprintf("amapGeocode/%s (https://github.com/womeimingzi11/amapGeocode)",
-              tryCatch(as.character(utils::packageVersion("amapGeocode")), error = function(e) "dev"))
+      sprintf(
+        "amapGeocode/%s (https://github.com/womeimingzi11/amapGeocode)",
+        tryCatch(as.character(utils::packageVersion("amapGeocode")), error = function(e) "dev")
+      )
     )
   )
   req <- httr2::req_retry(
@@ -377,10 +379,10 @@ amap_prepare_request <- function(endpoint,
 }
 
 amap_process_response <- function(resp,
-                                 endpoint,
-                                 query,
-                                 output = NULL,
-                                 callback = NULL) {
+                                  endpoint,
+                                  query,
+                                  output = NULL,
+                                  callback = NULL) {
   rate_limit <- amap_rate_limit(resp)
   status_code <- httr2::resp_status(resp)
   body_raw <- httr2::resp_body_raw(resp)

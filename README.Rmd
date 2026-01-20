@@ -130,7 +130,7 @@ get results of reverse geocoding, by `getLocation` function.
 
 ```{r getLocation_to_table_as_TRUE, eval = FALSE}
 res <-
-  getLocation(103.9960,30.6475)
+  getLocation(103.9960, 30.6475)
 knitr::kable(res)
 ```
 

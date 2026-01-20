@@ -63,7 +63,8 @@
 #'
 #' # Request extended POI details
 #' getLocation(104.043284, 30.666864,
-#'             extensions = "all", details = "pois")
+#'   extensions = "all", details = "pois"
+#' )
 #'
 #' # Batch reverse-geocode ten points at a time
 #' lngs <- rep(104.043284, 12)
@@ -291,16 +292,16 @@ getLocation <- function(lng,
 }
 
 get_location_raw <- function(coords,
-                            key = NULL,
-                            poitype = NULL,
-                            radius = NULL,
-                            extensions = NULL,
-                            roadlevel = NULL,
-                            sig = NULL,
-                            output = "JSON",
-                            callback = NULL,
-                            homeorcorp = 0,
-                            keep_bad_request = TRUE) {
+                             key = NULL,
+                             poitype = NULL,
+                             radius = NULL,
+                             extensions = NULL,
+                             roadlevel = NULL,
+                             sig = NULL,
+                             output = "JSON",
+                             callback = NULL,
+                             homeorcorp = 0,
+                             keep_bad_request = TRUE) {
   mapper <- function(coord) {
     query <- list(
       location = coord,
@@ -450,13 +451,12 @@ location_finalize <- function(tbl, details) {
     "neighborhood", "building"
   )
   detail_cols <- intersect(c("pois", "roads", "roadinters", "aois"), details)
-  query_index <- query_lng <- query_lat <- NULL
   if (!nrow(tbl)) {
     result <- dplyr::select(tbl, dplyr::all_of(c(base_cols, detail_cols, "query_index", "query_lng", "query_lat")))
   } else {
     ordered <- c("query_index", "query_lng", "query_lat", base_cols, detail_cols)
     present <- intersect(ordered, names(tbl))
-    tbl <- dplyr::arrange(tbl, query_index)
+    tbl <- dplyr::arrange(tbl, .data$query_index)
     result <- dplyr::select(tbl, dplyr::all_of(present))
   }
   drop <- intersect(c("query_index", "query_lng", "query_lat"), names(result))
@@ -570,11 +570,15 @@ detail_table <- function(items, type) {
 
 location_detail_fields <- function() {
   list(
-    pois = c("id", "name", "type", "typecode", "distance", "direction",
-             "address", "location", "businessarea"),
+    pois = c(
+      "id", "name", "type", "typecode", "distance", "direction",
+      "address", "location", "businessarea"
+    ),
     roads = c("id", "name", "direction", "distance", "location"),
-    roadinters = c("direction", "distance", "location", "first_id",
-                   "first_name", "second_id", "second_name"),
+    roadinters = c(
+      "direction", "distance", "location", "first_id",
+      "first_name", "second_id", "second_name"
+    ),
     aois = c("id", "name", "adcode", "location", "area", "distance", "type")
   )
 }

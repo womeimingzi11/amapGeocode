@@ -24,7 +24,6 @@ Imports:
     dplyr,
     utils
 Suggests: 
-    stringr,
     knitr,
     rmarkdown,
     testthat,
