@@ -57,16 +57,7 @@
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.7.0" id="amapgeocode-070">amapGeocode 0.7.0<a class="anchor" aria-label="anchor" href="#amapgeocode-070"></a></h2>
-</div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.8.0" id="amapgeocode-080-1">amapGeocode 0.8.0<a class="anchor" aria-label="anchor" href="#amapgeocode-080-1"></a></h2>
-<ul><li><p>Migrated the HTTP stack to {httr2}, unifying retries, diagnostics, and rate-limit metadata via <code>amap_request()</code> and <code>amap_api_error</code>.</p></li>
-<li><p>Added request signing helpers (<code><a href="../reference/amap_sign.html">amap_sign()</a></code>, <code><a href="../reference/with_amap_signature.html">with_amap_signature()</a></code>, <code><a href="../reference/amap_config.html">amap_config()</a></code>) to simplify secure integrations.</p></li>
-<li><p><code><a href="../reference/getCoord.html">getCoord()</a></code> now supports <code>mode = "all"</code> for multi-match results and <code>batch = TRUE</code> for 10-at-a-time requests, with <code><a href="../reference/extractCoord.html">extractCoord()</a></code> returning stable columns.</p></li>
-<li><p><code><a href="../reference/getLocation.html">getLocation()</a></code> gains batching plus optional POI/road/AOI list-columns through the new <code>details</code> argument in <code><a href="../reference/extractLocation.html">extractLocation()</a></code>.</p></li>
-<li><p><code><a href="../reference/extractAdmin.html">extractAdmin()</a></code> iterates over multiple parents and can emit boundary polylines when <code>include_polyline = TRUE</code>.</p></li>
-<li><p>Test suite migrated to offline {vcr}/{httptest2} fixtures covering multi-result, extensions, and error scenarios.</p></li>
-<li><p>Since 0.7.0, the Version of R under 4.1.0 will not support anymore.</p></li>
+<ul><li>Since 0.7.0, the Version of R under 4.1.0 will not support anymore.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.0" id="amapgeocode-060">amapGeocode 0.6.0<a class="anchor" aria-label="anchor" href="#amapgeocode-060"></a></h2><p class="text-muted">CRAN release: 2021-04-19</p>

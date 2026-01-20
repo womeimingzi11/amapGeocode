@@ -101,7 +101,9 @@ if (FALSE) { # \dontrun{
 getAdmin("Sichuan Province", subdistrict = 1)
 
 # Include polylines (requires extensions = "all")
-getAdmin("Sichuan Province", subdistrict = 1,
-         extensions = "all", include_polyline = TRUE)
+getAdmin("Sichuan Province",
+  subdistrict = 1,
+  extensions = "all", include_polyline = TRUE
+)
 } # }
 ```
