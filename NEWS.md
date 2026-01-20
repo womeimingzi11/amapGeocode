@@ -1,3 +1,9 @@
+# amapGeocode 1.0.0
+* This is the first major release of `amapGeocode`, marking API stability.
+* Added a Shiny Graphical User Interface (GUI) accessible via `amap_gui()`.
+* Enhanced error handling and test coverage.
+* Improved documentation with new vignettes and pkgdown site.
+
 # amapGeocode 0.9.0
 * Added a Shiny Graphical User Interface (GUI) accessible via `amap_gui()`. This interface supports single and batch operations for geocoding, reverse geocoding, and coordinate conversion, along with API configuration.
 * Switched default tabular outputs to `tibble` with tidyverse helpers.
