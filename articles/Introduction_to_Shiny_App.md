@@ -1,0 +1,88 @@
+# Interactive Operations with Shiny GUI
+
+## Introduction
+
+Starting from version 0.9.0, `amapGeocode` includes a built-in Shiny
+application
+([`amap_gui()`](https://womeimingzi11.github.io/amapGeocode/reference/amap_gui.md))
+that provides a user-friendly graphical interface for all major package
+functions. This is particularly useful for users who prefer a GUI over
+command-line operations or for quick, interactive tasks.
+
+To launch the application, simply run:
+
+``` r
+library(amapGeocode)
+amap_gui()
+```
+
+## Features
+
+The Shiny application is organized into four main tabs, mirroring the
+package’s core functionality:
+
+### 1. Geocoding (Address to Coordinate)
+
+The **Geocoding** tab allows you to convert addresses into longitude and
+latitude coordinates.
+
+- **Single Address Mode**: Enter an address and an optional city to get
+  instant results.
+- **Batch Mode**: Upload a CSV file containing addresses. You can select
+  the column containing the address and the city (optional). The
+  application will process the file and provide a downloadable CSV with
+  coordinates.
+
+### 2. Reverse Geocoding (Coordinate to Address)
+
+The **Reverse Geocoding** tab converts coordinates back into structured
+addresses and administrative information.
+
+- **Single Point Mode**: Input longitude and latitude manually.
+- **Batch Mode**: Upload a CSV file with coordinate columns. The app
+  will batch process these and return detailed location info (formatted
+  address, country, province, city, district, etc.).
+
+### 3. Coordinate Conversion
+
+The **Convert Coords** tab handles coordinate system transformations.
+
+- **Supported Systems**: Convert from GPS (WGS84), MapBar, or Baidu
+  (BD09) coordinates to the AutoNavi (GCJ02) system.
+- **Batch Support**: Like other tabs, you can process single points or
+  upload CSV files for bulk conversion.
+
+### 4. Settings
+
+Configure global API settings directly within the app:
+
+- **API Key**: Set your AutoNavi API key. If you’ve already set it via
+  `options(amap_key = "...")` in R, it will be pre-filled.
+- **Parallel Processing**: Adjust the number of concurrent requests
+  (`max_active`) for batch operations.
+- **Throttling**: Set the request rate limit to comply with API quotas.
+
+## Workflow Example
+
+1.  **Launch the App**: Run
+    [`amapGeocode::amap_gui()`](https://womeimingzi11.github.io/amapGeocode/reference/amap_gui.md).
+2.  **Configure API Key**: Go to the **Settings** tab and verify your
+    API key is present.
+3.  **Perform Task**:
+    - Navigate to the **Geocoding** tab.
+    - Select “Batch File (CSV)” mode.
+    - Upload your `addresses.csv`.
+    - Select the column name that contains your addresses.
+    - Click **Batch Process**.
+4.  **Download Results**: Once processing is complete, a “Download
+    Results” button will appear. Click it to save the geocoded data to
+    your local machine.
+
+## Dependencies
+
+The GUI requires the following additional R packages: \* `shiny` \*
+`bslib` (for the modern UI theme) \* `DT` (for interactive data tables)
+\* `readr` (for fast file I/O)
+
+The app will check for these packages on startup and prompt you to
+install them if they are missing.

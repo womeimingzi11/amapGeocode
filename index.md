@@ -229,6 +229,33 @@ with_amap_signature("YOUR-SECRET", {
 })
 ```
 
+## Interactive GUI
+
+Introduced in version 0.9.0, `amapGeocode` now comes with a built-in
+Shiny application for interactive use. This is perfect for users who
+prefer a graphical interface or for quick batch processing tasks without
+writing code.
+
+To launch the GUI:
+
+``` r
+library(amapGeocode)
+# Make sure you have the required suggested packages installed:
+# install.packages(c("shiny", "bslib", "DT", "readr"))
+
+amap_gui()
+```
+
+The GUI supports: \* **Geocoding**: Single address or batch CSV
+processing. \* **Reverse Geocoding**: Coordinate to address, with batch
+support. \* **Coordinate Conversion**: Transform GPS/MapBar/Baidu
+coordinates to AutoNavi. \* **Configuration**: Set API key and tuning
+parameters visually.
+
+See the [Shiny App
+Vignette](https://womeimingzi11.github.io/amapGeocode/articles/Introduction_to_Shiny_App.html)
+for a detailed walkthrough.
+
 ## Bug report
 
 It’s very common for API upgrades to make the downstream application,
