@@ -1,5 +1,14 @@
 # Changelog
 
+## amapGeocode 1.0.0
+
+- This is the first major release of `amapGeocode`, marking API
+  stability.
+- Added a Shiny Graphical User Interface (GUI) accessible via
+  [`amap_gui()`](https://womeimingzi11.github.io/amapGeocode/reference/amap_gui.md).
+- Enhanced error handling and test coverage.
+- Improved documentation with new vignettes and pkgdown site.
+
 ## amapGeocode 0.9.0
 
 CRAN release: 2026-01-19
