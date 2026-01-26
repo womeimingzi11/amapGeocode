@@ -27,7 +27,7 @@
 #' @export
 amap_gui <- function() {
   # Check for required suggested packages
-  required_pkgs <- c("shiny", "bslib", "DT", "readr")
+  required_pkgs <- c("shiny", "bslib", "DT", "readr", "leaflet", "future", "promises")
   missing_pkgs <- required_pkgs[!vapply(required_pkgs, requireNamespace, logical(1), quietly = TRUE)]
 
   if (length(missing_pkgs) > 0) {

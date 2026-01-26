@@ -19,3 +19,4 @@
 ^run_check_after_fixes\.R$
 ^CRAN-SUBMISSION$
 ^amapGeocode_.*\.tar\.gz$
+^plan_shiny_enhancement\.md$

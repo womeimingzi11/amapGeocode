@@ -1,8 +1,15 @@
 # amapGeocode 1.0.0
-* This is the first major release of `amapGeocode`, marking API stability.
-* Added a Shiny Graphical User Interface (GUI) accessible via `amap_gui()`.
-* Enhanced error handling and test coverage.
-* Improved documentation with new vignettes and pkgdown site.
+
+## Shiny App Enhancements
+* **Modular Architecture**: The internal Shiny application has been refactored into modules for better maintainability and scalability.
+* **Administrative Region Search**: Added a dedicated GUI panel for querying administrative regions (`getAdmin`).
+* **Interactive Map**: Integrated `leaflet` to visualize geocoding, reverse geocoding, and admin search results on an interactive map.
+* **Coordinate Conversion**: Improved the UI for converting coordinates between different systems.
+* **Dependency Check**: `amap_gui()` now checks for the `leaflet` package in addition to other suggested dependencies.
+
+## Major Changes
+* `amapGeocode` now requires R >= 4.1.0.
+* Dropped support for older R versions to leverage native pipe `|>` and other modern features.
 
 # amapGeocode 0.9.0
 * Added a Shiny Graphical User Interface (GUI) accessible via `amap_gui()`. This interface supports single and batch operations for geocoding, reverse geocoding, and coordinate conversion, along with API configuration.

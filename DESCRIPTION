@@ -35,7 +35,10 @@ Suggests:
     bslib,
     DT,
     readr,
-    tools
+    leaflet,
+    tools,
+    future,
+    promises
 VignetteBuilder:
     knitr
 Encoding: UTF-8
