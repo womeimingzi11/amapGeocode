@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
-Starting from version 0.9.0, `amapGeocode` includes a built-in Shiny application (`amap_gui()`) that provides a user-friendly graphical interface for all major package functions. Version 1.0.0 significantly enhances this app with modular architecture, interactive maps, and administrative region search.
+Starting from version 0.9.0, `amapGeocode` includes a built-in Shiny application (`amap_gui()`) that provides a user-friendly graphical interface for all major package functions. Version 1.1.0 significantly enhances this app with modular architecture, interactive maps, and administrative region search.
 
 To launch the application, simply run:
 
@@ -44,7 +44,7 @@ The **Reverse Geocoding** tab converts coordinates back into structured addresse
 *   **Single Point Mode**: Input longitude and latitude manually.
 *   **Batch Mode**: Upload a CSV file with coordinate columns. The app will batch process these and return detailed location info.
 
-### 3. Administrative Regions (New in v1.0.0)
+### 3. Administrative Regions (New in v1.1.0)
 
 The **Admin Regions** tab allows you to query the administrative hierarchy.
 
@@ -59,7 +59,7 @@ The **Convert Coords** tab handles coordinate system transformations.
 *   **Supported Systems**: Convert from GPS (WGS84), MapBar, or Baidu (BD09) coordinates to the AutoNavi (GCJ02) system.
 *   **Batch Support**: Process single points or upload CSV files for bulk conversion.
 
-### 5. Interactive Map (New in v1.0.0)
+### 5. Interactive Map (New in v1.1.0)
 
 The **Map View** tab visualizes your results.
 
