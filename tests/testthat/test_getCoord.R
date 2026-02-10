@@ -1,3 +1,5 @@
+testthat::skip_if_not_installed("vcr")
+
 test_that("getCoord returns best match with rate limit metadata", {
   vcr::use_cassette("geocode_best",
     {

@@ -1,3 +1,5 @@
+testthat::skip_if_not_installed("vcr")
+
 test_that("getAdmin flattens multiple parent districts", {
   vcr::use_cassette("admin_multi",
     {

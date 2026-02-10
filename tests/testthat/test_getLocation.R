@@ -1,3 +1,5 @@
+testthat::skip_if_not_installed("vcr")
+
 test_that("getLocation returns basic reverse geocode data", {
   vcr::use_cassette("regeo_basic",
     {

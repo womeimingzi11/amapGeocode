@@ -1,0 +1,4 @@
+id,address,city,true_adcode,note
+a1,朝阳区,,110105,Ambiguous between Beijing and others
+a2,人民医院,成都市,,Requires additional context
+a3,中山路,,,Common street name nationwide

@@ -1,3 +1,10 @@
+# amapGeocode 1.2.0
+* Added reproducibility infrastructure: request caching (`amap_cache_enable()`/`amap_cache_disable()`) and JSONL audit logging (`amap_audit_enable()`/`amap_audit_disable()`/`amap_audit_report()`).
+* Added task-level tidy helpers for batch workflows: `geocodeData()` and `regeoData()`.
+* Added OD matrix construction via the AutoNavi distance API: `getOdMatrix()` plus `asAccessibilityInput()` adapter.
+* Added explainable candidate resolution: `resolveGeocode()` and initial uncertainty propagation helper `propagateUncertainty()`.
+* Added sample datasets under `inst/extdata/` and a new vignette `Medical Accessibility with amapGeocode`.
+
 # amapGeocode 1.1.0
 
 ## Shiny App Enhancements

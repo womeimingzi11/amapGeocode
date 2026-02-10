@@ -436,12 +436,92 @@ amap_request <- function(endpoint,
     output = output,
     callback = callback
   )
-  resp <- httr2::req_perform(prepared$req)
-  amap_process_response(
-    resp = resp,
+
+  request_id <- amap_request_id(
+    base_url = amap_base_url(),
     endpoint = prepared$endpoint,
     query = prepared$query,
+    key_hash = amap_key_hash(prepared$query$key %||% NA_character_),
     output = prepared$output,
     callback = prepared$callback
   )
+
+  cached <- amap_cache_get(prepared$endpoint, request_id)
+  if (!is.null(cached)) {
+    out <- structure(
+      list(body = cached$body, response = NULL, query = prepared$query),
+      class = "amap_response",
+      rate_limit = cached$meta$rate_limit %||% NULL
+    )
+    attr(out, "request_id") <- request_id
+    amap_audit_write(list(
+      ts = format(as.POSIXct(Sys.time(), tz = "UTC"), tz = "UTC", usetz = TRUE),
+      request_id = request_id,
+      endpoint = prepared$endpoint,
+      cache_hit = TRUE,
+      ok = TRUE,
+      http_status = cached$meta$http_status %||% NA_integer_,
+      infocode = cached$meta$infocode %||% NA_character_,
+      duration_ms = 0,
+      query = amap_sanitize_query_for_log(prepared$query)
+    ))
+    return(out)
+  }
+
+  t0 <- Sys.time()
+  out <- tryCatch(
+    {
+      resp <- httr2::req_perform(prepared$req)
+      amap_process_response(
+        resp = resp,
+        endpoint = prepared$endpoint,
+        query = prepared$query,
+        output = prepared$output,
+        callback = prepared$callback
+      )
+    },
+    error = function(e) e
+  )
+  dt <- as.numeric(difftime(Sys.time(), t0, units = "secs")) * 1000
+
+  if (inherits(out, "amap_response")) {
+    attr(out, "request_id") <- request_id
+    rate_limit <- attr(out, "rate_limit")
+    meta <- list(
+      http_status = tryCatch(httr2::resp_status(out$response), error = function(e) NA_integer_),
+      infocode = out$body$infocode %||% out$body$infoCode %||% NA_character_,
+      rate_limit = rate_limit %||% NULL
+    )
+    amap_cache_put(prepared$endpoint, request_id, out$body, meta)
+    amap_audit_write(list(
+      ts = format(as.POSIXct(Sys.time(), tz = "UTC"), tz = "UTC", usetz = TRUE),
+      request_id = request_id,
+      endpoint = prepared$endpoint,
+      cache_hit = FALSE,
+      ok = TRUE,
+      http_status = meta$http_status,
+      infocode = meta$infocode,
+      duration_ms = dt,
+      query = amap_sanitize_query_for_log(prepared$query)
+    ))
+    return(out)
+  }
+
+  api <- NULL
+  if (inherits(out, "amap_api_error")) {
+    api <- out
+  }
+  amap_audit_write(list(
+    ts = format(as.POSIXct(Sys.time(), tz = "UTC"), tz = "UTC", usetz = TRUE),
+    request_id = request_id,
+    endpoint = prepared$endpoint,
+    cache_hit = FALSE,
+    ok = FALSE,
+    http_status = if (!is.null(api)) api$http_status %||% NA_integer_ else NA_integer_,
+    infocode = if (!is.null(api)) api$infocode %||% NA_character_ else NA_character_,
+    duration_ms = dt,
+    error = conditionMessage(out),
+    query = amap_sanitize_query_for_log(prepared$query)
+  ))
+  stop(out)
 }

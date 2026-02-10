@@ -1,0 +1,73 @@
+---
+title: "Medical Accessibility with amapGeocode"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Medical Accessibility with amapGeocode}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette demonstrates a reproducible workflow for medical accessibility
+analysis in China using `amapGeocode`, centred on:
+
+1. Request caching + audit logging
+2. OD matrix construction via the AutoNavi distance API
+3. Preparing outputs for downstream accessibility metrics (e.g., the
+   `{accessibility}` package)
+
+## Setup
+
+```{r, eval = FALSE}
+library(amapGeocode)
+
+# Set your AutoNavi API key
+options(amap_key = "YOUR_KEY")
+
+# Reproducible infrastructure
+amap_cache_enable(path = tempdir(), ttl_days = 30)
+amap_audit_enable(path = tempdir())
+
+# Respect AutoNavi QPS limits (defaults are safe)
+amap_config(throttle = TRUE, max_active = 3)
+```
+
+## Sample data
+
+The package ships small example datasets:
+
+```{r, eval = FALSE}
+origins <- read.csv(system.file("extdata", "origins_sample.csv", package = "amapGeocode"))
+destinations <- read.csv(system.file("extdata", "hospitals_sample.csv", package = "amapGeocode"))
+```
+
+## Build OD matrix
+
+```{r, eval = FALSE}
+od <- getOdMatrix(
+  origins = origins,
+  destinations = destinations,
+  mode = "driving"
+)
+od
+```
+
+## Prepare for {accessibility}
+
+```{r, eval = FALSE}
+od_acc <- asAccessibilityInput(od, origins = origins, destinations = destinations)
+head(od_acc)
+```
+
+## Audit report
+
+```{r, eval = FALSE}
+amap_audit_report(file.path(tempdir(), "amap_audit_report.csv"), format = "csv")
+```
+

@@ -127,33 +127,17 @@ getCoord <- function(address,
     })
 
     prepared <- lapply(batch_queries, build_prepared)
-    reqs <- lapply(prepared, function(x) x$req)
-    resps <- httr2::req_perform_parallel(
-      reqs,
-      on_error = "return",
-      progress = FALSE,
-      max_active = max_active
-    )
+    outs <- amap_perform_prepared(prepared, max_active = max_active)
 
-    for (i in seq_along(resps)) {
+    for (i in seq_along(outs)) {
       idx <- indices[[i]]
       chunk_addresses <- addresses[idx]
       prep <- prepared[[i]]
-      resp <- resps[[i]]
+      resp <- outs[[i]]
 
       out <- tryCatch(
         {
-          if (inherits(resp, "httr2_response")) {
-            amap_process_response(
-              resp = resp,
-              endpoint = prep$endpoint,
-              query = prep$query,
-              output = prep$output,
-              callback = prep$callback
-            )
-          } else {
-            rlang::abort("Request failed", parent = resp)
-          }
+          if (inherits(resp, "amap_response")) resp else rlang::abort("Request failed", parent = resp)
         },
         amap_api_error = function(err) {
           if (isTRUE(keep_bad_request)) {
@@ -188,31 +172,15 @@ getCoord <- function(address,
       )
       build_prepared(query)
     })
-    reqs <- lapply(prepared, function(x) x$req)
-    resps <- httr2::req_perform_parallel(
-      reqs,
-      on_error = "return",
-      progress = FALSE,
-      max_active = max_active
-    )
+    outs <- amap_perform_prepared(prepared, max_active = max_active)
 
-    for (i in seq_along(resps)) {
+    for (i in seq_along(outs)) {
       prep <- prepared[[i]]
-      resp <- resps[[i]]
+      resp <- outs[[i]]
 
       out <- tryCatch(
         {
-          if (inherits(resp, "httr2_response")) {
-            amap_process_response(
-              resp = resp,
-              endpoint = prep$endpoint,
-              query = prep$query,
-              output = prep$output,
-              callback = prep$callback
-            )
-          } else {
-            rlang::abort("Request failed", parent = resp)
-          }
+          if (inherits(resp, "amap_response")) resp else rlang::abort("Request failed", parent = resp)
         },
         amap_api_error = function(err) {
           if (isTRUE(keep_bad_request)) {

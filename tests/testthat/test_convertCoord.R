@@ -1,3 +1,5 @@
+testthat::skip_if_not_installed("vcr")
+
 test_that("convertCoord returns converted numeric coordinates", {
   vcr::use_cassette("convert_basic",
     {
