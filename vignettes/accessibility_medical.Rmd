@@ -21,6 +21,7 @@ analysis in China using `amapGeocode`, centred on:
 2. OD matrix construction via the AutoNavi distance API
 3. Preparing outputs for downstream accessibility metrics (e.g., the
    `{accessibility}` package)
+4. Explainable geocode resolution and uncertainty sensitivity
 
 ## Setup
 
@@ -47,6 +48,21 @@ origins <- read.csv(system.file("extdata", "origins_sample.csv", package = "amap
 destinations <- read.csv(system.file("extdata", "hospitals_sample.csv", package = "amapGeocode"))
 ```
 
+## Explainable geocode resolution (optional)
+
+When geocoding ambiguous Chinese queries, use `mode = "all"` to obtain
+candidates and then resolve them with an explainable strategy.
+
+```{r, eval = FALSE}
+candidates <- getCoord("朝阳区", mode = "all")
+resolved <- resolveGeocode(
+  candidates,
+  admin = list(province = "北京市", city = "北京市")
+)
+resolved$best
+resolved$diagnostics
+```
+
 ## Build OD matrix
 
 ```{r, eval = FALSE}
@@ -65,9 +81,24 @@ od_acc <- asAccessibilityInput(od, origins = origins, destinations = destination
 head(od_acc)
 ```
 
+## Uncertainty sensitivity (top-2)
+
+If upstream geocoding is ambiguous, you can propagate top-2 candidate
+uncertainty to OD outputs.
+
+```{r, eval = FALSE}
+pu <- propagateUncertainty(
+  best = resolved$best,
+  candidates = resolved$candidates,
+  destinations = destinations,
+  mode = "driving"
+)
+head(pu$od_scenarios)
+head(pu$od_summary)
+```
+
 ## Audit report
 
 ```{r, eval = FALSE}
 amap_audit_report(file.path(tempdir(), "amap_audit_report.csv"), format = "csv")
 ```
-
